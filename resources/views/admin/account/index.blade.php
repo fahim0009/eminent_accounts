@@ -36,46 +36,26 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">
+                        <input type="text" class="form-control" id="name" name="name">
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Surname</label>
-                        <input type="text" id="surname" name="surname" class="form-control" placeholder="Enter surname">
+                        <label>Balance</label>
+                        <input type="number" id="balance" name="balance" class="form-control">
                       </div>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                       <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Phone</label>
-                        <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter phone">
+                        <label>Description</label>
+                        <input type="text" class="form-control" id="description" name="description">
                       </div>
                     </div>
                   </div>
 
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Enter confirm password">
-                      </div>
-                    </div>
-                  </div>
                   
                 </form>
               </div>
@@ -116,9 +96,8 @@
                 <tr>
                   <th>Sl</th>
                   <th>Name</th>
-                  <th>Surname</th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  <th>Balance</th>
+                  <th>Description</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -127,9 +106,8 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->name}}</td>
-                    <td style="text-align: center">{{$data->surname}}</td>
-                    <td style="text-align: center">{{$data->email}}</td>
-                    <td style="text-align: center">{{$data->phone}}</td>
+                    <td style="text-align: center">{{$data->balance}}</td>
+                    <td style="text-align: center">{{$data->description}}</td>
                     
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
@@ -191,19 +169,16 @@
       //header for csrf-token is must in laravel
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
-      var url = "{{URL::to('/admin/new-admin')}}";
-      var upurl = "{{URL::to('/admin/new-admin-update')}}";
+      var url = "{{URL::to('/admin/account')}}";
+      var upurl = "{{URL::to('/admin/account-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
           if($(this).val() == 'Create') {
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
-              form_data.append("email", $("#email").val());
-              form_data.append("phone", $("#phone").val());
-              form_data.append("surname", $("#surname").val());
-              form_data.append("password", $("#password").val());
-              form_data.append("confirm_password", $("#confirm_password").val());
+              form_data.append("balance", $("#balance").val());
+              form_data.append("description", $("#description").val());
               $.ajax({
                 url: url,
                 method: "POST",
@@ -240,11 +215,8 @@
           if($(this).val() == 'Update'){
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
-              form_data.append("email", $("#email").val());
-              form_data.append("phone", $("#phone").val());
-              form_data.append("surname", $("#surname").val());
-              form_data.append("password", $("#password").val());
-              form_data.append("confirm_password", $("#confirm_password").val());
+              form_data.append("balance", $("#balance").val());
+              form_data.append("description", $("#description").val());
               form_data.append("codeid", $("#codeid").val());
               
               $.ajax({
@@ -334,9 +306,8 @@
       //Delete  
       function populateForm(data){
           $("#name").val(data.name);
-          $("#surname").val(data.surname);
-          $("#phone").val(data.phone);
-          $("#email").val(data.email);
+          $("#balance").val(data.balance);
+          $("#description").val(data.description);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');
           $("#addBtn").html('Update');
