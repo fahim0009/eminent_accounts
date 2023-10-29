@@ -10,12 +10,15 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    
 
     <!-- Scripts -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('app/sass/app.scss')}}">
+
+    <!-- Scripts -->
     {{-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
 </head>
 <body>
@@ -78,6 +81,6 @@
             @yield('content')
         </main>
     </div>
-    <script src="{{ asset('app/js/app.js')}}"></script>
+    <script src="{{ asset('resources/app/js/app.js')}}"></script>
 </body>
 </html>

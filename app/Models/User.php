@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    
 
     /**
      * The attributes that are mass assignable.
@@ -23,11 +22,15 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'surname',
         'is_type',
         'password',
-        'address',
+        'street_name',
+        'house_number',
+        'town',
         'country',
-        'city',
+        'postcode',
+        'photo',
         'phone',
         'status',
         'about',
@@ -35,6 +38,8 @@ class User extends Authenticatable
         'twitter',
         'google',
         'linkedin',
+        'google_id',
+        'facebook_id',
         'updated_by',
         'created_by',
     ];
@@ -56,7 +61,13 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
-    
+    protected function type(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) =>  ["0", "1", "2"][$value],
+        );
+    }
 }

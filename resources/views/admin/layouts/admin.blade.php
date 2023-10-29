@@ -1,256 +1,172 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta name="description" content="Vali is a responsive and free admin theme built with Bootstrap 4, SASS and PUG.js. It's fully customizable and modular.">
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta charset="utf-8">
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin</title>
 
-    <title>Admin</title>
-    <!-- Twitter meta-->
-    <meta property="twitter:card" content="hasibuzzaman">
-    <meta property="twitter:site" content="@hasibuzzaman">
-    <meta property="twitter:creator" content="@hasibuzzaman">
-    <!-- Open Graph Meta-->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Vali Admin">
-    <meta property="og:description" content="Vali is a responsive and free admin theme built with Bootstrap 4, SASS and PUG.js. It's fully customizable and modular.">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/fontawesome-free/css/all.min.css')}}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css')}}">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jqvmap/jqvmap.min.css')}}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/dist/css/adminlte.min.css')}}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/daterangepicker/daterangepicker.css')}}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/summernote/summernote-bs4.min.css')}}">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{{ asset('assets/admin/plugins/toastr/toastr.min.css')}}">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
 
-    <!--DataTables [ OPTIONAL ]-->
-    {{-- <script src="{{ asset('plugins/datatables/media/js/jquery.dataTables.js')}}"></script>
-    <script src="{{ asset('plugins/datatables/media/js/dataTables.bootstrap.js')}}"></script>
-    <script src="{{ asset('plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js')}}"></script>
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="{{ asset('assets/admin/dist/img/AdminLTELogo.png')}}" alt="AdminLTELogo" height="60" width="60">
+  </div>
 
-    <!--DataTables Sample [ SAMPLE ]-->
-    <script src="{{ asset('js/demo/tables-datatables.js')}}"></script> --}}
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      
+    </ul>
 
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
 
-    <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/main.css')}}">
-    <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
 
-    {{--  datatables --}}
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
-  </head>
-  <body class="app sidebar-mini">
-    <!-- Navbar-->
-    <header class="app-header"><a class="app-header__logo" href="{{ route('homepage')}}">Accountancy</a>
-      <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
-      <!-- Navbar Right Menu-->
-      <ul class="app-nav">
-        <!--Notification Menu-->
-        
-        <!-- User Menu-->
-        <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
-          <ul class="dropdown-menu settings-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="{{url('admin/profile')}}"><i class="fa fa-user fa-lg"></i> Profile</a></li>
-            <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-lg"></i>{{ __('Logout') }}</a>
-             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                @csrf
-            </form>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </header>
-    <!-- Sidebar menu-->
-    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-    <aside class="app-sidebar">
-      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="@if(Auth::User()->photo){{ asset('images') }}/{{Auth::User()->photo}}@else{{ asset('1.png') }}@endif"  height="50px" width="50px" alt="User Image">
-        <div>
-          <p class="app-sidebar__user-name">{{Auth::User()->name}}</p>
-          <p class="app-sidebar__user-designation">Frontend Developer</p>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{Auth::user()->name}}</a>
         </div>
       </div>
-      <ul class="app-menu">
-        <li><a class="app-menu__item" href="{{ route('admin.dashboard')}}" id="dashboard"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
 
-        {{-- <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">UI Elements</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="bootstrap-components.html"><i class="icon fa fa-circle-o"></i> Bootstrap Elements</a></li>
-            <li><a class="treeview-item" href="https://fontawesome.com/v4.7.0/icons/" target="_blank" rel="noopener"><i class="icon fa fa-circle-o"></i> Font Icons</a></li>
-            <li><a class="treeview-item" href="ui-cards.html"><i class="icon fa fa-circle-o"></i> Cards</a></li>
-            <li><a class="treeview-item" href="widgets.html"><i class="icon fa fa-circle-o"></i> Widgets</a></li>
-          </ul>
-        </li> --}}
+      <!-- Sidebar Menu -->
+      @include('admin.inc.sidebar')
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    
 
-        {{-- @if(Auth::user()->is_type == 'admin' || in_array('1', json_decode(Auth::user()->staff->role->permissions))) --}}
-        <li><a class="app-menu__item" href="{{route('admin.registration')}}" id="admin"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Admin</span></a></li>
-        {{-- @endif --}}
-
-        
-
-        {{-- @if(Auth::user()->is_type == 'admin' || in_array('3', json_decode(Auth::user()->staff->role->permissions))) --}}
-        {{-- <li><a class="app-menu__item" href="{{url('admin/role')}}" id="role"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Roles</span></a></li> --}}
-        {{-- @endif --}}
-
-        {{-- @if(Auth::user()->is_type == 'admin' || in_array('3', json_decode(Auth::user()->staff->role->permissions))) --}}
-        <li><a class="app-menu__item" href="{{route('admin.photo')}}" id="photo"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Photo</span></a></li>
-        {{-- @endif --}}
-        
-        <li class="treeview" id="alluser"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">User</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            {{-- <li><a class="treeview-item" href="{{url('admin/agent-register')}}" id="agent"><i class="icon fa fa-circle-o"></i> Agent</a></li> --}}
-
-            {{-- @if(Auth::user()->is_type == 'admin' || in_array('4', json_decode(Auth::user()->staff->role->permissions))) --}}
-            <li><a class="treeview-item" href="{{url('admin/user-register')}}" id="user"><i class="icon fa fa-circle-o"></i> User</a></li>
-            {{-- @endif --}}
-
-            {{-- @if(Auth::user()->is_type == 'admin' || in_array('2', json_decode(Auth::user()->staff->role->permissions))) --}}
-            <li><a class="treeview-item" href="{{url('admin/staff')}}" id="staff"><i class="icon fa fa-circle-o"></i> Staff</a></li>
-            {{-- @endif --}}
-
-          </ul>
-        </li>
-
-        <li class="treeview" id="allblog"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Blog</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{ route('admin.blog_category')}}" id="blogcategory"><i class="icon fa fa-circle-o"></i>Category</a></li>
-            <li><a class="treeview-item" href="{{ route('admin.blog')}}" id="blog"><i class="icon fa fa-circle-o"></i> Add Blog</a></li>
-          </ul>
-        </li>
-
-        <li><a class="app-menu__item" href="{{route('admin.work')}}" id="work"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Work</span></a></li>
-
-        <li class="treeview" id="alljob"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Jobs</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{ route('admin.job_category')}}" id="jobcategory"><i class="icon fa fa-circle-o"></i>Category</a></li>
-            <li><a class="treeview-item" href="{{ route('admin.job')}}" id="job"><i class="icon fa fa-circle-o"></i> Jobs</a></li>
-          </ul>
-        </li>
-
-        <li><a class="app-menu__item" href="{{route('admin.agentrequest')}}" id="agentrequest"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Agent request</span></a></li>
-
-
-        {{-- <li class="treeview" id="allservice"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Service</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{ route('admin.service_category')}}" id="servicecategory"><i class="icon fa fa-circle-o"></i>Add Category</a></li>
-            <li><a class="treeview-item" href="{{ route('admin.service')}}" id="service"><i class="icon fa fa-circle-o"></i> Add Service</a></li>
-          </ul>
-        </li>
-
-        <li class="treeview" id="allnews"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">News</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{ route('admin.news_category')}}" id="newscategory"><i class="icon fa fa-circle-o"></i>Add Category</a></li>
-            <li><a class="treeview-item" href="{{ route('admin.news')}}" id="news"><i class="icon fa fa-circle-o"></i> Add News</a></li>
-          </ul>
-        </li>
-
-        
-
-        <li class="treeview" id="allgallery"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Gallery</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{ route('admin.gallery_category')}}" id="gallerycategory"><i class="icon fa fa-circle-o"></i>Add Category</a></li>
-            <li><a class="treeview-item" href="{{ route('admin.gallery')}}" id="gallery"><i class="icon fa fa-circle-o"></i> Add Image</a></li>
-          </ul>
-        </li> --}}
-
-
-        {{-- <li><a class="app-menu__item" href="charts.html"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Charts</span></a></li> --}}
-        {{-- <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Code Master</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{url('admin/master')}}"><i class="icon fa fa-circle-o"></i> Master Code</a></li>
-            <li><a class="treeview-item" href="{{url('admin/softcode')}}"><i class="icon fa fa-circle-o"></i> Soft Code</a></li>
-          </ul>
-        </li> --}}
-        {{-- @if(Auth::user()->is_type == 'admin' || in_array('3', json_decode(Auth::user()->staff->role->permissions))) --}}
-        <li><a class="app-menu__item" href="{{route('admin.contact-mail')}}" id="email"><i class="app-menu__icon fa fa-pie-chart"></i><span class="app-menu__label">Mail</span></a></li>
-        {{-- @endif --}}
-        <li class="treeview" id="fsettings"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Frontend Settings</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="{{url('admin/sliders')}}" id="slider"><i class="icon fa fa-circle-o"></i> Slider Image</a></li>
-            <li><a class="treeview-item" href="{{url('admin/company-detail')}}" id="slider"><i class="icon fa fa-circle-o"></i> Company Details</a></li>
-            <li><a class="treeview-item" href="{{url('admin/seo-settings')}}" id="seo"><i class="icon fa fa-circle-o"></i> Seo Settings</a></li>
-          </ul>
-        </li>
-        {{-- <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Tables</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="table-basic.html"><i class="icon fa fa-circle-o"></i> Basic Tables</a></li>
-            <li><a class="treeview-item" href="table-data-table.html"><i class="icon fa fa-circle-o"></i> Data Tables</a></li>
-          </ul>
-        </li> --}}
-        {{-- <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-file-text"></i><span class="app-menu__label">Pages</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="blank-page.html"><i class="icon fa fa-circle-o"></i> Blank Page</a></li>
-            <li><a class="treeview-item" href="page-login.html"><i class="icon fa fa-circle-o"></i> Login Page</a></li>
-            <li><a class="treeview-item" href="page-lockscreen.html"><i class="icon fa fa-circle-o"></i> Lockscreen Page</a></li>
-            <li><a class="treeview-item" href="page-user.html"><i class="icon fa fa-circle-o"></i> User Page</a></li>
-            <li><a class="treeview-item" href="page-invoice.html"><i class="icon fa fa-circle-o"></i> Invoice Page</a></li>
-            <li><a class="treeview-item" href="page-calendar.html"><i class="icon fa fa-circle-o"></i> Calendar Page</a></li>
-            <li><a class="treeview-item" href="page-mailbox.html"><i class="icon fa fa-circle-o"></i> Mailbox</a></li>
-            <li><a class="treeview-item" href="page-error.html"><i class="icon fa fa-circle-o"></i> Error Page</a></li>
-          </ul>
-        </li>
-        <li><a class="app-menu__item" href="docs.html"><i class="app-menu__icon fa fa-file-code-o"></i><span class="app-menu__label">Docs</span></a></li> --}}
-      </ul>
-    </aside>
+    <!-- Main content -->
     @yield('content')
-     <!-- Essential javascripts for application to work-->
-     <script src="{{ asset('js/jquery-3.3.1.min.js')}}"></script>
-     <script src="{{ asset('js/popper.min.js')}}"></script>
-     <script src="{{ asset('js/bootstrap.min.js')}}"></script>
-     <script src="{{ asset('js/main.js')}}"></script>
-     <!-- The javascript plugin to display page loading on top-->
-     <script src="{{ asset('js/plugins/pace.min.js')}}"></script>
-     <!-- Page specific javascripts-->
-     <script type="text/javascript" src="{{ asset('js/plugins/chart.js')}}"></script>
-     <script>
-      // page schroll top
-      function pagetop() {
-          window.scrollTo({
-              top: 130,
-              behavior: 'smooth',
-          });
-      }
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2023 <a href="#">AdminLTE.io</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 3.2.0
+    </div>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{{ asset('assets/admin/plugins/jquery/jquery.min.js')}}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{{ asset('assets/admin/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{{ asset('assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- ChartJS -->
+<script src="{{ asset('assets/admin/plugins/chart.js/Chart.min.js')}}"></script>
+<!-- Sparkline -->
+<script src="{{ asset('assets/admin/plugins/sparklines/sparkline.js')}}"></script>
+<!-- JQVMap -->
+{{-- <script src="{{ asset('assets/admin/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script> --}}
+<!-- jQuery Knob Chart -->
+<script src="{{ asset('assets/admin/plugins/jquery-knob/jquery.knob.min.js')}}"></script>
+<!-- daterangepicker -->
+<script src="{{ asset('assets/admin/plugins/moment/moment.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/daterangepicker/daterangepicker.js')}}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{{ asset('assets/admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+<!-- Summernote -->
+<script src="{{ asset('assets/admin/plugins/summernote/summernote-bs4.min.js')}}"></script>
+<!-- overlayScrollbars -->
+<script src="{{ asset('assets/admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{ asset('assets/admin/dist/js/adminlte.js')}}"></script>
+<!-- AdminLTE for demo purposes -->
+{{-- <script src="{{ asset('assets/admin/dist/js/demo.js')}}"></script> --}}
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{{ asset('assets/admin/dist/js/pages/dashboard.js')}}"></script>
 
 
-      function success(msg){
-             $.notify({
-                     // title: "Update Complete : ",
-                     message: msg,
-                     // icon: 'fa fa-check'
-                 },{
-                     type: "info"
-                 });
+<!-- DataTables  & Plugins -->
+<script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/jszip/jszip.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/pdfmake/pdfmake.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/pdfmake/vfs_fonts.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 
-         }
-     function dlt(){
-       swal({
-         title: "Are you sure?",
-         text: "You will not be able to recover this imaginary file!",
-         type: "warning",
-         showCancelButton: true,
-         confirmButtonText: "Yes, delete it!",
-         cancelButtonText: "No, cancel plx!",
-         closeOnConfirm: false,
-         closeOnCancel: false
-     }, function(isConfirm) {
-         if (isConfirm) {
-             swal("Deleted!", "Your imaginary file has been deleted.", "success");
-         } else {
-            swal("Cancelled", "Your imaginary file is safe :)", "error");
-
-         }
- });
-
-
-     }
-
-  </script>
-
-{{-- datatables  --}}
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script> 
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script> 
-
-
- <script type="text/javascript" src="{{asset('js/plugins/bootstrap-notify.min.js')}}"></script>
- <script type="text/javascript" src="{{asset('js/plugins/sweetalert.min.js')}}"></script>
-     @yield('script')
-    </body>
-    </html>
+<!-- SweetAlert2 -->
+<script src="{{ asset('assets/admin/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
+<script src="{{ asset('assets/admin/plugins/toastr/toastr.min.js')}}"></script>
+@yield('script')
+</body>
+</html>
