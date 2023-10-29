@@ -70,4 +70,9 @@ class User extends Authenticatable
             get: fn ($value) =>  ["0", "1", "2"][$value],
         );
     }
+
+    public function client()
+    {
+        return $this->hasMany(Client::class);
+    }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\ClientController;
 
 
 /*------------------------------------------
@@ -34,6 +35,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/account-update', [AccountController::class, 'update']);
     Route::get('/account/{id}', [AccountController::class, 'delete']);
 
+    
+    Route::get('/client', [ClientController::class, 'index'])->name('admin.client');
+    Route::post('/client', [ClientController::class, 'store']);
+    Route::get('/client/{id}/edit', [ClientController::class, 'edit']);
+    Route::post('/client-update', [ClientController::class, 'update']);
+    Route::get('/client/{id}', [ClientController::class, 'delete']);
 
 });
   
