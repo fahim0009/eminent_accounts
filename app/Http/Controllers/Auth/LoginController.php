@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
   
 class LoginController extends Controller
 {
@@ -40,12 +40,8 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     
-    /**
-     * Create a new controller instance.
-     *
-     * @return RedirectResponse
-     */
-    public function login(Request $request): RedirectResponse
+    
+    public function login(Request $request)
     {   
         $input = $request->all();
      
@@ -53,25 +49,32 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-     
-        if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
-        {
-            
-            if (auth()->user()->is_type == '1') {
-                
-                // dd('admin');
-                return redirect()->route('admin.dashboard');
-            }else if (auth()->user()->is_type == '2') {
-                return redirect()->route('manager.home');
-            }else if (auth()->user()->is_type == '0') {
-                return redirect()->route('user.home');
+
+        $chksts = User::where('email', $input['email'])->first();
+        if ($chksts) {
+            if ($chksts->status == 1) {
+                if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+                    {
+                        if (auth()->user()->is_type == '1') {
+                            return redirect()->route('admin.dashboard');
+                        }else if (auth()->user()->is_type == '2') {
+                            return redirect()->route('manager.home');
+                        }else if (auth()->user()->is_type == '0') {
+                            return redirect()->route('user.home');
+                        }else{
+                            return redirect()->route('home');
+                        }
+                    }else{
+                        return view('auth.login')
+                            ->with('message','Wrong Password.');
+                    }
             }else{
-                return redirect()->route('home');
+                return view('auth.login')
+                ->with('message','Your ID is Deactive.');
             }
-        }else{
-            dd('login');
-            return redirect()->route('login')
-                ->with('error','Email-Address And Password Are Wrong.');
+        }else {
+            return view('auth.login')
+                ->with('message','Credential Error. You are not authenticate user.');
         }
           
     }
