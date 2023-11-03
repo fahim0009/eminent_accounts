@@ -29,6 +29,14 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="{{route('admin.coa')}}" class="nav-link {{ (request()->is('admin/chart-of-account*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            Chart of account
+          </p>
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{route('admin.client')}}" class="nav-link {{ (request()->is('admin/client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
@@ -42,5 +43,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/client-update', [ClientController::class, 'update']);
     Route::get('/client/{id}', [ClientController::class, 'delete']);
 
+    
+    Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);
+    Route::get('/chart-of-account', [ChartOfAccountController::class, 'index'])->name('admin.coa');
+    Route::post('/chart-of-account', [ChartOfAccountController::class, 'store']);
+    Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
+    Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
+    Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
 });
   
