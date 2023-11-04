@@ -6,6 +6,7 @@ use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\LoanController;
 
 
 /*------------------------------------------
@@ -50,5 +51,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
+
+    
+    Route::get('/loan', [LoanController::class, 'index'])->name('admin.loan');
+    Route::post('/loan', [LoanController::class, 'store']);
+    Route::get('/loan/{id}/edit', [LoanController::class, 'edit']);
+    Route::post('/loan-update', [LoanController::class, 'update']);
+    Route::get('/loan/{id}', [LoanController::class, 'delete']);
 });
   
