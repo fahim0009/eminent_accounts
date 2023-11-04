@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\AgentController;
 
 
 /*------------------------------------------
@@ -29,7 +30,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/new-admin/{id}/edit', [AdminController::class, 'adminEdit']);
     Route::post('/new-admin-update', [AdminController::class, 'adminUpdate']);
     Route::get('/new-admin/{id}', [AdminController::class, 'adminDelete']);
-
+    
+    Route::get('/agent', [AgentController::class, 'index'])->name('admin.agent');
+    Route::post('/agent', [AgentController::class, 'store']);
+    Route::get('/agent/{id}/edit', [AgentController::class, 'edit']);
+    Route::post('/agent-update', [AgentController::class, 'update']);
+    Route::get('/agent/{id}', [AgentController::class, 'delete']);
     
     Route::get('/account', [AccountController::class, 'index'])->name('admin.account');
     Route::post('/account', [AccountController::class, 'store']);

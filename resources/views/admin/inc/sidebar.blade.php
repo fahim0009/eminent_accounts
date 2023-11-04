@@ -21,6 +21,14 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="{{route('admin.agent')}}" class="nav-link {{ (request()->is('admin/agent*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            Agent
+          </p>
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{route('admin.account')}}" class="nav-link {{ (request()->is('admin/account*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>

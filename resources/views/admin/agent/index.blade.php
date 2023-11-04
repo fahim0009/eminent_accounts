@@ -25,7 +25,7 @@
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
-                <h3 class="card-title">Add new admin</h3>
+                <h3 class="card-title">Add new agent</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -192,8 +192,8 @@
       //header for csrf-token is must in laravel
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
-      var url = "{{URL::to('/admin/new-admin')}}";
-      var upurl = "{{URL::to('/admin/new-admin-update')}}";
+      var url = "{{URL::to('/admin/agent')}}";
+      var upurl = "{{URL::to('/admin/agent-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
@@ -296,7 +296,7 @@
           });
       });
       //Edit  end
-      //Delete
+      //Delete 
       $("#contentContainer").on('click','#deleteBtn', function(){
             if(!confirm('Sure?')) return;
             codeid = $(this).attr('rid');
