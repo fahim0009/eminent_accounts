@@ -50,6 +50,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/client/{id}/edit', [ClientController::class, 'edit']);
     Route::post('/client-update', [ClientController::class, 'update']);
     Route::get('/client/{id}', [ClientController::class, 'delete']);
+    Route::get('/client-details/{id}', [ClientController::class, 'getClientInfo'])->name('admin.clientDetails');
 
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);

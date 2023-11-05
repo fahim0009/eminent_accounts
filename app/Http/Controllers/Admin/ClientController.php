@@ -21,6 +21,15 @@ class ClientController extends Controller
         return view('admin.client.index', compact('data','agents','countries','accounts'));
     }
 
+    public function getClientInfo($id)
+    {
+        $data = Client::orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts'));
+    }
+
     public function store(Request $request)
     {
         // if(empty($request->name)){
