@@ -64,17 +64,6 @@ class ClientController extends Controller
         }
         // end
 
-        // image
-        if ($request->manpower_image != 'null') {
-            $request->validate([
-                'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
-            ]);
-            $rand = mt_rand(100000, 999999);
-            $manpower_imageName = time(). $rand .'.'.$request->manpower_image->extension();
-            $request->manpower_image->move(public_path('images/client/manpower'), $manpower_imageName);
-            $data->manpower_image = $manpower_imageName;
-        }
-        // end
 
 
         $data->created_by = Auth::user()->id;

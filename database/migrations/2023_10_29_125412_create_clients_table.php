@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('passport_number')->nullable();
             $table->string('passport_name')->nullable();
             $table->string('passport_image')->nullable();
+            $table->string('client_image')->nullable();
             $table->string('visa')->nullable();
             $table->string('manpower_image')->nullable();
             $table->string('country')->nullable();
