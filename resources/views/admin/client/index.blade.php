@@ -73,18 +73,23 @@
 
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Visa</label>
-                        <input type="file" class="form-control" id="visa" name="visa">
+                        <label>Client Image</label>
+                        <input type="file" class="form-control" id="client_image" name="client_image">
                       </div>
                     </div>
 
-                    
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Manpower Image</label>
-                        <input type="file" class="form-control" id="manpower_image" name="manpower_image">
+                        <label>Country</label>
+                        <select class="form-control" id="country" name="country">
+                          <option value="">Select</option>
+                          @foreach ($countries as $country)
+                            <option value="{{$country->id}}">{{$country->name}}</option>
+                          @endforeach
+                        </select>
                       </div>
                     </div>
+                    
 
 
                   </div>
@@ -100,10 +105,17 @@
 
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Country</label>
-                        <input type="text" class="form-control" id="country" name="country">
+                        <label>Payment Method</label>
+                        <select class="form-control" id="account_id" name="account_id">
+                          <option value="">Select</option>
+                          @foreach ($accounts as $account)
+                            <option value="{{$account->id}}">{{$account->name}}</option>
+                          @endforeach
+                        </select>
                       </div>
                     </div>
+
+                    
                   </div>
 
                   <div class="row">
@@ -263,23 +275,19 @@
               if(typeof passport_image === 'undefined'){
                   passport_image = 'null';
               }
-              var visa = $('#visa').prop('files')[0];
-              if(typeof visa === 'undefined'){
-                  visa = 'null';
-              }
-              var manpower_image = $('#manpower_image').prop('files')[0];
-              if(typeof manpower_image === 'undefined'){
-                  manpower_image = 'null';
+              var client_image = $('#client_image').prop('files')[0];
+              if(typeof client_image === 'undefined'){
+                client_image = 'null';
               }
 
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
-              form_data.append('visa', visa);
-              form_data.append('manpower_image', manpower_image);
+              form_data.append('client_image', client_image);
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
               form_data.append("country", $("#country").val());
+              form_data.append("account_id", $("#account_id").val());
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("total_rcv", $("#total_rcv").val());
@@ -325,22 +333,19 @@
               if(typeof passport_image === 'undefined'){
                   passport_image = 'null';
               }
-              var visa = $('#visa').prop('files')[0];
-              if(typeof visa === 'undefined'){
-                  visa = 'null';
+              var client_image = $('#client_image').prop('files')[0];
+              if(typeof client_image === 'undefined'){
+                client_image = 'null';
               }
-              var manpower_image = $('#manpower_image').prop('files')[0];
-              if(typeof manpower_image === 'undefined'){
-                  manpower_image = 'null';
-              }
+              
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
-              form_data.append('visa', visa);
-              form_data.append('manpower_image', manpower_image);
+              form_data.append('client_image', client_image);
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
               form_data.append("country", $("#country").val());
+              form_data.append("account_id", $("#account_id").val());
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("total_rcv", $("#total_rcv").val());
@@ -423,6 +428,7 @@
           $("#passport_name").val(data.passport_name);
           $("#passport_rcv_date").val(data.passport_rcv_date);
           $("#country").val(data.country);
+          $("#account_id").val(data.account_id);
           $("#user_id").val(data.user_id);
           $("#package_cost").val(data.package_cost);
           $("#total_rcv").val(data.total_rcv);

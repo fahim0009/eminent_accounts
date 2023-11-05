@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Country;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
@@ -14,7 +16,9 @@ class ClientController extends Controller
     {
         $data = Client::orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
-        return view('admin.client.index', compact('data','agents'));
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        return view('admin.client.index', compact('data','agents','countries','accounts'));
     }
 
     public function store(Request $request)
@@ -35,9 +39,11 @@ class ClientController extends Controller
         $data->passport_number = $request->passport_number;
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
-        $data->country = $request->country;
+        $data->country_id = $request->country;
+        $data->account_id = $request->account_id;
         $data->package_cost = $request->package_cost;
         $data->total_rcv = $request->total_rcv;
+        $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
 
         // image
@@ -53,14 +59,14 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->visa != 'null') {
+        if ($request->client_image != 'null') {
             $request->validate([
-                'visa' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'client_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
             ]);
             $rand = mt_rand(100000, 999999);
-            $visaimageName = time(). $rand .'.'.$request->visa->extension();
-            $request->visa->move(public_path('images/client/visa'), $visaimageName);
-            $data->visa = $visaimageName;
+            $client_imageName = time(). $rand .'.'.$request->client_image->extension();
+            $request->client_image->move(public_path('images/client'), $client_imageName);
+            $data->client_image = $client_imageName;
         }
         // end
 
@@ -107,7 +113,8 @@ class ClientController extends Controller
         $data->passport_number = $request->passport_number;
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
-        $data->country = $request->country;
+        $data->country_id = $request->country;
+        $data->account_id = $request->account_id;
         $data->package_cost = $request->package_cost;
         $data->total_rcv = $request->total_rcv;
         $data->description = $request->description;
@@ -125,28 +132,17 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->visa != 'null') {
+        if ($request->client_image != 'null') {
             $request->validate([
-                'visa' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'client_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
             ]);
             $rand = mt_rand(100000, 999999);
-            $visaimageName = time(). $rand .'.'.$request->visa->extension();
-            $request->visa->move(public_path('images/client/visa'), $visaimageName);
-            $data->visa = $visaimageName;
+            $client_imageName = time(). $rand .'.'.$request->client_image->extension();
+            $request->client_image->move(public_path('images/client'), $client_imageName);
+            $data->client_image = $client_imageName;
         }
         // end
 
-        // image
-        if ($request->manpower_image != 'null') {
-            $request->validate([
-                'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
-            ]);
-            $rand = mt_rand(100000, 999999);
-            $manpower_imageName = time(). $rand .'.'.$request->manpower_image->extension();
-            $request->manpower_image->move(public_path('images/client/manpower'), $manpower_imageName);
-            $data->manpower_image = $manpower_imageName;
-        }
-        // end
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";

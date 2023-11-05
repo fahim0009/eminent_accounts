@@ -24,7 +24,10 @@ return new class extends Migration
             $table->string('client_image')->nullable();
             $table->string('visa')->nullable();
             $table->string('manpower_image')->nullable();
-            $table->string('country')->nullable();
+            $table->bigInteger('country_id')->unsigned()->nullable();
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->bigInteger('account_id')->unsigned()->nullable();
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->double('package_cost',10,2)->default(0);
             $table->string('passport_rcv_date')->nullable();
             $table->double('due_amount',10,2)->default(0);
