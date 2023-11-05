@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Admin\CountryController;
 
 
 /*------------------------------------------
@@ -64,5 +65,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/loan/{id}/edit', [LoanController::class, 'edit']);
     Route::post('/loan-update', [LoanController::class, 'update']);
     Route::get('/loan/{id}', [LoanController::class, 'delete']);
+
+    
+    Route::get('/country', [CountryController::class, 'index'])->name('admin.country');
+    Route::post('/country', [CountryController::class, 'store']);
+    Route::get('/country/{id}/edit', [CountryController::class, 'edit']);
+    Route::post('/country-update', [CountryController::class, 'update']);
+    Route::get('/country/{id}', [CountryController::class, 'delete']);
 });
   

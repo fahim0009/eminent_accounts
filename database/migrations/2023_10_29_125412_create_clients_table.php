@@ -28,7 +28,15 @@ return new class extends Migration
             $table->string('passport_rcv_date')->nullable();
             $table->double('due_amount',10,2)->default(0);
             $table->double('total_rcv',10,2)->default(0);
+            $table->double('refund',10,2)->default(0);
             $table->string('description')->nullable();
+            $table->string('job_company')->nullable();
+            $table->string('joining_date')->nullable();
+            $table->double('salary',10,2)->nullable();
+            $table->double('flight_date')->nullable();
+            $table->boolean('processing')->default(1);
+            $table->boolean('complete')->default(0);
+            $table->boolean('decline')->default(0);
             $table->boolean('status')->default(1);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
