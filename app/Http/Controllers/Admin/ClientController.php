@@ -23,7 +23,7 @@ class ClientController extends Controller
 
     public function getClientInfo($id)
     {
-        $data = Client::orderby('id','DESC')->get();
+        $data = Client::where('id',$id)->first();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
