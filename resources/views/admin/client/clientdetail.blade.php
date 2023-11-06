@@ -11,7 +11,7 @@
           <div class="col-md-3">
 
             <!-- Profile Image -->
-            <div class="card card-primary card-outline">
+            <div class="card card-secondary card-outline">
               <div class="card-body box-profile">
                 <div class="text-center">
                   <img class="profile-user-img img-fluid img-circle"
@@ -26,19 +26,21 @@
             <!-- /.card -->
 
             <!-- About Me Box -->
-            <div class="card card-primary">
+            <div class="card card-secondary">
               <div class="card-header">
                 <h3 class="card-title">About Me</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
 
-                {{-- <strong><i class="fas fa-book mr-1"></i> Education</strong>
+                <strong><i class="fas fa-book mr-1"></i> Agent Details</strong>
                 <p class="text-muted">
-                  B.S. in Computer Science from the University of Tennessee at Knoxville
+                  {{$data->user->name}} <br>
+                  {{$data->user->email}} <br>
+                  {{$data->user->phone}}
                 </p>
                 <hr>
-                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+                {{-- <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
                 <p class="text-muted">Malibu, California</p>
                 <hr> --}}
 
@@ -66,36 +68,107 @@
                 <div class="tab-content">
                   <div class="active tab-pane" id="activity">
                     <!-- Post -->
-                    <div class="post">
-                      <div class="user-block">
-                        <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
-                        <span class="username">
-                          <a href="#">Jonathan Burke Jr.</a>
-                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                        </span>
-                        <span class="description">Shared publicly - 7:30 PM today</span>
+                    <form class="form-horizontal">
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Name <small>(Passport Name)</small></label>
+                            <input type="text" class="form-control" id="passport_name" name="passport_name">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Passport Number</label>
+                            <input type="text" id="passport_number" name="passport_number" class="form-control">
+                        </div>
                       </div>
-                      <!-- /.user-block -->
-                      <p>
-                        Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore the hate as they create awesome
-                        tools to help create filler text for everyone from bacon lovers
-                        to Charlie Sheen fans.
-                      </p>
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Passport Image</label>
+                            <input type="file" class="form-control" id="passport_image" name="passport_image">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Visa Image</label>
+                            <input type="file" class="form-control" id="visa_image" name="visa_image">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Client Image</label>
+                            <input type="file" class="form-control" id="client_image" name="client_image">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Manpower Image</label>
+                            <input type="file" class="form-control" id="manpower_image" name="manpower_image">
+                        </div>
+                      </div>
 
-                      <p>
-                        <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                        <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
-                        <span class="float-right">
-                          <a href="#" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (5)
-                          </a>
-                        </span>
-                      </p>
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Passport Receive Date</label>
+                            <input type="date" class="form-control" id="passport_rcv_date" name="passport_rcv_date">
+                        </div>
+    
+                        <div class="col-sm-6">
+                            <label>Payment Method</label>
+                            <select class="form-control" id="account_id" name="account_id">
+                              <option value="">Select</option>
+                              @foreach ($accounts as $account)
+                                <option value="{{$account->id}}">{{$account->name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
 
-                      <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                    </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Package Cost</label>
+                            <input type="number" class="form-control" id="package_cost" name="package_cost">
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label>Received Amount</label>
+                            <input type="number" class="form-control" id="total_rcv" name="total_rcv">
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Country</label>
+                            <select class="form-control" id="country" name="country">
+                              <option value="">Select</option>
+                              @foreach ($countries as $country)
+                                <option value="{{$country->id}}">{{$country->name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+
+                        
+                        <div class="col-sm-6">
+                            <label>Agents</label>
+                            <select name="user_id" id="user_id" class="form-control">
+                              <option value="">Select</option>
+                              @foreach ($agents as $item)
+                              <option value="{{$item->id}}">{{$item->name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <label>Description</label>
+                            <textarea name="description" id="description" cols="30" rows="2" class="form-control"></textarea>
+                        </div>
+                      </div>
+
+                      <div class="form-group row mt-3">
+                        <div class="col-sm-10">
+                          <button type="button" class="btn btn-secondary">Update</button>
+                        </div>
+                      </div>
+
+                    </form>
                     <!-- /.post -->
                   </div>
                   <!-- /.tab-pane -->
