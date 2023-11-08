@@ -123,10 +123,9 @@ class ClientController extends Controller
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
         $data->country_id = $request->country;
-        $data->account_id = $request->account_id;
         $data->package_cost = $request->package_cost;
-        $data->total_rcv = $request->total_rcv;
         $data->description = $request->description;
+        $data->flight_date = $request->flight_date;
 
         // image
         if ($request->passport_image != 'null') {
@@ -152,6 +151,30 @@ class ClientController extends Controller
         }
         // end
 
+        // image
+        if ($request->visa_image != 'null') {
+            $request->validate([
+                'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+            ]);
+            $rand = mt_rand(100000, 999999);
+            $visaImageName = time(). $rand .'.'.$request->visa_image->extension();
+            $request->visa_image->move(public_path('images/client/visa'), $visaImageName);
+            $data->visa = $visaImageName;
+        }
+        // end
+
+        // image
+        if ($request->manpower_image != 'null') {
+            $request->validate([
+                'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+            ]);
+            $rand = mt_rand(100000, 999999);
+            $manpower_imageName = time(). $rand .'.'.$request->manpower_image->extension();
+            $request->manpower_image->move(public_path('images/client/manpower'), $manpower_imageName);
+            $data->manpower_image = $manpower_imageName;
+        }
+        // end
+
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";
@@ -162,15 +185,15 @@ class ClientController extends Controller
         } 
     }
 
-    public function delete($id)
-    {
+    // public function delete($id)
+    // {
 
-        if(Client::destroy($id)){
-            return response()->json(['success'=>true,'message'=>'Data has been deleted successfully']);
-        }else{
-            return response()->json(['success'=>false,'message'=>'Delete Failed']);
-        }
-    }
+    //     if(Client::destroy($id)){
+    //         return response()->json(['success'=>true,'message'=>'Data has been deleted successfully']);
+    //     }else{
+    //         return response()->json(['success'=>false,'message'=>'Delete Failed']);
+    //     }
+    // }
 
 
 }
