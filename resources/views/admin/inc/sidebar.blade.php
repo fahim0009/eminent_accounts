@@ -45,10 +45,10 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{route('admin.coa')}}" class="nav-link {{ (request()->is('admin/chart-of-account*')) ? 'active' : '' }}">
+        <a href="{{route('admin.businesspartner')}}" class="nav-link {{ (request()->is('admin/business-partner*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>
-            Chart of account
+            Business Partner
           </p>
         </a>
       </li>
