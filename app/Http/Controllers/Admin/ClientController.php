@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\BusinessPartner;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
@@ -18,7 +19,8 @@ class ClientController extends Controller
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.client.index', compact('data','agents','countries','accounts'));
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.index', compact('data','agents','countries','accounts','bpartners'));
     }
 
     public function getClientInfo($id)
@@ -27,7 +29,8 @@ class ClientController extends Controller
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.client.clientdetail', compact('data','agents','countries','accounts'));
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','bpartners'));
     }
 
     public function store(Request $request)

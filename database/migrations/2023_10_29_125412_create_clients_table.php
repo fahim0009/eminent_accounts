@@ -34,6 +34,10 @@ return new class extends Migration
             $table->double('total_rcv',10,2)->default(0);
             $table->double('refund',10,2)->default(0);
             $table->string('description')->nullable();
+            $table->bigInteger('business_partner_id')->unsigned()->nullable();
+            $table->foreign('business_partner_id')->references('id')->on('business_partners')->onDelete('cascade');
+            $table->string('b2b_contact')->nullable();
+            $table->double('b2b_payment',10,2)->nullable();
             $table->string('job_company')->nullable();
             $table->string('joining_date')->nullable();
             $table->double('salary',10,2)->nullable();
