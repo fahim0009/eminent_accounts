@@ -37,7 +37,8 @@
                 <p class="text-muted">
                   {{$data->user->name}} <br>
                   {{$data->user->email}} <br>
-                  {{$data->user->phone}}
+                  {{$data->user->phone}} <br>
+                  
                 </p>
                 <hr>
                 {{-- <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
@@ -359,14 +360,14 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                  @foreach ($accounts as $key => $data)
+                                  @foreach ($accounts as $key => $tran)
                                   <tr>
                                     <td style="text-align: center">{{ $key + 1 }}</td>
-                                    <td style="text-align: center">{{$data->date}}</td>
-                                    <td style="text-align: center">{{$data->account_id}}</td>
-                                    <td style="text-align: center">{{$data->amount}}</td>
+                                    <td style="text-align: center">{{$tran->date}}</td>
+                                    <td style="text-align: center">{{$tran->account_id}}</td>
+                                    <td style="text-align: center">{{$tran->amount}}</td>
                                     <td style="text-align: center">
-                                      <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                                      <a id="EditBtn" rid="{{$tran->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                                     </td>
                                   </tr>
                                   @endforeach
@@ -387,33 +388,35 @@
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="btob_partner">
                     <form class="form-horizontal">
+                      @csrf
                       <div class="form-group row">
                         <label for="inputName" class="col-sm-2 col-form-label">Business Partner</label>
+                        <div class="partnerermsg"></div>
                         <div class="col-sm-10">
                           <select name="business_partner_id" id="business_partner_id" class="form-control">
                             <option value="">Select</option>
                             @foreach ($bpartners as $partner)
-                            <option value="{{$partner->id}}">{{$partner->name}}</option>
+                            <option value="{{$partner->id}}" @if ($data->business_partner_id == $partner->id) selected @endif>{{$partner->name}}</option>
                             @endforeach
                           </select>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="b2b_contact" class="col-sm-2 col-form-label">Contact Amount</label>
+                        <label for="b2b_contact" class="col-sm-2 col-form-label">Contact Amount </label>
                         <div class="col-sm-10">
-                          <input type="number" class="form-control" id="b2b_contact" name="b2b_contact">
+                          <input type="text" class="form-control" id="b2b_contact" name="b2b_contact" value="{{$data->b2b_contact}}">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label for="b2b_payment" class="col-sm-2 col-form-label">Payment</label>
                         <div class="col-sm-10">
-                          <input type="number" class="form-control" id="b2b_payment" name="b2b_payment" readonly>
+                          <input type="text" class="form-control" id="b2b_payment" name="b2b_payment" value="{{$data->b2b_payment}}" readonly>
                         </div>
                       </div>
                       
                       <div class="form-group row">
                         <div class="offset-sm-2 col-sm-10">
-                          <button type="submit" class="btn btn-secondary">Save</button>
+                          <button type="button" id="partnerUpdate" class="btn btn-secondary">Save</button>
                         </div>
                       </div>
                     </form>
@@ -535,6 +538,50 @@
             success: function (d) {
                 if (d.status == 303) {
                     $(".ermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data updated successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+          
+      });
+
+
+      var purl = "{{URL::to('/admin/client-partner-update')}}";
+      // console.log(url);
+      $("#partnerUpdate").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("business_partner_id", $("#business_partner_id").val());
+          form_data.append("b2b_contact", $("#b2b_contact").val());
+          form_data.append("codeid", $("#codeid").val());
+
+          $.ajax({
+            url: purl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".partnerermsg").html(d.message);
                 }else if(d.status == 300){
 
                   $(function() {
