@@ -190,6 +190,8 @@
                   <th>Passport Number</th>
                   <th>Package Cost</th>
                   <th>Received Amount</th>
+                  <th>Decline</th>
+                  <th>Complete</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -202,6 +204,19 @@
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
                     <td style="text-align: center">{{$data->total_rcv}}</td>
+                    <td style="text-align: center">
+                      <div class="toggle-flip">
+                        <label>
+                            <input type="checkbox" class="toggle-class" data-id="{{$data->id}}" {{ $data->decline ? 'checked' : '' }}><span class="flip-indecator" data-toggle-on="Active" data-toggle-off="Inactive"></span>
+                        </label>
+                    </div>
+                    </td>
+                    <td style="text-align: center">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input completeBtn" id="complete{{$data->id}}"  data-id="{{$data->id}}" {{ $data->complete ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="complete{{$data->id}}"></label>
+                      </div>
+                    </td>
                     
                     <td style="text-align: center">
                       <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
@@ -246,6 +261,55 @@
         "responsive": true,
       });
     });
+
+    $(function() {
+      $('.completeBtn').change(function() {
+        var url = "{{URL::to('/admin/complete-client')}}";
+          var complete = $(this).prop('checked') == true ? 1 : 0;
+          var id = $(this).data('id');
+          $.ajax({
+              type: "GET",
+              dataType: "json",
+              url: url,
+              data: {'complete': complete, 'id': id},
+              success: function(d){
+                // console.log(data.success)
+                if (d.status == 303) {
+                        $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'warning',
+                            title: d.message
+                          });
+                        });
+                    }else if(d.status == 300){
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: d.message
+                          });
+                        });
+                    }
+                },
+                error: function (d) {
+                    console.log(d);
+                }
+          });
+      })
+    })
+
+
   </script>
 
 <script>

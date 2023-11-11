@@ -230,5 +230,27 @@ class ClientController extends Controller
         } 
     }
 
+    public function completeClient(Request $request)
+    {
+        $user = Client::find($request->id);
+        $user->complete = $request->complete;
+        $user->save();
+
+        if($request->complete==1){
+            $user = Client::find($request->id);
+            $user->complete = $request->complete;
+            $user->save();
+            $message ="Client Complete Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }else{
+            $user = Client::find($request->id);
+            $user->complete = $request->complete;
+            $user->save();
+            $message ="Client not completed!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
+    }
+
 
 }

@@ -299,7 +299,7 @@
 
                   <div class="tab-pane" id="settings">
                     <div class="row">
-                          <h3>Payment</h3>
+                          <h3>Money Receipt</h3>
                     </div>
                     <form class="form-horizontal">
 
