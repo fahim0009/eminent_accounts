@@ -91,5 +91,10 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/money-receipt', [TransactionController::class, 'moneyreceived']);
     Route::post('/money-receipt-update', [TransactionController::class, 'moneyReceivedUpdate']);
     Route::get('/money-receipt/{id}/edit', [TransactionController::class, 'moneyReceivedEdit']);
+
+    // payment
+    Route::post('/money-payment', [TransactionController::class, 'moneyPayment']);
+    Route::post('/money-payment-update', [TransactionController::class, 'moneyPaymentUpdate']);
+    Route::get('/money-payment/{id}/edit', [TransactionController::class, 'moneyPaymentEdit']);
 });
   

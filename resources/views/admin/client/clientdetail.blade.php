@@ -376,7 +376,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                  @foreach ($trans as $key => $tran)
+                                  @foreach ($recepts as $key => $tran)
                                   <tr>
                                     <td style="text-align: center">{{ $key + 1 }}</td>
                                     <td style="text-align: center">{{$tran->date}}</td>
@@ -442,25 +442,107 @@
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="btob_payment">
                     <!-- The timeline -->
-                    <div class="timeline timeline-inverse">
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-danger">
-                          10 Feb. 2014
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-success">
-                          3 Jan. 2014
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      <div>
-                        <i class="far fa-clock bg-gray"></i>
-                      </div>
+                    <div class="row">
+                      <h3>Money Payment</h3>
                     </div>
+                    <div class="permsg"></div>
+                    <form class="form-horizontal">
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                            <label>Transaction method</label>
+                            <select class="form-control" id="paccount_id" name="paccount_id">
+                              <option value="">Select</option>
+                              @foreach ($accounts as $method)
+                                <option value="{{$method->id}}">{{$method->name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Date</label>
+                            <input type="date" class="form-control" id="pdate" name="pdate">
+                            <input type="hidden" class="form-control" id="p_id" name="p_id">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <label>Amount</label>
+                            <input type="number" class="form-control" id="pamount" name="pamount">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <label>Note</label>
+                            <input type="text" class="form-control" id="pnote" name="pnote">
+                        </div>
+                      </div>
+                      
+                      
+                      <div class="form-group row pmtBtn">
+                        <div class="col-sm-12 mt-2">
+                          <button type="button" id="pmtBtn" class="btn btn-success">Save</button>
+                        </div>
+                      </div>
+                      <div class="form-group row pmtUpBtn" style="display: none">
+                        <div class="col-sm-12 mt-2">
+                          <button type="button" id="pmtUpBtn" class="btn btn-success">Update</button>
+                          <button type="button" id="pmtCloseBtn" class="btn btn-warning">Close</button>
+                        </div>
+                      </div>
+                    </form>
+
+                    <div class="row">
+                          <h3>Payment History</h3>
+                    </div>
+
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col-12">
+                          <!-- /.card -->
+                
+                          <div class="card">
+                            <div class="card-header">
+                              <h3 class="card-title">All Payment Data</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body" id="paymentContainer">
+                              <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                  <th>Sl</th>
+                                  <th>Date</th>
+                                  <th>Transaction Method</th>
+                                  <th>Amount</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                  @foreach ($payments as $key => $payment)
+                                  <tr>
+                                    <td style="text-align: center">{{ $key + 1 }}</td>
+                                    <td style="text-align: center">{{$payment->date}}</td>
+                                    <td style="text-align: center">{{$payment->account->name}}</td>
+                                    <td style="text-align: center">{{$payment->amount}}</td>
+                                    <td style="text-align: center">
+                                      <a id="pmtEditBtn" rid="{{$payment->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                                    </td>
+                                  </tr>
+                                  @endforeach
+                                
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- /.card-body -->
+                          </div>
+                          <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </div>
+
                   </div>
                   <!-- /.tab-pane -->
                 </div>
@@ -748,7 +830,134 @@
         $(".rcptUpBtn").hide(300);
         $(".rcptBtn").show(100);
       });
+      //Edit  end
 
+      var pmturl = "{{URL::to('/admin/money-payment')}}";
+      var pmtupurl = "{{URL::to('/admin/money-payment-update')}}";
+      // console.log(url);
+      $("#pmtBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("account_id", $("#paccount_id").val());
+          form_data.append("business_partner_id", $("#business_partner_id").val());
+          form_data.append("user_id", $("#agent_id").val());
+          form_data.append("date", $("#pdate").val());
+          form_data.append("amount", $("#pamount").val());
+          form_data.append("note", $("#pnote").val());
+          form_data.append("client_id", $("#codeid").val());
+          form_data.append("tran_type", "payment");
+
+          $.ajax({
+            url: pmturl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".permsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data saved successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+      });
+
+      
+      //Edit
+      $("#paymentContainer").on('click','#pmtEditBtn', function(){
+          //alert("btn work");
+          codeid = $(this).attr('rid');
+          //console.log($codeid);
+          info_url = tranurl + '/'+codeid+'/edit';
+          //console.log($info_url);
+          $.get(info_url,{},function(d){
+              populateForm(d);
+              pagetop();
+          });
+      });
+
+      function populateForm(data){
+          $("#account_id").val(data.account_id);
+          $("#date").val(data.date);
+          $("#amount").val(data.amount);
+          $("#note").val(data.note);
+          $("#tran_id").val(data.id);
+          $(".rcptUpBtn").show(300);
+          $(".rcptBtn").hide(100);
+      }
+
+      $("#rcptUpBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("account_id", $("#account_id").val());
+          form_data.append("user_id", $("#agent_id").val());
+          form_data.append("date", $("#date").val());
+          form_data.append("amount", $("#amount").val());
+          form_data.append("note", $("#note").val());
+          form_data.append("client_id", $("#codeid").val());
+          form_data.append("tran_id", $("#tran_id").val());
+
+          $.ajax({
+            url: tranupurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".tranermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data Updated Successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+          });
+          //update  end
+        });
+
+      $("#rcptCloseBtn").click(function(){
+      
+        $("#account_id").val('');
+        $("#date").val('');
+        $("#amount").val('');
+        $("#note").val('');
+        $("#tran_id").val('');
+        $(".rcptUpBtn").hide(300);
+        $(".rcptBtn").show(100);
+      });
       //Edit  end
       
   });
