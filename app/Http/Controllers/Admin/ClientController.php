@@ -23,6 +23,26 @@ class ClientController extends Controller
         return view('admin.client.index', compact('data','agents','countries','accounts','bpartners'));
     }
 
+    public function decline()
+    {
+        $data = Client::where('decline','1')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.decline', compact('data','agents','countries','accounts','bpartners'));
+    }
+
+    public function completed()
+    {
+        $data = Client::where('complete','1')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.completed', compact('data','agents','countries','accounts','bpartners'));
+    }
+
     public function getClientInfo($id)
     {
         $data = Client::where('id',$id)->first();
@@ -247,6 +267,28 @@ class ClientController extends Controller
             $user->complete = $request->complete;
             $user->save();
             $message ="Client not completed!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
+    }
+
+    public function declineClient(Request $request)
+    {
+        $user = Client::find($request->id);
+        $user->decline = $request->decline;
+        $user->save();
+
+        if($request->decline==1){
+            $user = Client::find($request->id);
+            $user->decline = $request->decline;
+            $user->save();
+            $message ="Client decline Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }else{
+            $user = Client::find($request->id);
+            $user->decline = $request->decline;
+            $user->save();
+            $message ="Client not decline!!.";
             return response()->json(['status'=> 303,'message'=>$message]);
         }
 

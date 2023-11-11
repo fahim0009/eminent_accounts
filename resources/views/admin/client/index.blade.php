@@ -205,11 +205,10 @@
                     <td style="text-align: center">{{$data->package_cost}}</td>
                     <td style="text-align: center">{{$data->total_rcv}}</td>
                     <td style="text-align: center">
-                      <div class="toggle-flip">
-                        <label>
-                            <input type="checkbox" class="toggle-class" data-id="{{$data->id}}" {{ $data->decline ? 'checked' : '' }}><span class="flip-indecator" data-toggle-on="Active" data-toggle-off="Inactive"></span>
-                        </label>
-                    </div>
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input declineBtn" id="decline{{$data->id}}"  data-id="{{$data->id}}" {{ $data->decline ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="decline{{$data->id}}"></label>
+                      </div>
                     </td>
                     <td style="text-align: center">
                       <div class="custom-control custom-switch">
@@ -272,6 +271,53 @@
               dataType: "json",
               url: url,
               data: {'complete': complete, 'id': id},
+              success: function(d){
+                // console.log(data.success)
+                if (d.status == 303) {
+                        $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'warning',
+                            title: d.message
+                          });
+                        });
+                    }else if(d.status == 300){
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: d.message
+                          });
+                        });
+                    }
+                },
+                error: function (d) {
+                    console.log(d);
+                }
+          });
+      })
+    })
+
+    $(function() {
+      $('.declineBtn').change(function() {
+        var url = "{{URL::to('/admin/decline-client')}}";
+          var decline = $(this).prop('checked') == true ? 1 : 0;
+          var id = $(this).data('id');
+          $.ajax({
+              type: "GET",
+              dataType: "json",
+              url: url,
+              data: {'decline': decline, 'id': id},
               success: function(d){
                 // console.log(data.success)
                 if (d.status == 303) {
