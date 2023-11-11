@@ -105,36 +105,13 @@
 
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Payment Method</label>
-                        <select class="form-control" id="account_id" name="account_id">
-                          <option value="">Select</option>
-                          @foreach ($accounts as $account)
-                            <option value="{{$account->id}}">{{$account->name}}</option>
-                          @endforeach
-                        </select>
-                      </div>
-                    </div>
-
-                    
-                  </div>
-
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <div class="form-group">
                         <label>Package Cost</label>
                         <input type="number" class="form-control" id="package_cost" name="package_cost">
                       </div>
                     </div>
 
-                    
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Received Amount</label>
-                        <input type="number" class="form-control" id="total_rcv" name="total_rcv">
-                      </div>
-                    </div>
-
                   </div>
+                  
 
                   <div class="row">
                     <div class="col-sm-12">

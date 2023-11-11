@@ -325,6 +325,13 @@
                             <input type="number" class="form-control" id="amount" name="amount">
                         </div>
                       </div>
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <label>Note</label>
+                            <input type="text" class="form-control" id="note" name="note">
+                        </div>
+                      </div>
                       
                       
                       <div class="form-group row">
