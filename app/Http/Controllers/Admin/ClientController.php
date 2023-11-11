@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Country;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
@@ -25,7 +26,7 @@ class ClientController extends Controller
 
     public function decline()
     {
-        $data = Client::where('decline','1')->orderby('id','DESC')->get();
+        $data = Client::where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -35,7 +36,7 @@ class ClientController extends Controller
 
     public function completed()
     {
-        $data = Client::where('complete','1')->orderby('id','DESC')->get();
+        $data = Client::where('status','1')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -46,12 +47,13 @@ class ClientController extends Controller
     public function getClientInfo($id)
     {
         $data = Client::where('id',$id)->first();
+        $trans = Transaction::where('client_id',$id)->orderby('id','DESC')->get();
         // dd($data);
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','bpartners'));
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','bpartners','trans'));
     }
 
     public function store(Request $request)
@@ -73,9 +75,7 @@ class ClientController extends Controller
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
         $data->country_id = $request->country;
-        $data->account_id = $request->account_id;
         $data->package_cost = $request->package_cost;
-        $data->total_rcv = $request->total_rcv;
         $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
 

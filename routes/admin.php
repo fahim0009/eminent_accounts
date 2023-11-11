@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
+use App\Http\Controllers\Admin\TransactionController;
 
 
 /*------------------------------------------
@@ -85,5 +86,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/business-partner/{id}/edit', [BusinessPartnerController::class, 'edit']);
     Route::post('/business-partner-update', [BusinessPartnerController::class, 'update']);
     Route::get('/business-partner/{id}', [BusinessPartnerController::class, 'delete']);
+
+    // transaction
+    Route::post('/money-receipt', [TransactionController::class, 'moneyreceived']);
+    Route::get('/money-receipt/{id}/edit', [TransactionController::class, 'moneyReceivedEdit']);
 });
   

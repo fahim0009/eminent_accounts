@@ -331,10 +331,8 @@
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
               form_data.append("country", $("#country").val());
-              form_data.append("account_id", $("#account_id").val());
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
-              form_data.append("total_rcv", $("#total_rcv").val());
               form_data.append("description", $("#description").val());
 
 
@@ -389,10 +387,8 @@
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
               form_data.append("country", $("#country").val());
-              form_data.append("account_id", $("#account_id").val());
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
-              form_data.append("total_rcv", $("#total_rcv").val());
               form_data.append("description", $("#description").val());
               form_data.append("codeid", $("#codeid").val());
               
@@ -472,10 +468,8 @@
           $("#passport_name").val(data.passport_name);
           $("#passport_rcv_date").val(data.passport_rcv_date);
           $("#country").val(data.country);
-          $("#account_id").val(data.account_id);
           $("#user_id").val(data.user_id);
           $("#package_cost").val(data.package_cost);
-          $("#total_rcv").val(data.total_rcv);
           $("#description").val(data.description);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');

@@ -40,6 +40,7 @@
                   {{$data->user->phone}} <br>
                   
                 </p>
+                <input type="hidden" id="agent_id" value="{{$data->user_id}}">
                 <hr>
                 {{-- <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
                 <p class="text-muted">Malibu, California</p>
@@ -301,12 +302,13 @@
                     <div class="row">
                           <h3>Money Receipt</h3>
                     </div>
+                    <div class="tranermsg"></div>
                     <form class="form-horizontal">
 
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Transaction method</label>
-                            <select class="form-control" id="method" name="method">
+                            <select class="form-control" id="account_id" name="account_id">
                               <option value="">Select</option>
                               @foreach ($accounts as $method)
                                 <option value="{{$method->id}}">{{$method->name}}</option>
@@ -316,6 +318,7 @@
                         <div class="col-sm-6">
                             <label>Date</label>
                             <input type="date" class="form-control" id="date" name="date">
+                            <input type="hidden" class="form-control" id="tran_id" name="tran_id">
                         </div>
                       </div>
 
@@ -334,15 +337,21 @@
                       </div>
                       
                       
-                      <div class="form-group row">
+                      <div class="form-group row rcptBtn">
                         <div class="col-sm-12 mt-2">
-                          <button type="submit" class="btn btn-success">Submit</button>
+                          <button type="button" id="rcptBtn" class="btn btn-success">Save</button>
+                        </div>
+                      </div>
+                      <div class="form-group row rcptUpBtn" style="display: none">
+                        <div class="col-sm-12 mt-2">
+                          <button type="button" id="rcptUpBtn" class="btn btn-success">Update</button>
+                          <button type="button" id="rcptCloseBtn" class="btn btn-warning">Close</button>
                         </div>
                       </div>
                     </form>
 
                     <div class="row">
-                          <h3>Transaction</h3>
+                          <h3>Receipt History</h3>
                     </div>
 
                     <div class="container-fluid">
@@ -355,7 +364,7 @@
                               <h3 class="card-title">All Data</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body">
+                            <div class="card-body" id="rcvContainer">
                               <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
@@ -367,14 +376,14 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                  @foreach ($accounts as $key => $tran)
+                                  @foreach ($trans as $key => $tran)
                                   <tr>
                                     <td style="text-align: center">{{ $key + 1 }}</td>
                                     <td style="text-align: center">{{$tran->date}}</td>
-                                    <td style="text-align: center">{{$tran->account_id}}</td>
+                                    <td style="text-align: center">{{$tran->account->name}}</td>
                                     <td style="text-align: center">{{$tran->amount}}</td>
                                     <td style="text-align: center">
-                                      <a id="EditBtn" rid="{{$tran->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                                      <a id="tranEditBtn" rid="{{$tran->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                                     </td>
                                   </tr>
                                   @endforeach
@@ -611,8 +620,91 @@
             }
         });
         //update  end
-          
       });
+
+
+      var tranurl = "{{URL::to('/admin/money-receipt')}}";
+      // console.log(url);
+      $("#rcptBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("account_id", $("#account_id").val());
+          form_data.append("user_id", $("#agent_id").val());
+          form_data.append("date", $("#date").val());
+          form_data.append("amount", $("#amount").val());
+          form_data.append("note", $("#note").val());
+          form_data.append("client_id", $("#codeid").val());
+          form_data.append("tran_type", "receipt");
+
+          $.ajax({
+            url: tranurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".tranermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data saved successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+      });
+
+      
+      //Edit
+      $("#rcvContainer").on('click','#tranEditBtn', function(){
+          //alert("btn work");
+          codeid = $(this).attr('rid');
+          //console.log($codeid);
+          info_url = tranurl + '/'+codeid+'/edit';
+          //console.log($info_url);
+          $.get(info_url,{},function(d){
+              populateForm(d);
+              pagetop();
+          });
+      });
+
+      function populateForm(data){
+          $("#account_id").val(data.account_id);
+          $("#date").val(data.date);
+          $("#amount").val(data.amount);
+          $("#note").val(data.note);
+          $("#tran_id").val(data.id);
+          $(".rcptUpBtn").show(300);
+          $(".rcptBtn").hide(100);
+      }
+
+      $("#rcptCloseBtn").click(function(){
+      
+        $("#account_id").val('');
+        $("#date").val('');
+        $("#amount").val('');
+        $("#note").val('');
+        $("#tran_id").val('');
+        $(".rcptUpBtn").hide(300);
+        $(".rcptBtn").show(100);
+      });
+
+      //Edit  end
       
   });
 </script>
