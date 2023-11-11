@@ -239,7 +239,6 @@ class ClientController extends Controller
         $data = Client::find($request->codeid);
         $data->business_partner_id = $request->business_partner_id;
         $data->b2b_contact = $request->b2b_contact;
-        $data->b2b_payment = $request->b2b_contact;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Business Partner Updated Successfully.</b></div>";

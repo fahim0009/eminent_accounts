@@ -89,6 +89,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     // transaction
     Route::post('/money-receipt', [TransactionController::class, 'moneyreceived']);
+    Route::post('/money-receipt-update', [TransactionController::class, 'moneyReceivedUpdate']);
     Route::get('/money-receipt/{id}/edit', [TransactionController::class, 'moneyReceivedEdit']);
 });
   

@@ -60,4 +60,37 @@ class TransactionController extends Controller
         $info = Transaction::where($where)->get()->first();
         return response()->json($info);
     }
+
+    public function moneyReceivedUpdate(Request $request)
+    {
+        if(empty($request->account_id)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Transaction method \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(empty($request->amount)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"amount \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+
+        $data = Transaction::find($request->tran_id);
+
+            $client = Client::find($request->client_id);
+            $client->total_rcv = $client->total_rcv + $request->amount - $data->amount;
+            $client->due_amount = $client->due_amount - $request->amount + $data->amount;
+            $client->save();
+
+        $data->date = $request->date;
+        $data->account_id = $request->account_id;
+        $data->amount = $request->amount;
+        $data->note = $request->note;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
 }

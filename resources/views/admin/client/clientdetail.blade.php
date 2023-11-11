@@ -624,6 +624,7 @@
 
 
       var tranurl = "{{URL::to('/admin/money-receipt')}}";
+      var tranupurl = "{{URL::to('/admin/money-receipt-update')}}";
       // console.log(url);
       $("#rcptBtn").click(function(){
 
@@ -692,6 +693,50 @@
           $(".rcptUpBtn").show(300);
           $(".rcptBtn").hide(100);
       }
+
+      $("#rcptUpBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("account_id", $("#account_id").val());
+          form_data.append("user_id", $("#agent_id").val());
+          form_data.append("date", $("#date").val());
+          form_data.append("amount", $("#amount").val());
+          form_data.append("note", $("#note").val());
+          form_data.append("client_id", $("#codeid").val());
+          form_data.append("tran_id", $("#tran_id").val());
+
+          $.ajax({
+            url: tranupurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".tranermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data Updated Successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+          });
+          //update  end
+        });
 
       $("#rcptCloseBtn").click(function(){
       
