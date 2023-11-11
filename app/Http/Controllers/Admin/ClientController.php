@@ -250,49 +250,28 @@ class ClientController extends Controller
         } 
     }
 
-    public function completeClient(Request $request)
+    public function changeClientStatus(Request $request)
     {
         $user = Client::find($request->id);
-        $user->complete = $request->complete;
-        $user->save();
-
-        if($request->complete==1){
-            $user = Client::find($request->id);
-            $user->complete = $request->complete;
-            $user->save();
-            $message ="Client Complete Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message]);
+        $user->status = $request->status;
+        if($user->save()){
+            if ($user->status == 0) {
+                $stsval = "Processing";
+            }elseif($user->status == 1){
+                $stsval = "Complete";
+            }else {
+                $stsval = "Decline";
+            }
+            
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval]);
         }else{
-            $user = Client::find($request->id);
-            $user->complete = $request->complete;
-            $user->save();
-            $message ="Client not completed!!.";
+            $message ="There was an error to change status!!.";
             return response()->json(['status'=> 303,'message'=>$message]);
         }
 
     }
 
-    public function declineClient(Request $request)
-    {
-        $user = Client::find($request->id);
-        $user->decline = $request->decline;
-        $user->save();
-
-        if($request->decline==1){
-            $user = Client::find($request->id);
-            $user->decline = $request->decline;
-            $user->save();
-            $message ="Client decline Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message]);
-        }else{
-            $user = Client::find($request->id);
-            $user->decline = $request->decline;
-            $user->save();
-            $message ="Client not decline!!.";
-            return response()->json(['status'=> 303,'message'=>$message]);
-        }
-
-    }
 
 
 }

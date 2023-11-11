@@ -55,8 +55,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/client/{id}', [ClientController::class, 'delete']);
     Route::get('/client-details/{id}', [ClientController::class, 'getClientInfo'])->name('admin.clientDetails');
     Route::post('/client-partner-update', [ClientController::class, 'partnerUpdate']);
-    Route::get('/complete-client', [ClientController::class, 'completeClient']);
-    Route::get('/decline-client', [ClientController::class, 'declineClient']);
+    Route::get('/change-client-status', [ClientController::class, 'changeClientStatus']);
 
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);

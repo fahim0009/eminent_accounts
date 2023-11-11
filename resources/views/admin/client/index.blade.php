@@ -190,8 +190,7 @@
                   <th>Passport Number</th>
                   <th>Package Cost</th>
                   <th>Received Amount</th>
-                  <th>Decline</th>
-                  <th>Complete</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -205,15 +204,17 @@
                     <td style="text-align: center">{{$data->package_cost}}</td>
                     <td style="text-align: center">{{$data->total_rcv}}</td>
                     <td style="text-align: center">
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input declineBtn" id="decline{{$data->id}}"  data-id="{{$data->id}}" {{ $data->decline ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="decline{{$data->id}}"></label>
-                      </div>
-                    </td>
-                    <td style="text-align: center">
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input completeBtn" id="complete{{$data->id}}"  data-id="{{$data->id}}" {{ $data->complete ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="complete{{$data->id}}"></label>
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-secondary"><span id="stsval"> @if ($data->status == 0) Processing
+                        @elseif($data->status == 1) Complete @else Decline @endif</span></button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu" role="menu">
+                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
+                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
+                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</a>
+                        </div>
                       </div>
                     </td>
                     
@@ -262,15 +263,16 @@
     });
 
     $(function() {
-      $('.completeBtn').change(function() {
-        var url = "{{URL::to('/admin/complete-client')}}";
-          var complete = $(this).prop('checked') == true ? 1 : 0;
+      $('.stsBtn').click(function() {
+        var url = "{{URL::to('/admin/change-client-status')}}";
           var id = $(this).data('id');
+          var status = $(this).attr('value');
+          // console.log(value);
           $.ajax({
               type: "GET",
               dataType: "json",
               url: url,
-              data: {'complete': complete, 'id': id},
+              data: {'status': status, 'id': id},
               success: function(d){
                 // console.log(data.success)
                 if (d.status == 303) {
@@ -287,6 +289,8 @@
                           });
                         });
                     }else if(d.status == 300){
+                      
+                      $("#stsval").html(d.stsval);
                       $(function() {
                           var Toast = Swal.mixin({
                             toast: true,
@@ -307,54 +311,6 @@
           });
       })
     })
-
-    $(function() {
-      $('.declineBtn').change(function() {
-        var url = "{{URL::to('/admin/decline-client')}}";
-          var decline = $(this).prop('checked') == true ? 1 : 0;
-          var id = $(this).data('id');
-          $.ajax({
-              type: "GET",
-              dataType: "json",
-              url: url,
-              data: {'decline': decline, 'id': id},
-              success: function(d){
-                // console.log(data.success)
-                if (d.status == 303) {
-                        $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: d.message
-                          });
-                        });
-                    }else if(d.status == 300){
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: d.message
-                          });
-                        });
-                    }
-                },
-                error: function (d) {
-                    console.log(d);
-                }
-          });
-      })
-    })
-
 
   </script>
 
