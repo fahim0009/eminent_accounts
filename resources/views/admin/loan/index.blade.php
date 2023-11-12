@@ -61,7 +61,22 @@
                         <input type="number" id="amount" name="amount" class="form-control">
                       </div>
                     </div>
+
                     <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Account</label>
+                        <select name="account_id" id="account_id" class="form-control">
+                          <option value="">Select</option>
+                          @foreach ($accounts as $account)
+                          <option value="{{$account->id}}">{{$account->name}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-12">
                       <div class="form-group">
                         <label>Note</label>
                         <input type="text" class="form-control" id="note" name="note">
@@ -195,6 +210,7 @@
               var form_data = new FormData();
               form_data.append("date", $("#date").val());
               form_data.append("user_id", $("#user_id").val());
+              form_data.append("account_id", $("#account_id").val());
               form_data.append("amount", $("#amount").val());
               form_data.append("note", $("#note").val());
               $.ajax({
@@ -234,6 +250,7 @@
               var form_data = new FormData();
               form_data.append("date", $("#date").val());
               form_data.append("user_id", $("#user_id").val());
+              form_data.append("account_id", $("#account_id").val());
               form_data.append("amount", $("#amount").val());
               form_data.append("note", $("#note").val());
               form_data.append("codeid", $("#codeid").val());
@@ -312,6 +329,7 @@
       function populateForm(data){
           $("#date").val(data.date);
           $("#user_id").val(data.user_id);
+          $("#account_id").val(data.account_id);
           $("#amount").val(data.amount);
           $("#note").val(data.note);
           $("#codeid").val(data.id);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Models\User;
@@ -13,8 +14,9 @@ class LoanController extends Controller
     public function index()
     {
         $data = Loan::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->orderby('id','DESC')->get();
-        return view('admin.loan.index', compact('data','agents'));
+        return view('admin.loan.index', compact('data','agents','accounts'));
     }
 
     public function store(Request $request)
@@ -39,6 +41,7 @@ class LoanController extends Controller
         $data = new Loan;
         $data->date = $request->date;
         $data->user_id = $request->user_id;
+        $data->account_id = $request->account_id;
         $data->amount = $request->amount;
         $data->due_amount = $request->amount;
         $data->note = $request->note;
@@ -85,6 +88,7 @@ class LoanController extends Controller
         $data = Loan::find($request->codeid);
         $data->date = $request->date;
         $data->user_id = $request->user_id;
+        $data->account_id = $request->account_id;
         $data->amount = $request->amount;
         $data->note = $request->note;
         $data->updated_by = Auth::user()->id;
