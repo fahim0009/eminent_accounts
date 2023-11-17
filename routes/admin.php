@@ -73,8 +73,10 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/loan-update', [LoanController::class, 'update']);
     Route::get('/loan/{id}', [LoanController::class, 'delete']);
 
-    
-    Route::post('/loan-receive', [LoanController::class, 'loanReturnStore']);
+    Route::get('/loan-return-history/{id}', [LoanController::class, 'loanReturnHistory'])->name('admin.loanReturnHistory');
+    Route::post('/loan-return', [LoanController::class, 'loanReturnStore']);
+    Route::get('/loan-return/{id}/edit', [LoanController::class, 'loanReturnedit']);
+    Route::post('/loan-return-update', [LoanController::class, 'loanReturnUpdate']);
 
     
     Route::get('/country', [CountryController::class, 'index'])->name('admin.country');

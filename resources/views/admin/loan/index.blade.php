@@ -25,7 +25,7 @@
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
-                <h3 class="card-title">Add new admin</h3>
+                <h3 class="card-title">Add new loan</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -148,6 +148,7 @@
                     </td>
                     
                     <td style="text-align: center">
+                      <a href="{{route('admin.loanReturnHistory', $data->id)}}"><i class="fa fa-eye" style="color: #21f352;font-size:16px;"></i></a>
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                       <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
                     </td>
@@ -414,7 +415,7 @@
         });
       //Delete  
 
-      var rcvurl = "{{URL::to('/admin/loan-receive')}}";
+      var rcvurl = "{{URL::to('/admin/loan-return')}}";
       // loan receive
       $("#rcvBtn").click(function(){
         
