@@ -37,7 +37,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Date</label>
-                        <input type="date" class="form-control" id="date" name="date">
+                        <input type="date" class="form-control" id="date" name="date" value="{{date('Y-m-d')}}">
                       </div>
                     </div>
 
@@ -128,6 +128,7 @@
                   <th>Amount</th>
                   <th>Due Amount</th>
                   <th>Note</th>
+                  <th>Receive</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -136,15 +137,101 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->user_id}}</td>
+                    <td style="text-align: center">{{$data->user->name}}</td>
                     <td style="text-align: center">{{$data->amount}}</td>
                     <td style="text-align: center">{{$data->due_amount}}</td>
                     <td style="text-align: center">{{$data->note}}</td>
+                    <td style="text-align: center">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{$data->id}}">
+                        Receive
+                      </button>  
+                    </td>
                     
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                       <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
                     </td>
+
+                    {{-- modal start  --}}
+                    <div class="modal fade" id="exampleModal{{$data->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Receive</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <div class="container">
+                              <div class="returnermsg"></div>
+                              <form action="">
+                                @csrf
+                                <div class="row">
+
+                                  <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label>Date</label>
+                                      <input type="date" class="form-control" id="rcvdate" name="rcvdate" value="{{date('Y-m-d')}}">
+                                    </div>
+                                  </div>
+              
+                                  <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label>Agents</label>
+                                      <input type="text" value="{{$data->user->name}}" class="form-control" readonly>
+                                      <input type="hidden" value="{{$data->user_id}}" name="rcvuser_id" id="rcvuser_id" class="form-control">
+                                      <input type="hidden" value="{{$data->id}}" name="loan_id" id="loan_id" class="form-control">
+                                    </div>
+                                  </div>
+                                </div>
+              
+                                <div class="row">
+                                  <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label>Amount</label>
+                                      <input type="number" id="rcvamount" name="rcvamount" class="form-control">
+                                    </div>
+                                  </div>
+              
+                                  <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label>Account</label>
+                                      <select name="rcvaccount_id" id="rcvaccount_id" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach ($accounts as $account)
+                                        <option value="{{$account->id}}">{{$account->name}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+              
+                                <div class="row">
+                                  <div class="col-sm-12">
+                                    <div class="form-group">
+                                      <label>Note</label>
+                                      <input type="text" class="form-control" id="rcvnote" name="rcvnote">
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="rcvBtn" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {{-- modal end --}}
+
+
+
                   </tr>
                   @endforeach
                 
@@ -326,6 +413,57 @@
             });
         });
       //Delete  
+
+      var rcvurl = "{{URL::to('/admin/loan-receive')}}";
+      // loan receive
+      $("#rcvBtn").click(function(){
+        
+          var form_data = new FormData();
+          form_data.append("date", $("#rcvdate").val());
+          form_data.append("user_id", $("#rcvuser_id").val());
+          form_data.append("loan_id", $("#loan_id").val());
+          form_data.append("account_id", $("#rcvaccount_id").val());
+          form_data.append("amount", $("#rcvamount").val());
+          form_data.append("note", $("#rcvnote").val());
+
+          $.ajax({
+            url: rcvurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".returnermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data create successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+
+
+      });
+      // loan receive
+
+
+
+
       function populateForm(data){
           $("#date").val(data.date);
           $("#user_id").val(data.user_id);
