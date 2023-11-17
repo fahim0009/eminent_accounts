@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->longText('note')->nullable();
             $table->double('amount',10,2)->nullable();
+            $table->double('total_collection',10,2)->nullable();
             $table->double('due_amount',10,2)->nullable();
             $table->boolean('status')->default(1);
             $table->string('updated_by')->nullable();

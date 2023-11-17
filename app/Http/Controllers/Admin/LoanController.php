@@ -47,6 +47,11 @@ class LoanController extends Controller
         $data->note = $request->note;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
+
+            $account = Account::find($request->account_id);
+            $account->balance = $account->balance - $request->amount;
+            $account->save();
+
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
             return response()->json(['status'=> 300,'message'=>$message]);
         }else{
@@ -86,13 +91,24 @@ class LoanController extends Controller
 
 
         $data = Loan::find($request->codeid);
+
+            $account = Account::find($request->account_id);
+            $account->balance = $account->balance + $data->amount;
+            $account->save();
+
         $data->date = $request->date;
         $data->user_id = $request->user_id;
         $data->account_id = $request->account_id;
         $data->amount = $request->amount;
+        // $data->due_amount = $request->amount;
         $data->note = $request->note;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
+
+            $account = Account::find($request->account_id);
+            $account->balance = $account->balance - $request->amount;
+            $account->save();
+
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";
             return response()->json(['status'=> 300,'message'=>$message]);
         }
