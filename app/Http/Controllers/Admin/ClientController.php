@@ -151,6 +151,7 @@ class ClientController extends Controller
         $data->package_cost = $request->package_cost;
         $data->description = $request->description;
         $data->flight_date = $request->flight_date;
+        $data->visa_exp_date = $request->visa_exp_date;
 
         // image
         if ($request->passport_image != 'null') {

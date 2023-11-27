@@ -124,6 +124,10 @@
                             <input type="number" class="form-control" id="package_cost" name="package_cost"  value="{{$data->package_cost}}">
                         </div>
 
+                        <div class="col-sm-6">
+                          <label>Visa Expired  Date</label>
+                          <input type="date" class="form-control" id="visa_exp_date" name="visa_exp_date" value="{{$data->visa_exp_date}}">
+                        </div>
                         
                         
                       </div>
@@ -190,7 +194,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Client Image</label>
-                              <input type="file" class="form-control" id="client_image" name="client_image">
+                              <button type="button" class="btn btn-secondary">Download</button>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -221,7 +225,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Passport Image</label>
-                              <input type="file" class="form-control" id="passport_image" name="passport_image">
+                              <button type="button" class="btn btn-secondary">Download</button>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -252,7 +256,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Visa Image</label>
-                              <input type="file" class="form-control" id="visa_image" name="visa_image">
+                              <button type="button" class="btn btn-secondary">Download</button>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -283,7 +287,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Passport Image</label>
-                              <input type="file" class="form-control" id="manpower_image" name="manpower_image">
+                              <button type="button" class="btn btn-secondary">Download</button>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -623,6 +627,7 @@
           form_data.append("package_cost", $("#package_cost").val());
           form_data.append("description", $("#description").val());
           form_data.append("flight_date", $("#flight_date").val());
+          form_data.append("visa_exp_date", $("#visa_exp_date").val());
           form_data.append("codeid", $("#codeid").val());
 
 

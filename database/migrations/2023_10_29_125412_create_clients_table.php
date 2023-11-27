@@ -42,6 +42,7 @@ return new class extends Migration
             $table->string('joining_date')->nullable();
             $table->double('salary',10,2)->nullable();
             $table->string('flight_date')->nullable();
+            $table->string('visa_exp_date')->nullable();
             $table->boolean('processing')->default(1);
             $table->boolean('complete')->default(0);
             $table->boolean('decline')->default(0);
