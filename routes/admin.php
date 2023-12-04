@@ -58,6 +58,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/client-partner-update', [ClientController::class, 'partnerUpdate']);
     Route::get('/change-client-status', [ClientController::class, 'changeClientStatus']);
 
+    // download
+    Route::get('/client-image-download/{id}', [ClientController::class, 'client_image_download'])->name('client_image.download');
+
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);
     Route::get('/chart-of-account', [ChartOfAccountController::class, 'index'])->name('admin.coa');

@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\Transaction;
+// use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
@@ -271,6 +273,18 @@ class ClientController extends Controller
             return response()->json(['status'=> 303,'message'=>$message]);
         }
 
+    }
+
+    public function client_image_download($id)
+    {
+
+        $client_image = Client::where('id', $id)->first()->client_image;
+
+        $filepath = public_path('images/client/').$client_image;
+        if (isset($filepath)) {
+            return Response::download($filepath);
+        }
+        
     }
 
 

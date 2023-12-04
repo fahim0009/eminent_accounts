@@ -194,7 +194,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Client Image</label>
-                              <button type="button" class="btn btn-secondary">Download</button>
+                              <a href="{{ route('client_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
                           <!-- /.row -->
