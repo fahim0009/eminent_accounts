@@ -287,6 +287,42 @@ class ClientController extends Controller
         
     }
 
+    public function passport_image_download($id)
+    {
+
+        $passport_image = Client::where('id', $id)->first()->passport_image;
+
+        $filepath = public_path('images/client/passport/').$passport_image;
+        if (isset($filepath)) {
+            return Response::download($filepath);
+        }
+        
+    }
+
+    public function visa_image_download($id)
+    {
+
+        $visa = Client::where('id', $id)->first()->visa;
+
+        $filepath = public_path('images/client/visa/').$visa;
+        if (isset($filepath)) {
+            return Response::download($filepath);
+        }
+        
+    }
+
+    public function manpower_image_download($id)
+    {
+
+        $manpower = Client::where('id', $id)->first()->manpower_image;
+
+        $filepath = public_path('images/client/manpower/').$manpower;
+        if (isset($filepath)) {
+            return Response::download($filepath);
+        }
+        
+    }
+
 
 
 }

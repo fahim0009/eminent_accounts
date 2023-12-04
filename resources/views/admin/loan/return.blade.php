@@ -19,6 +19,7 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                <div class="ermsg"></div>
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">

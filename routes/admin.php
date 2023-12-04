@@ -60,6 +60,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     // download
     Route::get('/client-image-download/{id}', [ClientController::class, 'client_image_download'])->name('client_image.download');
+    Route::get('/visa-image-download/{id}', [ClientController::class, 'visa_image_download'])->name('visa_image.download');
+    Route::get('/manpower-image-download/{id}', [ClientController::class, 'manpower_image_download'])->name('manpower_image.download');
+    Route::get('/passport-image-download/{id}', [ClientController::class, 'passport_image_download'])->name('passport_image.download');
 
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);

@@ -197,11 +197,7 @@ class LoanController extends Controller
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
-        if(empty($request->user_id)){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Agent \" field..!</b></div>";
-            return response()->json(['status'=> 303,'message'=>$message]);
-            exit();
-        }
+        
         if(empty($request->amount)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Amount \" field..!</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
@@ -211,12 +207,12 @@ class LoanController extends Controller
         
         $data = LoanTransaction::find($request->codeid);
 
-            $loan = Loan::find($request->loan_id);
+            $loan = Loan::find($data->loan_id);
             $loan->due_amount = $loan->due_amount + $data->amount - $request->amount;
             $loan->save();
 
-            $account = Account::find($request->account_id);
-            $account->balance = $account->balance - $data->amount + $request->amount;
+            $account = Account::find($data->account_id);
+            $account->balance = $account->balance - $data->amount;
             $account->save();
 
 
@@ -227,6 +223,10 @@ class LoanController extends Controller
         $data->note = $request->note;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
+
+            $upaccount = Account::find($request->account_id);
+            $upaccount->balance = $account->balance  + $request->amount;
+            $upaccount->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
             return response()->json(['status'=> 300,'message'=>$message]);

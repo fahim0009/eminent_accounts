@@ -225,7 +225,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Passport Image</label>
-                              <button type="button" class="btn btn-secondary">Download</button>
+                              <a href="{{ route('passport_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -256,7 +256,7 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <label>Visa Image</label>
-                              <button type="button" class="btn btn-secondary">Download</button>
+                              <a href="{{ route('visa_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
                           <!-- /.row -->
@@ -286,8 +286,8 @@
                         <div class="col-sm-6">
                           <div class="row">
                             <div class="col-sm-12">
-                              <label>Passport Image</label>
-                              <button type="button" class="btn btn-secondary">Download</button>
+                              <label>Manpower Image</label>
+                              <a href="{{ route('manpower_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
                           <!-- /.row -->
