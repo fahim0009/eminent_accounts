@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\KafelaClientController;
 
 
 /*------------------------------------------
@@ -107,5 +108,15 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/money-payment', [TransactionController::class, 'moneyPayment']);
     Route::post('/money-payment-update', [TransactionController::class, 'moneyPaymentUpdate']);
     Route::get('/money-payment/{id}/edit', [TransactionController::class, 'moneyPaymentEdit']);
+
+    // kafela client
+    Route::get('/kafela-client', [KafelaClientController::class, 'index'])->name('admin.kafelaclient');
+    Route::get('/kafela-decline-clients', [KafelaClientController::class, 'decline'])->name('admin.kafeladeclineclient');
+    Route::get('/kafela-completed-clients', [KafelaClientController::class, 'completed'])->name('admin.kafelacompletedclient');
+    Route::post('/kafela-client', [KafelaClientController::class, 'store']);
+    Route::get('/kafela-client/{id}/edit', [KafelaClientController::class, 'edit']);
+    Route::post('/kafela-client-update', [KafelaClientController::class, 'update']);
+    Route::get('/kafela-client/{id}', [KafelaClientController::class, 'delete']);
+    Route::get('/change-kafela-client-status', [KafelaClientController::class, 'changeClientStatus']);
 });
   

@@ -101,29 +101,31 @@
           </p>
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
+
+
+      <li class="nav-item {{ (request()->is('admin/kafela-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/kafela-completed-clients*')) ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ (request()->is('admin/kafela-client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
-            Kafela Client
+            Kafela Clients
             <i class="fas fa-angle-left right"></i>
-            <span class="badge badge-info right">6</span>
           </p>
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="pages/layout/top-nav.html" class="nav-link">
+            <a href="{{route('admin.kafelaclient')}}" class="nav-link {{ (request()->is('admin/kafela-client*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
-              <p>Top Navigation</p>
+              <p>Processing</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+            <a href="{{route('admin.kafelacompletedclient')}}" class="nav-link {{ (request()->is('admin/kafela-completed-clients*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
-              <p>Top Navigation + Sidebar</p>
+              <p>Complete</p>
             </a>
           </li>
           
+
         </ul>
       </li>
 
