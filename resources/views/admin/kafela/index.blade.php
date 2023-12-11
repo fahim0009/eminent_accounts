@@ -25,7 +25,7 @@
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
-                <h3 class="card-title">Add new client</h3>
+                <h3 class="card-title">Add new kafela client</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -35,11 +35,11 @@
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Agents</label>
-                        <select name="user_id" id="user_id" class="form-control">
+                        <label>Clients</label>
+                        <select name="client_id" id="client_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach ($agents as $item)
-                          <option value="{{$item->id}}">{{$item->name}}</option>
+                          @foreach ($clients as $item)
+                          <option value="{{$item->id}}">{{$item->passport_name}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -59,60 +59,55 @@
                         <input type="text" class="form-control" id="passport_name" name="passport_name">
                       </div>
                     </div>
-
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Passport Image</label>
-                        <input type="file" class="form-control" id="passport_image" name="passport_image">
-                      </div>
-                    </div>
-
-                  </div>
-
-                  <div class="row">
-
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Client Image</label>
-                        <input type="file" class="form-control" id="client_image" name="client_image">
-                      </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Country</label>
-                        <select class="form-control" id="country" name="country">
-                          <option value="">Select</option>
-                          @foreach ($countries as $country)
-                            <option value="{{$country->id}}">{{$country->name}}</option>
-                          @endforeach
-                        </select>
-                      </div>
-                    </div>
                     
 
 
                   </div>
 
                   <div class="row">
-                    
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Passport Receive Date</label>
-                        <input type="date" class="form-control" id="passport_rcv_date" name="passport_rcv_date">
+                        <label>Job Title</label>
+                        <input type="text" class="form-control" id="job_title" name="job_title">
                       </div>
                     </div>
-
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Package Cost</label>
-                        <input type="number" class="form-control" id="package_cost" name="package_cost">
+                        <label>Job Company</label>
+                        <input type="text" class="form-control" id="job_company" name="job_company">
                       </div>
                     </div>
-
                   </div>
-                  
 
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Salary</label>
+                        <input type="number" class="form-control" id="salary" name="salary">
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Joining Date</label>
+                        <input type="date" class="form-control" id="joining_date" name="joining_date">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Aqama Image</label>
+                        <input type="file" class="form-control" id="aqama_image" name="aqama_image">
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Aqama Exp Date</label>
+                        <input type="date" class="form-control" id="aqama_exp_date" name="aqama_exp_date">
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-sm-12">
                       <div class="form-group">
@@ -120,10 +115,7 @@
                         <input type="text" class="form-control" id="description" name="description">
                       </div>
                     </div>
-
                   </div>
-
-                  
                 </form>
               </div>
 
@@ -162,11 +154,11 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
-                  <th>Agent Name</th>
-                  <th>Passport Name</th>
+                  <th>Client Name</th>
                   <th>Passport Number</th>
-                  <th>Package Cost</th>
-                  <th>Received Amount</th>
+                  <th>Job Title</th>
+                  <th>Company</th>
+                  <th>Salary</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -175,11 +167,11 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->user->name}}</td>
-                    <td style="text-align: center">{{$data->passport_name}}</td>
-                    <td style="text-align: center">{{$data->passport_number}}</td>
-                    <td style="text-align: center">{{$data->package_cost}}</td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
+                    <td style="text-align: center">{{$data->client->passport_name}}</td>
+                    <td style="text-align: center">{{$data->client->passport_number}}</td>
+                    <td style="text-align: center">{{$data->job_title}}</td>
+                    <td style="text-align: center">{{$data->job_company}}</td>
+                    <td style="text-align: center">{{$data->salary}}</td>
                     <td style="text-align: center">
                       <div class="btn-group">
                         <button type="button" class="btn btn-secondary"><span id="stsval"> @if ($data->status == 0) Processing
@@ -190,13 +182,12 @@
                         <div class="dropdown-menu" role="menu">
                           <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
                           <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</a>
                         </div>
                       </div>
                     </td>
                     
                     <td style="text-align: center">
-                      <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
+                      
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                       <a id="deleteBtn" rid="{{$data->id}}"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
                       </a>
@@ -241,7 +232,7 @@
 
     $(function() {
       $('.stsBtn').click(function() {
-        var url = "{{URL::to('/admin/change-client-status')}}";
+        var url = "{{URL::to('/admin/change-kafela-client-status')}}";
           var id = $(this).data('id');
           var status = $(this).attr('value');
           // console.log(value);
@@ -308,31 +299,27 @@
       //header for csrf-token is must in laravel
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
-      var url = "{{URL::to('/admin/client')}}";
-      var upurl = "{{URL::to('/admin/client-update')}}";
+      var url = "{{URL::to('/admin/kafela-client')}}";
+      var upurl = "{{URL::to('/admin/kafela-client-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
           if($(this).val() == 'Create') {
 
-              var passport_image = $('#passport_image').prop('files')[0];
-              if(typeof passport_image === 'undefined'){
-                  passport_image = 'null';
-              }
-              var client_image = $('#client_image').prop('files')[0];
-              if(typeof client_image === 'undefined'){
-                client_image = 'null';
+              var aqama_image = $('#aqama_image').prop('files')[0];
+              if(typeof aqama_image === 'undefined'){
+                aqama_image = 'null';
               }
 
               var form_data = new FormData();
-              form_data.append('passport_image', passport_image);
-              form_data.append('client_image', client_image);
-              form_data.append("passport_number", $("#passport_number").val());
-              form_data.append("passport_name", $("#passport_name").val());
-              form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
-              form_data.append("country", $("#country").val());
-              form_data.append("user_id", $("#user_id").val());
-              form_data.append("package_cost", $("#package_cost").val());
+              form_data.append('aqama_image', aqama_image);
+              form_data.append("client_id", $("#client_id").val());
+              form_data.append("job_title", $("#job_title").val());
+              form_data.append("job_company", $("#job_company").val());
+              form_data.append("salary", $("#salary").val());
+
+              form_data.append("joining_date", $("#joining_date").val());
+              form_data.append("aqama_exp_date", $("#aqama_exp_date").val());
               form_data.append("description", $("#description").val());
 
 
@@ -371,24 +358,19 @@
           //create  end
           //Update
           if($(this).val() == 'Update'){
-              var passport_image = $('#passport_image').prop('files')[0];
-              if(typeof passport_image === 'undefined'){
-                  passport_image = 'null';
+            var aqama_image = $('#aqama_image').prop('files')[0];
+              if(typeof aqama_image === 'undefined'){
+                aqama_image = 'null';
               }
-              var client_image = $('#client_image').prop('files')[0];
-              if(typeof client_image === 'undefined'){
-                client_image = 'null';
-              }
-              
               var form_data = new FormData();
-              form_data.append('passport_image', passport_image);
-              form_data.append('client_image', client_image);
-              form_data.append("passport_number", $("#passport_number").val());
-              form_data.append("passport_name", $("#passport_name").val());
-              form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
-              form_data.append("country", $("#country").val());
-              form_data.append("user_id", $("#user_id").val());
-              form_data.append("package_cost", $("#package_cost").val());
+              form_data.append('aqama_image', aqama_image);
+              form_data.append("client_id", $("#client_id").val());
+              form_data.append("job_title", $("#job_title").val());
+              form_data.append("job_company", $("#job_company").val());
+              form_data.append("salary", $("#salary").val());
+
+              form_data.append("joining_date", $("#joining_date").val());
+              form_data.append("aqama_exp_date", $("#aqama_exp_date").val());
               form_data.append("description", $("#description").val());
               form_data.append("codeid", $("#codeid").val());
               
@@ -463,13 +445,15 @@
             });
         });
         //Delete 
+
+
       function populateForm(data){
-          $("#passport_number").val(data.passport_number);
-          $("#passport_name").val(data.passport_name);
-          $("#passport_rcv_date").val(data.passport_rcv_date);
-          $("#country").val(data.country);
-          $("#user_id").val(data.user_id);
-          $("#package_cost").val(data.package_cost);
+          $("#client_id").val(data.client_id);
+          $("#job_company").val(data.job_company);
+          $("#job_title").val(data.job_title);
+          $("#salary").val(data.salary);
+          $("#joining_date").val(data.joining_date);
+          $("#aqama_exp_date").val(data.aqama_exp_date);
           $("#description").val(data.description);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');

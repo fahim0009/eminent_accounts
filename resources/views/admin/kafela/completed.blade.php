@@ -17,40 +17,50 @@
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Agent Name</th>
-                  <th>Passport Name</th>
-                  <th>Passport Number</th>
-                  <th>Package Cost</th>
-                  <th>Received Amount</th>
-                  <th>Complete</th>
-                  <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
                   <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->user->name}}</td>
-                    <td style="text-align: center">{{$data->passport_name}}</td>
-                    <td style="text-align: center">{{$data->passport_number}}</td>
-                    <td style="text-align: center">{{$data->package_cost}}</td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
-                    <td style="text-align: center">
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input completeBtn" id="complete{{$data->id}}"  data-id="{{$data->id}}" {{ $data->complete ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="complete{{$data->id}}"></label>
-                      </div>
-                    </td>
-                    
-                    <td style="text-align: center">
-                      <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
-                    </td>
+                    <th>Sl</th>
+                    <th>Client Name</th>
+                    <th>Passport Number</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Salary</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                  @endforeach
-                
-                </tbody>
+                  </thead>
+                  <tbody>
+                    @foreach ($data as $key => $data)
+                    <tr>
+                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center">{{$data->client->passport_name}}</td>
+                      <td style="text-align: center">{{$data->client->passport_number}}</td>
+                      <td style="text-align: center">{{$data->job_title}}</td>
+                      <td style="text-align: center">{{$data->job_company}}</td>
+                      <td style="text-align: center">{{$data->salary}}</td>
+                      <td style="text-align: center">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-secondary"><span id="stsval"> @if ($data->status == 0) Processing
+                          @elseif($data->status == 1) Complete @else Decline @endif</span></button>
+                          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                          <div class="dropdown-menu" role="menu">
+                            <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
+                            <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      <td style="text-align: center">
+                        
+                        <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                        <a id="deleteBtn" rid="{{$data->id}}"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                        </a>
+                      </td>
+                    </tr>
+                    @endforeach
+                  
+                  </tbody>
               </table>
             </div>
             <!-- /.card-body -->
@@ -86,15 +96,16 @@
     });
 
     $(function() {
-      $('.completeBtn').change(function() {
-        var url = "{{URL::to('/admin/complete-client')}}";
-          var complete = $(this).prop('checked') == true ? 1 : 0;
+      $('.stsBtn').click(function() {
+        var url = "{{URL::to('/admin/change-kafela-client-status')}}";
           var id = $(this).data('id');
+          var status = $(this).attr('value');
+          // console.log(value);
           $.ajax({
               type: "GET",
               dataType: "json",
               url: url,
-              data: {'complete': complete, 'id': id},
+              data: {'status': status, 'id': id},
               success: function(d){
                 // console.log(data.success)
                 if (d.status == 303) {
@@ -111,6 +122,8 @@
                           });
                         });
                     }else if(d.status == 300){
+                      
+                      $("#stsval").html(d.stsval);
                       $(function() {
                           var Toast = Swal.mixin({
                             toast: true,
@@ -132,52 +145,7 @@
       })
     })
 
-    $(function() {
-      $('.declineBtn').change(function() {
-        var url = "{{URL::to('/admin/decline-client')}}";
-          var decline = $(this).prop('checked') == true ? 1 : 0;
-          var id = $(this).data('id');
-          $.ajax({
-              type: "GET",
-              dataType: "json",
-              url: url,
-              data: {'decline': decline, 'id': id},
-              success: function(d){
-                // console.log(data.success)
-                if (d.status == 303) {
-                        $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: d.message
-                          });
-                        });
-                    }else if(d.status == 300){
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: d.message
-                          });
-                        });
-                    }
-                },
-                error: function (d) {
-                    console.log(d);
-                }
-          });
-      })
-    })
+
 
 
   </script>

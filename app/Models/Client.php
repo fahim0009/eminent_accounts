@@ -15,4 +15,9 @@ class Client extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function kafelaclient()
+    {
+        return $this->hasMany(KafelaClient::class);
+    }
+
 }

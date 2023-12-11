@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kafela_clients', function (Blueprint $table) {
+        Schema::create('kafela_client_histories', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('client_id')->unsigned()->nullable();
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->bigInteger('kafela_client_id')->unsigned()->nullable();
+            $table->foreign('kafela_client_id')->references('id')->on('kafela_clients')->onDelete('cascade');
             $table->double('salary',10,2)->default(0);
             $table->string('description')->nullable();
             $table->string('job_title')->nullable();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kafela_clients');
+        Schema::dropIfExists('kafela_client_histories');
     }
 };
