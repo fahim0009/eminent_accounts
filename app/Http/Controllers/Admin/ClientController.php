@@ -26,6 +26,16 @@ class ClientController extends Controller
         return view('admin.client.index', compact('data','agents','countries','accounts','bpartners'));
     }
 
+    public function processing()
+    {
+        $data = Client::where('status','0')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners'));
+    }
+
     public function decline()
     {
         $data = Client::where('status','2')->orderby('id','DESC')->get();

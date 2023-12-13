@@ -49,6 +49,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     
     Route::get('/client', [ClientController::class, 'index'])->name('admin.client');
+    Route::get('/processing-clients', [ClientController::class, 'processing'])->name('admin.processingclient');
     Route::get('/decline-clients', [ClientController::class, 'decline'])->name('admin.declineclient');
     Route::get('/completed-clients', [ClientController::class, 'completed'])->name('admin.completedclient');
     Route::post('/client', [ClientController::class, 'store']);
