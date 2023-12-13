@@ -162,6 +162,7 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
+                  <th>Client ID</th>
                   <th>Agent Name</th>
                   <th>Passport Name</th>
                   <th>Passport Number</th>
@@ -175,6 +176,7 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
+                    <td style="text-align: center">{{$data->clientid}}</td>
                     <td style="text-align: center">{{$data->user->name}}</td>
                     <td style="text-align: center">{{$data->passport_name}}</td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
@@ -182,7 +184,7 @@
                     <td style="text-align: center">{{$data->total_rcv}}</td>
                     <td style="text-align: center">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-secondary"><span id="stsval"> @if ($data->status == 0) Processing
+                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing
                         @elseif($data->status == 1) Complete @else Decline @endif</span></button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                           <span class="sr-only">Toggle Dropdown</span>
@@ -243,7 +245,7 @@
         var url = "{{URL::to('/admin/change-client-status')}}";
           var id = $(this).data('id');
           var status = $(this).attr('value');
-          // console.log(value);
+          // console.log(id);
           $.ajax({
               type: "GET",
               dataType: "json",
@@ -266,7 +268,7 @@
                         });
                     }else if(d.status == 300){
                       
-                      $("#stsval").html(d.stsval);
+                      $("#stsval"+d.id).html(d.stsval);
                       $(function() {
                           var Toast = Swal.mixin({
                             toast: true,

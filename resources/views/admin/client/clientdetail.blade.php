@@ -49,6 +49,13 @@
                 <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
 
                 <p class="text-muted">{{$data->description}}</p>
+
+                <hr>
+                <strong><i class="far fa-file-alt mr-1"></i> Total Received</strong>
+                <p class="text-muted">{{$data->total_rcv}}</p>
+                <hr>
+                <strong><i class="far fa-file-alt mr-1"></i> Due Amount</strong>
+                <p class="text-muted">{{$data->due_amount}}</p>
               </div>
               <!-- /.card-body -->
             </div>
@@ -72,6 +79,14 @@
                     <!-- Post -->
                     <form class="form-horizontal">
                       @csrf
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <label>Client ID</label>
+                            <input type="number" class="form-control" id="clientid" name="clientid">
+                        </div>
+                      </div>
+
+
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Name <small>(Passport Name)</small></label>
@@ -187,13 +202,17 @@
 
                       <div class="row mb-3">
                         <div class="col-sm-6">
-                          <img class="img-fluid" src="{{asset('images/client/'.$data->client_image)}}" alt="Photo">
+                          @if ($data->client_image)
+                            <img class="img-fluid" src="{{asset('images/client/'.$data->client_image)}}" alt="Photo">
+                          @else
+                              
+                            <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
+                          @endif
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                           <div class="row">
                             <div class="col-sm-12">
-                              <label>Client Image</label>
                               <a href="{{ route('client_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
@@ -218,13 +237,17 @@
 
                       <div class="row mb-3">
                         <div class="col-sm-6">
-                          <img class="img-fluid" src="{{asset('images/client/passport/'.$data->passport_image)}}" alt="Photo">
+                          @if ($data->passport_image)
+                            <img class="img-fluid" src="{{asset('images/client/passport/'.$data->passport_image)}}" alt="Photo">
+                          @else
+                              
+                            <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
+                          @endif
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                           <div class="row">
                             <div class="col-sm-12">
-                              <label>Passport Image</label>
                               <a href="{{ route('passport_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
@@ -249,13 +272,18 @@
 
                       <div class="row mb-3">
                         <div class="col-sm-6">
+
+                          @if ($data->visa)
+                              
                           <img class="img-fluid" src="{{asset('images/client/visa/'.$data->visa)}}" alt="Photo">
+                          @else
+                            <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
+                          @endif
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                           <div class="row">
                             <div class="col-sm-12">
-                              <label>Visa Image</label>
                               <a href="{{ route('visa_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
@@ -280,13 +308,18 @@
 
                       <div class="row mb-3">
                         <div class="col-sm-6">
+
+                          @if ($data->manpower_image)
+                              
                           <img class="img-fluid" src="{{asset('images/client/manpower/'.$data->manpower_image)}}" alt="Photo">
+                          @else
+                          <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
+                          @endif
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                           <div class="row">
                             <div class="col-sm-12">
-                              <label>Manpower Image</label>
                               <a href="{{ route('manpower_image.download',$data->id)}}" class="btn btn-secondary">Download</a>
                             </div>
                           </div>
@@ -619,6 +652,7 @@
           form_data.append('client_image', client_image);
           form_data.append('manpower_image', manpower_image);
           form_data.append('visa_image', visa_image);
+          form_data.append("clientid", $("#clientid").val());
           form_data.append("passport_number", $("#passport_number").val());
           form_data.append("passport_name", $("#passport_name").val());
           form_data.append("passport_rcv_date", $("#passport_rcv_date").val());

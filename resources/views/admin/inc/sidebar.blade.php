@@ -65,7 +65,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{{route('admin.processingclient')}}" class="nav-link">
+            <a href="{{route('admin.processingclient')}}" class="nav-link {{ (request()->is('admin/processing-clients*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
               <p>Processing</p>
             </a>

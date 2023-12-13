@@ -82,8 +82,17 @@ class ClientController extends Controller
         //     exit();
         // }
 
+        
+        $chkemail = Client::where('clientid',$request->clientid)->first();
+        if($chkemail){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This client ID already added.</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+
         $data = new Client;
         $data->user_id = $request->user_id;
+        $data->clientid = $request->clientid;
         $data->passport_number = $request->passport_number;
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
@@ -151,11 +160,19 @@ class ClientController extends Controller
         //     exit();
         // }
 
+
+        $chkemail = Client::where('clientid',$request->clientid)->where('id','!=', $request->codeid)->first();
+        if($chkemail){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This client ID already added.</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
         
 
 
         $data = Client::find($request->codeid);
         $data->user_id = $request->user_id;
+        $data->clientid = $request->clientid;
         $data->passport_number = $request->passport_number;
         $data->passport_name = $request->passport_name;
         $data->passport_rcv_date = $request->passport_rcv_date;
@@ -277,7 +294,7 @@ class ClientController extends Controller
             }
             
             $message ="Status Change Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval]);
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
         }else{
             $message ="There was an error to change status!!.";
             return response()->json(['status'=> 303,'message'=>$message]);

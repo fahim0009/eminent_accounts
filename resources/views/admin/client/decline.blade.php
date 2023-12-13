@@ -41,7 +41,7 @@
                     <td style="text-align: center">{{$data->total_rcv}}</td>
                     <td style="text-align: center">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-secondary"><span id="stsval"> @if ($data->status == 0) Processing
+                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing
                         @elseif($data->status == 1) Complete @else Decline @endif</span></button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                           <span class="sr-only">Toggle Dropdown</span>
@@ -121,7 +121,7 @@
                         });
                     }else if(d.status == 300){
                       
-                      $("#stsval").html(d.stsval);
+                      $("#stsval"+d.id).html(d.stsval);
                       $(function() {
                           var Toast = Swal.mixin({
                             toast: true,
