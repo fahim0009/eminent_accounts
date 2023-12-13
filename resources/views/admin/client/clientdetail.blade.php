@@ -68,7 +68,7 @@
                 <ul class="nav nav-pills">
                   <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Client Details</a></li>
                   <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Documents</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Transactions</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Receipt</a></li>
                   <li class="nav-item"><a class="nav-link" href="#btob_partner" data-toggle="tab">Business Partner</a></li>
                   <li class="nav-item"><a class="nav-link" href="#btob_payment" data-toggle="tab">B2B Payment</a></li>
                 </ul>
@@ -82,7 +82,7 @@
                       <div class="row">
                         <div class="col-sm-12">
                             <label>Client ID</label>
-                            <input type="number" class="form-control" id="clientid" name="clientid">
+                            <input type="number" class="form-control" id="clientid" name="clientid" value="{{$data->clientid}}" readonly="readonly">
                         </div>
                       </div>
 
@@ -90,12 +90,12 @@
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Name <small>(Passport Name)</small></label>
-                            <input type="text" class="form-control" value="{{$data->passport_name}}" id="passport_name" name="passport_name">
+                            <input type="text" class="form-control" value="{{$data->passport_name}}" id="passport_name" name="passport_name" readonly="readonly">
                             <input type="hidden" name="codeid" id="codeid" value="{{$data->id}}">
                         </div>
                         <div class="col-sm-6">
                             <label>Passport Number</label>
-                            <input type="text" id="passport_number" name="passport_number" class="form-control" value="{{$data->passport_number}}">
+                            <input type="text" id="passport_number" name="passport_number" class="form-control" value="{{$data->passport_number}}" readonly="readonly">
                         </div>
                       </div>
                       <div class="row">
@@ -105,7 +105,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label>Visa Image</label>
-                            <input type="file" class="form-control" id="visa_image" name="visa_image">
+                            <input type="file" class="form-control" id="visa_image" name="visa_image" readonly="readonly">
                         </div>
                       </div>
                       <div class="row">
@@ -122,11 +122,11 @@
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Passport Receive Date</label>
-                            <input type="date" class="form-control" id="passport_rcv_date" name="passport_rcv_date" value="{{$data->passport_rcv_date}}">
+                            <input type="date" class="form-control" id="passport_rcv_date" name="passport_rcv_date" value="{{$data->passport_rcv_date}}" readonly="readonly">
                         </div>
                         <div class="col-sm-6">
                             <label>Flight  Date</label>
-                            <input type="date" class="form-control" id="flight_date" name="flight_date" value="{{$data->flight_date}}">
+                            <input type="date" class="form-control" id="flight_date" name="flight_date" value="{{$data->flight_date}}" readonly="readonly">
                         </div>
     
                         
@@ -136,12 +136,12 @@
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Package Cost</label>
-                            <input type="number" class="form-control" id="package_cost" name="package_cost"  value="{{$data->package_cost}}">
+                            <input type="number" class="form-control" id="package_cost" name="package_cost"  value="{{$data->package_cost}}" readonly="readonly">
                         </div>
 
                         <div class="col-sm-6">
                           <label>Visa Expired  Date</label>
-                          <input type="date" class="form-control" id="visa_exp_date" name="visa_exp_date" value="{{$data->visa_exp_date}}">
+                          <input type="date" class="form-control" id="visa_exp_date" name="visa_exp_date" value="{{$data->visa_exp_date}}" readonly="readonly">
                         </div>
                         
                         
@@ -151,7 +151,7 @@
                       <div class="row">
                         <div class="col-sm-6">
                             <label>Country</label>
-                            <select class="form-control" id="country" name="country">
+                            <select class="form-control" id="country" name="country" disabled>
                               <option value="">Select</option>
                               @foreach ($countries as $country)
                                 <option value="{{$country->id}}"@if ($country->id == $data->country_id) selected @endif >{{$country->name}}</option>
@@ -162,7 +162,7 @@
                         
                         <div class="col-sm-6">
                             <label>Agents</label>
-                            <select name="user_id" id="user_id" class="form-control">
+                            <select name="user_id" id="user_id" class="form-control" disabled>
                               <option value="">Select</option>
                               @foreach ($agents as $item)
                               <option value="{{$item->id}}" @if ($item->id == $data->user_id) selected @endif>{{$item->name}}</option>
@@ -174,13 +174,14 @@
                       <div class="row">
                         <div class="col-sm-12">
                             <label>Description</label>
-                            <textarea name="description" id="description" cols="30" rows="2" class="form-control">{{$data->description}}</textarea>
+                            <textarea name="description" id="description" cols="30" rows="2" class="form-control" readonly="readonly">{{$data->description}}</textarea>
                         </div>
                       </div>
 
                       <div class="form-group row mt-3">
                         <div class="col-sm-10">
-                          <button type="button" id="updatebtn" class="btn btn-secondary">Update</button>
+                          <button type="button" id="updatebtn" class="btn btn-secondary updateBtn">Update</button>
+                          <button id="editBtn" class="btn btn-secondary editBtn">Edit</button>
                         </div>
                       </div>
 
@@ -998,6 +999,25 @@
         $(".rcptBtn").show(100);
       });
       //Edit  end
+
+
+      $(".updateBtn").hide();
+      $("body").delegate(".editBtn","click",function(event){
+            event.preventDefault();
+            $("#clientid").attr("readonly", false);
+            $("#passport_name").attr("readonly", false);
+            $("#passport_number").attr("readonly", false);
+            $("#visa_image").attr("readonly", false);
+            $("#passport_rcv_date").attr("readonly", false);
+            $("#description").attr("readonly", false);
+            $("#user_id").attr("disabled", false);
+            $("#country").attr("disabled", false);
+            $("#visa_exp_date").attr("readonly", false);
+            $("#package_cost").attr("readonly", false);
+            $("#flight_date").attr("readonly", false);
+            $("#editBtn").hide();
+            $(".updateBtn").show();
+        });
       
   });
 </script>

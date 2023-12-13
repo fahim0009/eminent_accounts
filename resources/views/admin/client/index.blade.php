@@ -32,6 +32,15 @@
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
+
+                  
+                  <div class="row">
+                    <div class="col-sm-12">
+                        <label>Client ID</label>
+                        <input type="number" class="form-control" id="clientid" name="clientid" value="">
+                    </div>
+                  </div>
+
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
@@ -328,6 +337,7 @@
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
               form_data.append('client_image', client_image);
+              form_data.append("clientid", $("#clientid").val());
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
@@ -384,6 +394,7 @@
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
               form_data.append('client_image', client_image);
+              form_data.append("clientid", $("#clientid").val());
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
@@ -465,6 +476,7 @@
         });
         //Delete 
       function populateForm(data){
+          $("#clientid").val(data.clientid);
           $("#passport_number").val(data.passport_number);
           $("#passport_name").val(data.passport_name);
           $("#passport_rcv_date").val(data.passport_rcv_date);
