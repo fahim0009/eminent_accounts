@@ -19,9 +19,9 @@
     <!-- Main content -->
     <section class="content" id="addThisFormContainer">
       <div class="container-fluid">
-        <div class="row">
+        <div class="row justify-content-md-center">
           <!-- right column -->
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
@@ -34,7 +34,7 @@
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
                   <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                       <div class="form-group">
                         <label>Name</label>
                         <input type="text" class="form-control" id="name" name="name">
