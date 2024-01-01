@@ -44,6 +44,6 @@ class HomeController extends Controller
      */
     public function managerHome(): View
     {
-        return view('managerHome');
+        return view('manager.dashboard');
     }
 }

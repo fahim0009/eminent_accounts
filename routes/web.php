@@ -51,6 +51,6 @@ All Admin Routes List
 --------------------------------------------*/
 Route::group(['prefix' =>'manager/', 'middleware' => ['auth', 'is_manager']], function(){
   
-    Route::get('/manager/home', [HomeController::class, 'managerHome'])->name('manager.home');
+    Route::get('/dashboard', [HomeController::class, 'managerHome'])->name('manager.dashboard');
 });
  
