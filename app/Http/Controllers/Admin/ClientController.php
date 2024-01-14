@@ -246,15 +246,15 @@ class ClientController extends Controller
         } 
     }
 
-    // public function delete($id)
-    // {
+    public function delete($id)
+    {
 
-    //     if(Client::destroy($id)){
-    //         return response()->json(['success'=>true,'message'=>'Data has been deleted successfully']);
-    //     }else{
-    //         return response()->json(['success'=>false,'message'=>'Delete Failed']);
-    //     }
-    // }
+        if(Client::destroy($id)){
+            return response()->json(['success'=>true,'message'=>'Data has been deleted successfully']);
+        }else{
+            return response()->json(['success'=>false,'message'=>'Delete Failed']);
+        }
+    }
 
 
     public function partnerUpdate(Request $request)
