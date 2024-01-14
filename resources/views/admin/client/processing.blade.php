@@ -345,6 +345,7 @@
                 processData: false,
                 data:form_data,
                 success: function (d) {
+                console.log(d);
                     if (d.status == 303) {
                         $(".ermsg").html(d.message);
                     }else if(d.status == 300){

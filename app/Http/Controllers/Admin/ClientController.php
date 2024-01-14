@@ -83,7 +83,7 @@ class ClientController extends Controller
         // }
 
         
-        $chkemail = Client::where('clientid',$request->clientid)->first();
+        $chkemail = Client::where('clientid',$request->clientid)->whereNotNull('clientid')->first();
         if($chkemail){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This client ID already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
