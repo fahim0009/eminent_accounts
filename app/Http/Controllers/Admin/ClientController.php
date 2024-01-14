@@ -71,11 +71,11 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        // if(empty($request->name)){
-        //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
-        //     return response()->json(['status'=> 303,'message'=>$message]);
-        //     exit();
-        // }
+        if(empty($request->user_id)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Agent \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
         // if(empty($request->balance)){
         //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Balance \" field..!</b></div>";
         //     return response()->json(['status'=> 303,'message'=>$message]);
@@ -160,8 +160,14 @@ class ClientController extends Controller
         //     exit();
         // }
 
+        if(empty($request->user_id)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Agent \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
 
-        $chkemail = Client::where('clientid',$request->clientid)->where('id','!=', $request->codeid)->first();
+
+        $chkemail = Client::where('clientid',$request->clientid)->where('id','!=', $request->codeid)->whereNotNull('clientid')->first();
         if($chkemail){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This client ID already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
