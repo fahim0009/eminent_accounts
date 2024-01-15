@@ -314,6 +314,7 @@
                     }
                 },
                 error:function(d){
+                  alert(d.message);
                     console.log(d);
                 }
             });

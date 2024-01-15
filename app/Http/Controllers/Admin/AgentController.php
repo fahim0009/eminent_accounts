@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
+use App\Models\Loan;
+use App\Models\LoanTransaction;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -135,11 +139,23 @@ class AgentController extends Controller
 
     public function delete($id)
     {
+        $chkagent = Client::where('user_id', $id)->first();
+        $chktran = Transaction::where('user_id', $id)->first();
+        $chkloan = Loan::where('user_id', $id)->first();
 
-        if(User::destroy($id)){
-            return response()->json(['success'=>true,'message'=>'Agent has been deleted successfully']);
-        }else{
-            return response()->json(['success'=>false,'message'=>'Delete Failed']);
+        if (isset($chkagent) || isset($chktran) || isset($chkloan)) {
+
+            return response()->json(['success'=>true,'message'=>'This agent have transaction. Do not delete this agent..']);
+
+        } else {
+            if(User::destroy($id)){
+                return response()->json(['success'=>true,'message'=>'Agent has been deleted successfully']);
+            }else{
+                return response()->json(['success'=>false,'message'=>'Delete Failed']);
+            }
         }
+        
+
+        
     }
 }
