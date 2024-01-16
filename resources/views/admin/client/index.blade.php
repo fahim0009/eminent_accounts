@@ -323,6 +323,7 @@
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
+            $(this).prop('disabled', true);
           if($(this).val() == 'Create') {
 
               var passport_image = $('#passport_image').prop('files')[0];
@@ -357,6 +358,7 @@
                 success: function (d) {
                     if (d.status == 303) {
                         $(".ermsg").html(d.message);
+                        $("#addBtn").prop('disabled', false);
                     }else if(d.status == 300){
 
                       $(function() {
@@ -415,6 +417,7 @@
                       console.log(d);
                       if (d.status == 303) {
                           $(".ermsg").html(d.message);
+                          $("#addBtn").prop('disabled', false);
                           pagetop();
                       }else if(d.status == 300){
                         $(function() {

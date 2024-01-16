@@ -196,6 +196,7 @@
       var upurl = "{{URL::to('/admin/agent-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
+        $(this).prop('disabled', true);
       //   alert("#addBtn");
           if($(this).val() == 'Create') {
               var form_data = new FormData();
@@ -214,6 +215,7 @@
                 success: function (d) {
                     if (d.status == 303) {
                         $(".ermsg").html(d.message);
+                        $("#addBtn").prop('disabled', false);
                     }else if(d.status == 300){
 
                       $(function() {
