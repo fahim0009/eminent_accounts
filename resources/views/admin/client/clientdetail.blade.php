@@ -275,8 +275,22 @@
                         <div class="col-sm-6">
 
                           @if ($data->visa)
+                          @php
+                              $foo = \File::extension($data->visa);
+                          @endphp
                               
-                          <img class="img-fluid" src="{{asset('images/client/visa/'.$data->visa)}}" alt="Photo">
+                          @if ($foo == "pdf")
+                            <div class="row justify-content-center">
+                              <iframe src="{{asset('images/client/visa/'.$data->visa)}}" width="100%" height="600">
+                                <a href="{{asset('images/client/visa/'.$data->visa)}}">Download PDF</a>
+                              </iframe>
+                            </div>
+                          @else
+                              <img class="img-fluid" src="{{asset('images/client/visa/'.$data->visa)}}" alt="Photo">
+                          @endif
+
+                          
+                        
                           @else
                             <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
                           @endif
@@ -311,8 +325,21 @@
                         <div class="col-sm-6">
 
                           @if ($data->manpower_image)
-                              
-                          <img class="img-fluid" src="{{asset('images/client/manpower/'.$data->manpower_image)}}" alt="Photo">
+
+                          @php
+                              $chkmp = \File::extension($data->manpower_image);
+                          @endphp
+
+                          @if ($chkmp == "pdf")
+                            <div class="row justify-content-center">
+                              <iframe src="{{asset('images/client/manpower/'.$data->manpower_image)}}" width="100%" height="600">
+                                <a href="{{asset('images/client/manpower/'.$data->manpower_image)}}">Download PDF</a>
+                              </iframe>
+                            </div>
+                          @else
+                              <img class="img-fluid" src="{{asset('images/client/manpower/'.$data->manpower_image)}}" alt="Photo">
+                          @endif
+
                           @else
                           <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg')}}" class="img-fluid" alt="User Image">
                           @endif
