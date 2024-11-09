@@ -138,6 +138,16 @@
         </ul>
       </li>
 
+      
+      <li class="nav-item">
+        <a href="{{route('admin.okala')}}" class="nav-link {{ (request()->is('admin/okala*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            Okala
+          </p>
+        </a>
+      </li>
+
 
 
 

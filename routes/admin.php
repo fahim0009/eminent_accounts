@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\BusinessPartnerController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
+use App\Http\Controllers\Admin\OkalaController;
 
 
 /*------------------------------------------
@@ -122,11 +123,21 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/change-kafela-client-status', [KafelaClientController::class, 'changeClientStatus']);
 
     //vendor
-    
     Route::get('/vendor', [VendorController::class, 'index'])->name('admin.vendor');
     Route::post('/vendor', [VendorController::class, 'store']);
     Route::get('/vendor/{id}/edit', [VendorController::class, 'edit']);
     Route::post('/vendor-update', [VendorController::class, 'update']);
     Route::get('/vendor/{id}', [VendorController::class, 'delete']);
+
+    
+    //okala
+    Route::get('/okala', [OkalaController::class, 'index'])->name('admin.okala');
+    Route::post('/okala', [OkalaController::class, 'store']);
+    Route::get('/okala/{id}/edit', [OkalaController::class, 'edit']);
+    Route::post('/okala-update', [OkalaController::class, 'update']);
+    Route::get('/okala/{id}', [OkalaController::class, 'delete']);
+
+
+
 });
   
