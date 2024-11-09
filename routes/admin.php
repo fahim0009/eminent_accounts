@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
+use App\Http\Controllers\Admin\VendorController;
 
 
 /*------------------------------------------
@@ -119,5 +120,13 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/kafela-client-update', [KafelaClientController::class, 'update']);
     Route::get('/kafela-client/{id}', [KafelaClientController::class, 'delete']);
     Route::get('/change-kafela-client-status', [KafelaClientController::class, 'changeClientStatus']);
+
+    //vendor
+    
+    Route::get('/vendor', [VendorController::class, 'index'])->name('admin.vendor');
+    Route::post('/vendor', [VendorController::class, 'store']);
+    Route::get('/vendor/{id}/edit', [VendorController::class, 'edit']);
+    Route::post('/vendor-update', [VendorController::class, 'update']);
+    Route::get('/vendor/{id}', [VendorController::class, 'delete']);
 });
   
