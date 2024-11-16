@@ -1,6 +1,8 @@
 @extends('admin.layouts.admin')
 
 @section('content')
+<!-- Select2 CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- Main content -->
 <section class="content" id="newBtnSection">
@@ -70,24 +72,10 @@
                       </div>
                     </div>
 
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label>Agent</label>
-                        <select name="agent_id" id="agent_id" class="form-control">
-                          <option value="">Select</option>
-                          @foreach (\App\Models\User::where('is_type', 2)->get() as $agent)
-
-                          <option value="{{$agent->id}}">{{$agent->name}}</option>
-                              
-                          @endforeach
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                       <div class="form-group">
                         <label>Vendor</label>
-                        <select name="agent_id" id="agent_id" class="form-control">
+                        <select name="vendor_id" id="vendor_id" class="form-control">
                           <option value="">Select</option>
                           @foreach (\App\Models\Vendor::orderby('id', 'DESC')->get() as $vendor)
 
@@ -142,9 +130,7 @@
                   <th>Visa Id</th>
                   <th>Sponsor Id</th>
                   <th>Trade</th>
-                  <th>Akama</th>
                   <th>Assign To</th>
-                  <th>Agent</th>
                   <th>Vendor</th>
                   <th>Action</th>
                 </tr>
@@ -154,13 +140,20 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->vidaid}}</td>
+                    <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->trade}}</td>
-                    <td style="text-align: center">{{$data->akama}}</td>
-                    <td style="text-align: center">{{$data->assignto}}</td>
-                    <td style="text-align: center">{{$data->user_id}}</td>
-                    <td style="text-align: center">{{$data->vendor_id}}</td>
+                    <td style="text-align: center">
+                      <select name="assignto" id="assignto" class="form-control clientselect2">
+                        <option value="">Select</option>
+                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
+
+                        <option value="{{$client->id}}">{{$client->passport_name}}</option>
+                            
+                        @endforeach
+                      </select>
+                    </td>
+                    <td style="text-align: center">{{$data->vendor->name}}</td>
                     
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
@@ -187,22 +180,19 @@
 
 @endsection
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
+
+    $(document).ready(function () {
+      $('#example1').dataTable({
+        pageLength: 5, 
+        ordering: false, 
+        drawCallback: function(dt) {
+          $('.clientselect2').select2({tags: true});
+        }
       });
     });
+
   </script>
 
 <script>
@@ -230,10 +220,13 @@
       //   alert("#addBtn");
           if($(this).val() == 'Create') {
               var form_data = new FormData();
-              form_data.append("name", $("#name").val());
-              form_data.append("email", $("#email").val());
-              form_data.append("phone", $("#phone").val());
-              form_data.append("address", $("#address").val());
+              form_data.append("date", $("#date").val());
+              form_data.append("datanumber", $("#datanumber").val());
+              form_data.append("visaid", $("#visaid").val());
+              form_data.append("sponsorid", $("#sponsorid").val());
+              form_data.append("trade", $("#trade").val());
+              form_data.append("agent_id", $("#agent_id").val());
+              form_data.append("vendor_id", $("#vendor_id").val());
               $.ajax({
                 url: url,
                 method: "POST",

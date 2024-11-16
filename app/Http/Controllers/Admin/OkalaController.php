@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Okala;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class OkalaController extends Controller
@@ -33,24 +34,23 @@ class OkalaController extends Controller
             exit();
         }
         
+        $x = $request->datanumber;
         
-        $data = new Okala();
-        $data->name = $request->name;
-        $data->address = $request->address;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->phone = $request->phone;
-        $data->email = $request->email;
-        if ($data->save()) {
-            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
-            return response()->json(['status'=> 300,'message'=>$message]);
-        }else{
-            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        for ($i = 0; $i < $x; $i++) {
+            $data = new Okala();
+            $data->date = $request->date;
+            $data->user_id = $request->user_id;
+            $data->vendor_id = $request->vendor_id;
+            $data->trade = $request->trade;
+            $data->sponsorid = $request->sponsorid;
+            $data->visaid = $request->visaid;
+            $data->created_by = Auth::user()->id;
+            $data->save();
         }
+        
+        $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
+        return response()->json(['status'=> 300,'message'=>$message]);
+        
     }
 
     public function edit($id)

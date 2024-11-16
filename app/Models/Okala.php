@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Okala extends Model
 {
     use HasFactory;
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 }
