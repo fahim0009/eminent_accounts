@@ -104,13 +104,13 @@ class OkalaController extends Controller
     public function delete($id)
     {
         
-        $okala = Okala::where('vendor_id', $id)->first();
+        $okala = Okala::where('id', $id)->first();
 
-        if (isset($okala)) {
-            return response()->json(['success'=>true,'message'=>'This vendor have transaction. Do not delete this vendor..']);
+        if (isset($okala->assign_to)) {
+            return response()->json(['success'=>true,'message'=>'This Okala have transaction. Do not delete this Okala..']);
         } else {
-            if(Vendor::destroy($id)){
-                return response()->json(['success'=>true,'message'=>'Agent has been deleted successfully']);
+            if(Okala::destroy($id)){
+                return response()->json(['success'=>true,'message'=>'Okala has been deleted successfully']);
             }else{
                 return response()->json(['success'=>false,'message'=>'Delete Failed']);
             }
