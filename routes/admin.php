@@ -137,6 +137,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/okala-update', [OkalaController::class, 'update']);
     Route::get('/okala/{id}', [OkalaController::class, 'delete']);
 
+    Route::post('/client-add-okala', [OkalaController::class, 'addClientToOkala']);
 
 
 });

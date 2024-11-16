@@ -122,6 +122,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+              <input type="hidden" id="okalaCount" value="{{$data->count()}}">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -144,7 +145,7 @@
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->trade}}</td>
                     <td style="text-align: center">
-                      <select name="assignto" id="assignto" class="form-control clientselect2">
+                      <select name="assignto" id="assignto" class="form-control clientselect assignto"  data-okala-id="{{ $data->id }}">
                         <option value="">Select</option>
                         @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
 
@@ -152,6 +153,7 @@
                             
                         @endforeach
                       </select>
+                      <p id="message"></p>
                     </td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
                     
@@ -183,17 +185,68 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
 
-    $(document).ready(function () {
-      $('#example1').dataTable({
-        pageLength: 5, 
-        ordering: false, 
-        drawCallback: function(dt) {
-          $('.clientselect2').select2({tags: true});
-        }
+    $(function () {
+      $("#example1").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
       });
     });
 
+
+    $(document).ready(function () {
+      $('.clientselect').select2({
+            placeholder: 'Select a client',
+            width: '100%'
+        });
+    });
+
   </script>
+<script>
+  $(document).ready(function() {
+    var okalaurl = "{{URL::to('/admin/client-add-okala')}}";
+      $('.assignto').change(function() {
+          let clientId = $(this).val();
+          let okalaId = $(this).data('okala-id'); 
+
+          console.log(clientId, okalaId);
+          $.ajax({
+              url: okalaurl,
+              type: 'POST',
+              data: {
+                clientId: clientId,
+                okalaId: okalaId,
+                  _token: '{{ csrf_token() }}'
+              },
+              success: function(response) {
+                $(function() {
+                  var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                  });
+                  Toast.fire({
+                    icon: 'success',
+                    title: 'Data assigned successfully.'
+                  });
+                });
+              },
+              error: function(xhr) {
+                  $('#message').text('Error updating status');
+              }
+          });
+      });
+  });
+</script>
 
 <script>
   $(document).ready(function () {
@@ -263,10 +316,11 @@
           //Update
           if($(this).val() == 'Update'){
               var form_data = new FormData();
-              form_data.append("name", $("#name").val());
-              form_data.append("email", $("#email").val());
-              form_data.append("phone", $("#phone").val());
-              form_data.append("address", $("#address").val());
+              form_data.append("date", $("#date").val());
+              form_data.append("visaid", $("#visaid").val());
+              form_data.append("sponsorid", $("#sponsorid").val());
+              form_data.append("trade", $("#trade").val());
+              form_data.append("vendor_id", $("#vendor_id").val());
               form_data.append("codeid", $("#codeid").val());
               
               $.ajax({
@@ -342,14 +396,16 @@
         });
       //Delete  
       function populateForm(data){
-          $("#name").val(data.name);
-          $("#phone").val(data.phone);
-          $("#email").val(data.email);
-          $("#address").val(data.address);
+          $("#date").val(data.date);
+          $("#visaid").val(data.visaid);
+          $("#sponsorid").val(data.sponsorid);
+          $("#trade").val(data.trade);
+          $("#vendor_id").val(data.vendor_id);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');
           $("#addBtn").html('Update');
           $("#addThisFormContainer").show(300);
+          $("#datanumber").hide(100);
           $("#newBtn").hide(100);
       }
       function clearform(){
