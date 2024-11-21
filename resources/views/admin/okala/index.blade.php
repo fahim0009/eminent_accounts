@@ -138,9 +138,6 @@
                 </thead>
                 <tbody>
                   @foreach ($data as $key => $data)
-                  @php
-                      // $client = \App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get()
-                  @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
@@ -148,7 +145,20 @@
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->trade}}</td>
                     <td style="text-align: center">
+                      @if (isset($data->assign_to))
                       {{$data->client->passport_name}}
+                      @else
+                      <select name="assignto" id="assignto" class="form-control clientselect assignto"  data-okala-id="{{ $data->id }}">
+                        <option value="">Select</option>
+                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
+
+                        <option value="{{$client->id}}">{{$client->passport_name}}</option>
+                            
+                        @endforeach
+                      </select>
+                      @endif
+                      
+                      <p id="message"></p>
                     </td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
                     
