@@ -16,6 +16,13 @@ class OkalaController extends Controller
         return view('admin.okala.index', compact('data'));
     }
 
+    public function assignedOkala()
+    {
+        $data = Okala::whereNotNull('assign_to')->orderby('id','DESC')->get();
+        
+        return view('admin.okala.index', compact('data'));
+    }
+
     public function store(Request $request)
     {
         if(empty($request->date)){

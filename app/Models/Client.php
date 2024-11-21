@@ -20,4 +20,9 @@ class Client extends Model
         return $this->hasMany(KafelaClient::class);
     }
 
+    public function okala()
+    {
+        return $this->hasMany(Okala::class, 'assign_to', 'id');
+    }
+
 }
