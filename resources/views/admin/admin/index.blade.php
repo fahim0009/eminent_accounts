@@ -117,9 +117,9 @@
                 <tr>
                   <th>Sl</th>
                   <th>Name</th>
-                  <th>Surname</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -127,14 +127,22 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->name}}</td>
-                    <td style="text-align: center">{{$data->surname}}</td>
+                    <td style="text-align: center">{{$data->name}} {{$data->surname}}</td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
                     
+                    <td>
+                      <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input toggle-status" id="customSwitchStatus{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->status == 1 ? 'checked' : '' }}>
+                          <label class="custom-control-label" for="customSwitchStatus{{ $data->id }}"></label>
+                      </div>
+                  </td>
+                    
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                      <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
+                      @if (!Auth::user())
+                        <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
+                      @endif
                     </td>
                   </tr>
                   @endforeach
@@ -194,6 +202,7 @@
       //
       var url = "{{URL::to('/admin/new-admin')}}";
       var upurl = "{{URL::to('/admin/new-admin-update')}}";
+      var stsurl = "{{URL::to('/admin/users')}}";
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
@@ -334,6 +343,41 @@
           $('#createThisForm')[0].reset();
           $("#addBtn").val('Create');
       }
+
+      // active-deactive users
+      $(document).on('change', '.toggle-status', function() {
+            var userId = $(this).data('id');
+            var status = $(this).prop('checked') ? 1 : 0;
+
+            $.ajax({
+                url: stsurl + '/' + userId + '/status',
+                method: 'POST',
+                data: {
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+
+                    $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: response.message
+                          });
+                        });
+                      window.setTimeout(function(){location.reload()},2000)
+
+                },
+                error: function(xhr, status, error) {
+                    showError('An error occurred. Please try again.');
+                }
+            });
+      });
   });
 </script>
 @endsection

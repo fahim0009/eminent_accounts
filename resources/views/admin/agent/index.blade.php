@@ -119,6 +119,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Status</th>
                   <th>View</th>
                   <th>Action</th>
                 </tr>
@@ -130,6 +131,14 @@
                     <td style="text-align: center">{{$data->name}} {{$data->surname}}</td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
+                    
+                    <td>
+                      <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input toggle-status" id="customSwitchStatus{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->status == 1 ? 'checked' : '' }}>
+                          <label class="custom-control-label" for="customSwitchStatus{{ $data->id }}"></label>
+                      </div>
+                    </td>
+
                     <td style="text-align: center">
                       <a href="{{route('admin.agentClient', $data->id)}}"><i class="fa fa-eye" style="color: #3a9055;font-size:16px;"></i></a>
                     </td>
@@ -195,6 +204,7 @@
       //
       var url = "{{URL::to('/admin/agent')}}";
       var upurl = "{{URL::to('/admin/agent-update')}}";
+      var stsurl = "{{URL::to('/admin/users')}}";
       // console.log(url);
       $("#addBtn").click(function(){
         $(this).prop('disabled', true);
@@ -338,6 +348,41 @@
           $('#createThisForm')[0].reset();
           $("#addBtn").val('Create');
       }
+
+      // active-deactive users
+      $(document).on('change', '.toggle-status', function() {
+            var userId = $(this).data('id');
+            var status = $(this).prop('checked') ? 1 : 0;
+
+            $.ajax({
+                url: stsurl + '/' + userId + '/status',
+                method: 'POST',
+                data: {
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+
+                    $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: response.message
+                          });
+                        });
+                      window.setTimeout(function(){location.reload()},2000)
+
+                },
+                error: function(xhr, status, error) {
+                    showError('An error occurred. Please try again.');
+                }
+            });
+      });
   });
 </script>
 @endsection

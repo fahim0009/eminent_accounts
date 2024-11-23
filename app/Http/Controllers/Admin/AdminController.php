@@ -142,4 +142,13 @@ class AdminController extends Controller
             return response()->json(['success'=>false,'message'=>'Delete Failed']);
         }
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'Status updated successfully.']);
+    }
 }
