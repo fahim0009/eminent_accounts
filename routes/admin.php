@@ -130,6 +130,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/vendor/{id}/edit', [VendorController::class, 'edit']);
     Route::post('/vendor-update', [VendorController::class, 'update']);
     Route::get('/vendor/{id}', [VendorController::class, 'delete']);
+    Route::post('/vendor/{id}/status', [VendorController::class, 'updateStatus']);
 
     
     //okala

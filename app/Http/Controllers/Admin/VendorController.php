@@ -121,4 +121,13 @@ class VendorController extends Controller
         }
         
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = Vendor::findOrFail($id);
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'Status updated successfully.']);
+    }
 }

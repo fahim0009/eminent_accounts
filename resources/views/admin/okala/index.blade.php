@@ -77,7 +77,7 @@
                         <label>Vendor</label>
                         <select name="vendor_id" id="vendor_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Vendor::orderby('id', 'DESC')->get() as $vendor)
+                          @foreach (\App\Models\Vendor::orderby('id', 'DESC')->where('status', 1)->get() as $vendor)
 
                           <option value="{{$vendor->id}}">{{$vendor->name}}</option>
                               
