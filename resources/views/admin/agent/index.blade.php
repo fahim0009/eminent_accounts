@@ -117,9 +117,9 @@
                 <tr>
                   <th>Sl</th>
                   <th>Name</th>
-                  <th>Surname</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>View</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -127,11 +127,12 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->name}}</td>
-                    <td style="text-align: center">{{$data->surname}}</td>
+                    <td style="text-align: center">{{$data->name}} {{$data->surname}}</td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
-                    
+                    <td style="text-align: center">
+                      <a href="{{route('admin.agentClient', $data->id)}}"><i class="fa fa-eye" style="color: #3a9055;font-size:16px;"></i></a>
+                    </td>
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                       <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>

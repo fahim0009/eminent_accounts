@@ -244,6 +244,7 @@
                     title: 'Data assigned successfully.'
                   });
                 });
+                window.setTimeout(function(){location.reload()},2000)
               },
               error: function(xhr) {
                   $('#message').text('Error updating status');

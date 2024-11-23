@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
 use App\Models\Okala;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -131,6 +132,10 @@ class OkalaController extends Controller
         $data = Okala::find($request->okalaId);
         $data->assign_to = $request->clientId;
         $data->save();
+
+        $client = Client::find($request->clientId);
+        $client->status = 4;
+        $client->save();
 
         return response()->json(['message' => 'Client added successfully!']);
     }

@@ -38,6 +38,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/new-admin/{id}', [AdminController::class, 'adminDelete']);
     
     Route::get('/agent', [AgentController::class, 'index'])->name('admin.agent');
+    Route::get('/agent-client/{id}', [AgentController::class, 'getClient'])->name('admin.agentClient');
     Route::post('/agent', [AgentController::class, 'store']);
     Route::get('/agent/{id}/edit', [AgentController::class, 'edit']);
     Route::post('/agent-update', [AgentController::class, 'update']);

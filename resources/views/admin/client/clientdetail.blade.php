@@ -14,9 +14,14 @@
             <div class="card card-secondary card-outline">
               <div class="card-body box-profile">
                 <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle"
-                       src="{{asset('images/client/'.$data->client_image)}}"
-                       alt="User profile picture" style="height: 200px; width:auto">
+                  @if ($data->client_image)
+                    <img class="profile-user-img img-fluid img-circle"
+                  src="{{asset('images/client/'.$data->client_image)}}"
+                  alt="User profile picture" style="height: 200px; width:auto">
+                  @else
+                  <img class="profile-user-img img-fluid img-circle" src="{{asset('default.png')}}" alt="User profile picture" style="height: 200px; width:auto">
+                      
+                  @endif
                 </div>
 
                 <h3 class="profile-username text-center">{{$data->passport_name}}</h3>
@@ -68,9 +73,7 @@
                 <ul class="nav nav-pills">
                   <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Client Details</a></li>
                   <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Documents</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Receipt</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#btob_partner" data-toggle="tab">Business Partner</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#btob_payment" data-toggle="tab">B2B Payment</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Received</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
@@ -365,7 +368,7 @@
 
                   <div class="tab-pane" id="settings">
                     <div class="row">
-                          <h3>Money Receipt</h3>
+                          <h3>Money Received</h3>
                     </div>
                     <div class="tranermsg"></div>
                     <form class="form-horizontal">
@@ -466,150 +469,7 @@
                     </div>
 
                   </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="btob_partner">
-                    <form class="form-horizontal">
-                      @csrf
-                      <div class="form-group row">
-                        <label for="inputName" class="col-sm-2 col-form-label">Business Partner</label>
-                        <div class="partnerermsg"></div>
-                        <div class="col-sm-10">
-                          <select name="business_partner_id" id="business_partner_id" class="form-control">
-                            <option value="">Select</option>
-                            @foreach ($bpartners as $partner)
-                            <option value="{{$partner->id}}" @if ($data->business_partner_id == $partner->id) selected @endif>{{$partner->name}}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="b2b_contact" class="col-sm-2 col-form-label">Contact Amount </label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="b2b_contact" name="b2b_contact" value="{{$data->b2b_contact}}">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="b2b_payment" class="col-sm-2 col-form-label">Payment</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="b2b_payment" name="b2b_payment" value="{{$data->b2b_payment}}" readonly>
-                        </div>
-                      </div>
-                      
-                      <div class="form-group row">
-                        <div class="offset-sm-2 col-sm-10">
-                          <button type="button" id="partnerUpdate" class="btn btn-secondary">Save</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-
                   
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="btob_payment">
-                    <!-- The timeline -->
-                    <div class="row">
-                      <h3>Money Payment</h3>
-                    </div>
-                    <div class="permsg"></div>
-                    <form class="form-horizontal">
-
-                      <div class="row">
-                        <div class="col-sm-6">
-                            <label>Transaction method</label>
-                            <select class="form-control" id="paccount_id" name="paccount_id">
-                              <option value="">Select</option>
-                              @foreach ($accounts as $method)
-                                <option value="{{$method->id}}">{{$method->name}}</option>
-                              @endforeach
-                            </select>
-                        </div>
-                        <div class="col-sm-6">
-                            <label>Date</label>
-                            <input type="date" class="form-control" id="pdate" name="pdate">
-                            <input type="hidden" class="form-control" id="p_id" name="p_id">
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-sm-12">
-                            <label>Amount</label>
-                            <input type="number" class="form-control" id="pamount" name="pamount">
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-sm-12">
-                            <label>Note</label>
-                            <input type="text" class="form-control" id="pnote" name="pnote">
-                        </div>
-                      </div>
-                      
-                      
-                      <div class="form-group row pmtBtn">
-                        <div class="col-sm-12 mt-2">
-                          <button type="button" id="pmtBtn" class="btn btn-success">Save</button>
-                        </div>
-                      </div>
-                      <div class="form-group row pmtUpBtn" style="display: none">
-                        <div class="col-sm-12 mt-2">
-                          <button type="button" id="pmtUpBtn" class="btn btn-success">Update</button>
-                          <button type="button" id="pmtCloseBtn" class="btn btn-warning">Close</button>
-                        </div>
-                      </div>
-                    </form>
-
-                    <div class="row">
-                          <h3>Payment History</h3>
-                    </div>
-
-                    <div class="container-fluid">
-                      <div class="row">
-                        <div class="col-12">
-                          <!-- /.card -->
-                
-                          <div class="card">
-                            <div class="card-header">
-                              <h3 class="card-title">All Payment Data</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body" id="paymentContainer">
-                              <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                <tr>
-                                  <th>Sl</th>
-                                  <th>Date</th>
-                                  <th>Transaction Method</th>
-                                  <th>Amount</th>
-                                  <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                  @foreach ($payments as $key => $payment)
-                                  <tr>
-                                    <td style="text-align: center">{{ $key + 1 }}</td>
-                                    <td style="text-align: center">{{$payment->date}}</td>
-                                    <td style="text-align: center">{{$payment->account->name}}</td>
-                                    <td style="text-align: center">{{$payment->amount}}</td>
-                                    <td style="text-align: center">
-                                      <a id="pmtEditBtn" rid="{{$payment->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                                    </td>
-                                  </tr>
-                                  @endforeach
-                                
-                                </tbody>
-                              </table>
-                            </div>
-                            <!-- /.card-body -->
-                          </div>
-                          <!-- /.card -->
-                        </div>
-                        <!-- /.col -->
-                      </div>
-                      <!-- /.row -->
-                    </div>
-
-                  </div>
-                  <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
               </div><!-- /.card-body -->

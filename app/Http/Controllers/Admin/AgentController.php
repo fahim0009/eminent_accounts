@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Client;
+use App\Models\Country;
 use App\Models\Loan;
 use App\Models\LoanTransaction;
 use App\Models\Transaction;
@@ -17,6 +19,15 @@ class AgentController extends Controller
     {
         $data = User::where('is_type', '2')->orderby('id','DESC')->get();
         return view('admin.agent.index', compact('data'));
+    }
+
+    public function getClient($id)
+    {
+        $data = Client::where('user_id', $id)->orderby('id','DESC')->get();
+        $agents = User::where('id',$id)->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        return view('admin.agent.client', compact('data','agents','countries','accounts'));
     }
 
     public function store(Request $request)
