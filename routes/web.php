@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
   
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\Agent\ClientController;
   
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,7 @@ Route::get('/clear', function() {
   
 Auth::routes();
 Route::get('/', [FrontendController::class, 'index'])->name('homepage');
+Route::get('/home', [HomeController::class, 'index'])->name('homepage');
   
 /*------------------------------------------
 --------------------------------------------
@@ -52,5 +54,12 @@ All Admin Routes List
 Route::group(['prefix' =>'manager/', 'middleware' => ['auth', 'is_manager']], function(){
   
     Route::get('/dashboard', [HomeController::class, 'managerHome'])->name('manager.dashboard');
+
+
+    // client
+    Route::get('/client', [ClientController::class, 'index'])->name('manager.client');
+    Route::get('/processing-clients', [ClientController::class, 'processing'])->name('manager.processingclient');
+    Route::get('/decline-clients', [ClientController::class, 'decline'])->name('manager.declineclient');
+    Route::get('/completed-clients', [ClientController::class, 'completed'])->name('manager.completedclient');
 });
  

@@ -14,7 +14,7 @@
       </li>
 
       
-      {{-- <li class="nav-item {{ (request()->is('manager/client*')) ? 'menu-open' : '' }}{{ (request()->is('manager/completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('manager/decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('manager/processing-clients*')) ? 'menu-open' : '' }}">
+      <li class="nav-item {{ (request()->is('manager/client*')) ? 'menu-open' : '' }}{{ (request()->is('manager/completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('manager/decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('manager/processing-clients*')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('manager/client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
@@ -50,7 +50,7 @@
           </li>
 
         </ul>
-      </li> --}}
+      </li>
 
 
 
