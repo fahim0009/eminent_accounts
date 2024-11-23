@@ -46,14 +46,17 @@ class LoginController extends Controller
         $input = $request->all();
      
         $this->validate($request, [
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'required',
         ]);
 
-        $chksts = User::where('email', $input['email'])->first();
+        $chksts = User::where('email', $input['email'])->orWhere('phone', $request->email)->first();
         if ($chksts) {
             if ($chksts->status == 1) {
-                if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+
+
+                if (is_numeric($request->get('email'))) {
+                    if(auth()->attempt(array('phone' => $input['email'], 'password' => $input['password'])))
                     {
                         if (auth()->user()->is_type == '1') {
                             return redirect()->route('admin.dashboard');
@@ -68,6 +71,24 @@ class LoginController extends Controller
                         return view('auth.login')
                             ->with('message','Wrong Password.');
                     }
+                } else {
+                    if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+                    {
+                        if (auth()->user()->is_type == '1') {
+                            return redirect()->route('admin.dashboard');
+                        }else if (auth()->user()->is_type == '2') {
+                            return redirect()->route('manager.dashboard');
+                        }else if (auth()->user()->is_type == '0') {
+                            return redirect()->route('user.home');
+                        }else{
+                            return redirect()->route('home');
+                        }
+                    }else{
+                        return view('auth.login')
+                            ->with('message','Wrong Password.');
+                    }
+                }
+                
             }else{
                 return view('auth.login')
                 ->with('message','Your ID is Deactive.');
