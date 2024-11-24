@@ -153,7 +153,7 @@
         <a href="#" class="nav-link {{ (request()->is('admin/okala*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-table"></i>
           <p>
-            Okala
+            My Okala
             <i class="fas fa-angle-left right"></i>
           </p>
         </a>

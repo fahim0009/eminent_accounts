@@ -188,6 +188,10 @@ class ClientController extends Controller
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
 
+        if ($request->flight_date) {
+            $data->status = 1;
+        }
+
         // image
         if ($request->passport_image != 'null') {
             $request->validate([

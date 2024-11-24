@@ -128,7 +128,7 @@
                             <input type="date" class="form-control" id="passport_rcv_date" name="passport_rcv_date" value="{{$data->passport_rcv_date}}" readonly="readonly">
                         </div>
                         <div class="col-sm-6">
-                            <label>Flight  Date</label>
+                            <label>Flight Date/Delivery Date</label>
                             <input type="date" class="form-control" id="flight_date" name="flight_date" value="{{$data->flight_date}}" readonly="readonly">
                         </div>
     

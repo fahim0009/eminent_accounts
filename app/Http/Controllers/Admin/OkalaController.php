@@ -134,7 +134,7 @@ class OkalaController extends Controller
         $data->save();
 
         $client = Client::find($request->clientId);
-        $client->status = 4;
+        $client->assign = 1;
         $client->save();
 
         return response()->json(['message' => 'Client added successfully!']);

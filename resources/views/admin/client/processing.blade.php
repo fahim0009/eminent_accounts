@@ -168,6 +168,7 @@
                   <th>Passport Number</th>
                   <th>Package Cost</th>
                   <th>Received Amount</th>
+                  <th>Assign</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -182,6 +183,13 @@
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
                     <td style="text-align: center">{{$data->total_rcv}}</td>
+                    <td style="text-align: center">
+                      @if ($data->assign == 1)
+                          Assigned
+                      @else
+                          Not Assigned
+                      @endif
+                    </td>
                     <td style="text-align: center">
                       <div class="btn-group">
                         <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing

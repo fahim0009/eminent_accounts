@@ -46,7 +46,7 @@
 
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Number</label>
+                        <label>Number of Okala</label>
                         <input type="number" id="datanumber" name="datanumber" class="form-control">
                       </div>
                     </div>
@@ -65,14 +65,22 @@
                       </div>
                     </div>
                     
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Trade</label>
-                        <input type="text" class="form-control" id="trade" name="trade">
+                        <select name="trade" id="trade" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\Trade::orderby('id', 'DESC')->where('status', 1)->get() as $trade)
+
+                          <option value="{{$trade->id}}">{{$trade->name}}</option>
+                              
+                          @endforeach
+                        </select>
+
                       </div>
                     </div>
 
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Vendor</label>
                         <select name="vendor_id" id="vendor_id" class="form-control">
@@ -143,7 +151,7 @@
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">{{$data->trade}}</td>
+                    <td style="text-align: center">{{\App\Models\Trade::where('id', $data->trade)->first()->name}}</td>
                     <td style="text-align: center">
                       @if (isset($data->assign_to))
                       {{$data->client->passport_name}}
