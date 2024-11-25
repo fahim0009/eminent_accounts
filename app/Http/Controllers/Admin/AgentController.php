@@ -24,10 +24,27 @@ class AgentController extends Controller
     public function getClient($id)
     {
         $data = Client::where('user_id', $id)->orderby('id','DESC')->get();
+        $processing = Client::where('status','0')->where('user_id', $id)->count();
+        $decline = Client::where('status','2')->where('user_id', $id)->count();
+        $completed = Client::where('status','1')->where('user_id', $id)->count();
+
+        
+        $dueAmnt = Client::where('status','0')->where('user_id', $id)->sum('due_amount');
+        $receivedAmnt = Client::where('status','0')->where('user_id', $id)->sum('total_rcv');
+        $netReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','receipt')->sum('amount');
+
         $agents = User::where('id',$id)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.agent.client', compact('data','agents','countries','accounts'));
+        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','dueAmnt','netReceivedAmnt','receivedAmnt','id'));
+    }
+
+
+    public function getTran($id)
+    {
+        $data = Transaction::where('user_id',$id)->where('tran_type','receipt')->get();
+
+        return view('admin.agent.tran', compact('data','id'));
     }
 
     public function store(Request $request)

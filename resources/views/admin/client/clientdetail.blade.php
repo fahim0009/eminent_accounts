@@ -419,7 +419,7 @@
                     </form>
 
                     <div class="row">
-                          <h3>Receipt History</h3>
+                          <h3>Receive History</h3>
                     </div>
 
                     <div class="container-fluid">

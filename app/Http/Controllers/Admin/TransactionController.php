@@ -40,10 +40,13 @@ class TransactionController extends Controller
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
 
-            $client = Client::find($request->client_id);
-            $client->total_rcv = $client->total_rcv + $request->amount;
-            $client->due_amount = $client->due_amount - $request->amount;
-            $client->save();
+            if ($request->client_id) {
+                $client = Client::find($request->client_id);
+                $client->total_rcv = $client->total_rcv + $request->amount;
+                $client->due_amount = $client->due_amount - $request->amount;
+                $client->save();
+            }
+            
 
             $account = Account::find($request->account_id);
             $account->balance = $account->balance + $request->amount;

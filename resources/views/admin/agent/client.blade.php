@@ -155,79 +155,180 @@
     <!-- /.content -->
 
 
-<!-- Main content -->
-<section class="content" id="contentContainer">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <!-- /.card -->
+    <!-- Main content -->
+    <section class="content" id="contentContainer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- /.card -->
 
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">All Data</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Client ID</th>
-                  <th>Passport Name</th>
-                  <th>Passport Number</th>
-                  <th>Package Cost</th>
-                  <th>Received Amount</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
-                  <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->clientid}}</td>
-                    <td style="text-align: center">{{$data->passport_name}}</td>
-                    <td style="text-align: center">{{$data->passport_number}}</td>
-                    <td style="text-align: center">{{$data->package_cost}}</td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
-                    <td style="text-align: center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing
-                        @elseif($data->status == 1) Complete @else Decline @endif</span></button>
-                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
-                          <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu" role="menu">
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</a>
-                        </div>
-                      </div>
-                    </td>
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">All Data</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                  <table class="table table-bordered table-striped mt-4 mb-5">
+                    <thead>
+                    <tr>
+                      <th>Processing</th>
+                      <th>Complete</th>
+                      <th>Decline</th>
+                      <th>Receive Amount</th>
+                      <th>Due Amount</th>
+                      <th>Net Received</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                      <tr>
+                        <td style="text-align: center">{{ $processing }}</td>
+                        <td style="text-align: center">{{$completed}}</td>
+                        <td style="text-align: center">{{$decline}}</td>
+                        <td style="text-align: center">{{$receivedAmnt}}</td>
+                        <td style="text-align: center">{{$dueAmnt}}</td>
+                        <td style="text-align: center">{{$netReceivedAmnt}}</td>
+                        <td style="text-align: center">
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            Receive Amount
+                          </button>
+
+                          <a href="{{route('admin.agentTran', $id)}}" class="btn btn-primary" >
+                            all transaction
+                          </a>
+
+                        </td>
+                      </tr>
                     
-                    <td style="text-align: center">
-                      <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
-                      <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                      <a id="deleteBtn" rid="{{$data->id}}"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
-                      </a>
-                    </td>
-                  </tr>
-                  @endforeach
-                
-                </tbody>
-              </table>
+                    </tbody>
+                  </table>
+
+                  
+
+
+                  <table id="example1" class="table table-bordered table-striped mt-4">
+                    <thead>
+                    <tr>
+                      <th>Sl</th>
+                      <th>Client ID</th>
+                      <th>Passport Name</th>
+                      <th>Passport Number</th>
+                      <th>Package Cost</th>
+                      <th>Received Amount</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @foreach ($data as $key => $data)
+                      <tr>
+                        <td style="text-align: center">{{ $key + 1 }}</td>
+                        <td style="text-align: center">{{$data->clientid}}</td>
+                        <td style="text-align: center">{{$data->passport_name}}</td>
+                        <td style="text-align: center">{{$data->passport_number}}</td>
+                        <td style="text-align: center">{{$data->package_cost}}</td>
+                        <td style="text-align: center">{{$data->total_rcv}}</td>
+                        <td style="text-align: center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing
+                            @elseif($data->status == 1) Complete @else Decline @endif</span></button>
+                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                              <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" role="menu">
+                              <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
+                              <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
+                              <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</a>
+                            </div>
+                          </div>
+                        </td>
+                        
+                        <td style="text-align: center">
+                          <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
+                          <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                          <a id="deleteBtn" rid="{{$data->id}}"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                          </a>
+                        </td>
+                      </tr>
+                      @endforeach
+                    
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
             </div>
-            <!-- /.card-body -->
+            <!-- /.col -->
           </div>
-          <!-- /.card -->
+          <!-- /.row -->
         </div>
-        <!-- /.col -->
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New transaction</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <!-- /.row -->
+      <div class="modal-body">
+        <div class="tranermsg"></div>
+        <form class="form-horizontal">
+
+          <div class="row">
+            <div class="col-sm-6">
+              <label>Transaction method</label>
+              <select class="form-control" id="account_id" name="account_id">
+                <option value="">Select</option>
+                @foreach (\App\Models\Account::all() as $method)
+                  <option value="{{$method->id}}">{{$method->name}}</option>
+                @endforeach
+              </select>
+          </div>
+            <div class="col-sm-6">
+                <label>Date</label>
+                <input type="date" class="form-control" id="date" name="date">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+                <label>Amount</label>
+                <input type="number" class="form-control" id="amount" name="amount">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+                <label>Note</label>
+                <input type="text" class="form-control" id="note" name="note">
+                <input type="hidden" id="agent_id" name="agent_id" value="{{$id}}">
+            </div>
+          </div>
+          
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="rcptBtn">Save</button>
+      </div>
     </div>
-    <!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+  </div>
+</div>
 
 
 @endsection
@@ -497,6 +598,53 @@
           $('#createThisForm')[0].reset();
           $("#addBtn").val('Create');
       }
+
+      // add money from agent
+      var tranurl = "{{URL::to('/admin/money-receipt')}}";
+      // console.log(url);
+      $("#rcptBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("account_id", $("#account_id").val());
+          form_data.append("user_id", $("#agent_id").val());
+          form_data.append("date", $("#date").val());
+          form_data.append("amount", $("#amount").val());
+          form_data.append("note", $("#note").val());
+          form_data.append("tran_type", "receipt");
+
+          $.ajax({
+            url: tranurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".tranermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data saved successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+      });
+      // add money from agent
   });
 </script>
 @endsection
