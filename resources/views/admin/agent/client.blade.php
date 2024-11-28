@@ -188,7 +188,7 @@
                         <td style="text-align: center">{{$completed}}</td>
                         <td style="text-align: center">{{$decline}}</td>
                         <td style="text-align: center">{{$receivedAmnt}}</td>
-                        <td style="text-align: center">{{$dueAmnt}}</td>
+                        <td style="text-align: center">{{$dueAmnt - $directReceivedAmnt}}</td>
                         <td style="text-align: center">{{$netReceivedAmnt}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">

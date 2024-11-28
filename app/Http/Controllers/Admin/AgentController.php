@@ -32,11 +32,12 @@ class AgentController extends Controller
         $dueAmnt = Client::where('status','0')->where('user_id', $id)->sum('due_amount');
         $receivedAmnt = Client::where('status','0')->where('user_id', $id)->sum('total_rcv');
         $netReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','receipt')->sum('amount');
+        $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','receipt')->sum('amount');
 
         $agents = User::where('id',$id)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','dueAmnt','netReceivedAmnt','receivedAmnt','id'));
+        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','dueAmnt','netReceivedAmnt','receivedAmnt','id','directReceivedAmnt'));
     }
 
 
