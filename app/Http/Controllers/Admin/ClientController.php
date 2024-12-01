@@ -18,7 +18,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $data = Client::orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -28,7 +28,7 @@ class ClientController extends Controller
 
     public function processing()
     {
-        $data = Client::where('status','0')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -38,7 +38,7 @@ class ClientController extends Controller
 
     public function decline()
     {
-        $data = Client::where('status','2')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -48,13 +48,57 @@ class ClientController extends Controller
 
     public function completed()
     {
-        $data = Client::where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
         return view('admin.client.completed', compact('data','agents','countries','accounts','bpartners'));
     }
+
+
+
+    // ksa without job start
+    public function withoutjobindex()
+    {
+        $data = Client::where('is_job','0')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.index', compact('data','agents','countries','accounts','bpartners'));
+    }
+
+    public function withoutjobprocessing()
+    {
+        $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.processing', compact('data','agents','countries','accounts','bpartners'));
+    }
+
+    public function withoutjobdecline()
+    {
+        $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.decline', compact('data','agents','countries','accounts','bpartners'));
+    }
+
+    public function withoutjobcompleted()
+    {
+        $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
+        $agents = User::where('is_type','2')->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.completed', compact('data','agents','countries','accounts','bpartners'));
+    }
+    // ksa without job end
 
     public function getClientInfo($id)
     {

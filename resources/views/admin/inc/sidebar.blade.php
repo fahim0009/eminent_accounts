@@ -67,7 +67,7 @@
         <a href="#" class="nav-link {{ (request()->is('admin/client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
-            Clients
+            KSA with Job Client
             <i class="fas fa-angle-left right"></i>
           </p>
         </a>
@@ -93,6 +93,45 @@
           
           <li class="nav-item">
             <a href="{{route('admin.client')}}" class="nav-link {{ (request()->is('admin/client*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>All Clients</p>
+            </a>
+          </li>
+
+        </ul>
+      </li>
+
+
+      <li class="nav-item {{ (request()->is('admin/ksa-without-job-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-processing-clients*')) ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ (request()->is('admin/ksa-without-job*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-copy"></i>
+          <p>
+            KSA without Job Client
+            <i class="fas fa-angle-left right"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{{route('withoutjob.processingclient')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-processing-clients*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Processing</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('withoutjob.completedclient')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-completed-clients*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Complete</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('withoutjob.declineclient')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-decline-clients*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Decline</p>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="{{route('withoutjob.client')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-client*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
               <p>All Clients</p>
             </a>

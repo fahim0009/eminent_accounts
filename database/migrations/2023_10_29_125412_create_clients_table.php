@@ -47,6 +47,7 @@ return new class extends Migration
             $table->boolean('processing')->default(1);
             $table->boolean('complete')->default(0);
             $table->boolean('decline')->default(0);
+            $table->boolean('is_job')->default(1);
             $table->boolean('status')->default(0);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();

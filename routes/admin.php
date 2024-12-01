@@ -52,11 +52,19 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/account-update', [AccountController::class, 'update']);
     Route::get('/account/{id}', [AccountController::class, 'delete']);
 
-    
+    //ksa with job
     Route::get('/client', [ClientController::class, 'index'])->name('admin.client');
     Route::get('/processing-clients', [ClientController::class, 'processing'])->name('admin.processingclient');
     Route::get('/decline-clients', [ClientController::class, 'decline'])->name('admin.declineclient');
     Route::get('/completed-clients', [ClientController::class, 'completed'])->name('admin.completedclient');
+
+    //ksa without job
+    Route::get('/ksa-without-job-client', [ClientController::class, 'withoutjobindex'])->name('withoutjob.client');
+    Route::get('/ksa-without-job-processing-clients', [ClientController::class, 'withoutjobprocessing'])->name('withoutjob.processingclient');
+    Route::get('/ksa-without-job-decline-clients', [ClientController::class, 'withoutjobdecline'])->name('withoutjob.declineclient');
+    Route::get('/ksa-without-job-completed-clients', [ClientController::class, 'withoutjobcompleted'])->name('withoutjob.completedclient');
+
+
     Route::post('/client', [ClientController::class, 'store']);
     Route::get('/client/{id}/edit', [ClientController::class, 'edit']);
     Route::post('/client-update', [ClientController::class, 'update']);
