@@ -134,9 +134,6 @@ class ClientController extends Controller
             exit();
         }
 
-        do {
-            $uprogramid = random_int(100000, 999999);
-        } while (Client::where('programid', $uprogramid)->exists()); 
 
         $data = new Client;
         $data->user_id = $request->user_id;
