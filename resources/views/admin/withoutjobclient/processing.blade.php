@@ -344,6 +344,7 @@
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
+              form_data.append("is_job", $("#is_job").val());
 
 
 

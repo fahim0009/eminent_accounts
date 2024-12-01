@@ -134,6 +134,10 @@ class ClientController extends Controller
             exit();
         }
 
+        do {
+            $uprogramid = random_int(100000, 999999);
+        } while (Client::where('programid', $uprogramid)->exists()); 
+
         $data = new Client;
         $data->user_id = $request->user_id;
         $data->clientid = $request->clientid;
@@ -144,6 +148,7 @@ class ClientController extends Controller
         $data->package_cost = $request->package_cost;
         $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
+        $data->is_job = $request->is_job;
 
         // image
         if ($request->passport_image != 'null') {
