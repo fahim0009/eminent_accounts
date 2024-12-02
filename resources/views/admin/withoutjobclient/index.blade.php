@@ -49,7 +49,7 @@
                         <select name="user_id" id="user_id" class="form-control">
                           <option value="">Select</option>
                           @foreach ($agents as $item)
-                          <option value="{{$item->id}}">{{$item->name}}</option>
+                          <option value="{{$item->id}}">{{$item->name}} {{$item->surname}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -184,11 +184,12 @@
                 </tr>
                 </thead>
                 <tbody>
+                  
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->clientid}}</td>
-                    <td style="text-align: center">{{$data->user->name}}</td>
+                    <td style="text-align: center">{{$data->user->name}} {{$data->user->surname}} </td>
                     <td style="text-align: center">{{$data->passport_name}}</td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
@@ -208,9 +209,8 @@
                           <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</a>
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</a>
-                          <a class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</a>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</button>
                         </div>
                       </div>
                     </td>

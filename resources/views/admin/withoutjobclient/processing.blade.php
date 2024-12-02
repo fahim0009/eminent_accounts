@@ -40,7 +40,7 @@
                         <select name="user_id" id="user_id" class="form-control">
                           <option value="">Select</option>
                           @foreach ($agents as $item)
-                          <option value="{{$item->id}}">{{$item->name}}</option>
+                          <option value="{{$item->id}}">{{$item->name}} {{$item->surname}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -179,7 +179,7 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->clientid}}</td>
-                    <td style="text-align: center">{{$data->user->name}}</td>
+                    <td style="text-align: center">{{$data->user->name}} {{$data->user->surname}}</td>
                     <td style="text-align: center">{{$data->passport_name}}</td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
