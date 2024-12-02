@@ -29,11 +29,12 @@ class ClientController extends Controller
     public function processing()
     {
         $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
+        $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners'));
+        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners','count'));
     }
 
     public function decline()
@@ -194,7 +195,7 @@ class ClientController extends Controller
     public function update(Request $request)
     {
 
-        
+        $alldata = $request->all();
         // if(empty($request->name)){
         //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
         //     return response()->json(['status'=> 303,'message'=>$message]);
@@ -263,7 +264,7 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->visa_image != 'null') {
+        if ($request->visa_image) {
             $request->validate([
                 'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
             ]);
@@ -275,7 +276,7 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->manpower_image != 'null') {
+        if ($request->manpower_image) {
             $request->validate([
                 'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
             ]);
@@ -289,7 +290,7 @@ class ClientController extends Controller
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";
-            return response()->json(['status'=> 300,'message'=>$message]);
+            return response()->json(['status'=> 300,'message'=>$message,'alldata'=>$alldata]);
         }
         else{
             return response()->json(['status'=> 303,'message'=>'Server Error!!']);
