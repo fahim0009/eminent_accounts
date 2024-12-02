@@ -102,7 +102,7 @@ class AgentController extends Controller
         }
     }
 
-    public function adminEdit($id)
+    public function edit($id)
     {
         $where = [
             'id'=>$id
