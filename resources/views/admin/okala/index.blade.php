@@ -146,14 +146,17 @@
                 </thead>
                 <tbody>
                   @foreach ($data as $key => $data)
+                  @php
+                      $tradename = \App\Models\Trade::where('id', $data->trade)->first();
+                  @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">
-                      @if ($data->trade)
-                      {{\App\Models\Trade::where('id', $data->trade)->first()->name}}
+                      @if (isset($tradename))
+                      {{$tradename->name}}
                       @endif
                     </td>
                     <td style="text-align: center">
