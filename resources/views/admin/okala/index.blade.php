@@ -151,7 +151,11 @@
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">{{\App\Models\Trade::where('id', $data->trade)->first()->name}}</td>
+                    <td style="text-align: center">
+                      @if ($data->trade)
+                      {{\App\Models\Trade::where('id', $data->trade)->first()->name}}
+                      @endif
+                    </td>
                     <td style="text-align: center">
                       @if (isset($data->assign_to))
                       {{$data->client->passport_name}}
