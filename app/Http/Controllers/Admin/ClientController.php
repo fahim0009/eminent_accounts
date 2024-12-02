@@ -19,7 +19,7 @@ class ClientController extends Controller
     public function index()
     {
         $data = Client::where('is_job','1')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -29,7 +29,7 @@ class ClientController extends Controller
     public function processing()
     {
         $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -39,7 +39,7 @@ class ClientController extends Controller
     public function decline()
     {
         $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -49,7 +49,7 @@ class ClientController extends Controller
     public function completed()
     {
         $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -62,7 +62,7 @@ class ClientController extends Controller
     public function withoutjobindex()
     {
         $data = Client::where('is_job','0')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -72,7 +72,7 @@ class ClientController extends Controller
     public function withoutjobprocessing()
     {
         $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -82,7 +82,7 @@ class ClientController extends Controller
     public function withoutjobdecline()
     {
         $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -92,7 +92,7 @@ class ClientController extends Controller
     public function withoutjobcompleted()
     {
         $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -106,7 +106,7 @@ class ClientController extends Controller
         $recepts = Transaction::where('client_id',$id)->where('tran_type','receipt')->orderby('id','DESC')->get();
         $payments = Transaction::where('client_id',$id)->where('tran_type','payment')->orderby('id','DESC')->get();
         // dd($data);
-        $agents = User::where('is_type','2')->get();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -145,7 +145,7 @@ class ClientController extends Controller
         $data->package_cost = $request->package_cost;
         $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
-        $data->is_job = $request->is_job;
+        $data->is_job = $request->is_job ?? 1;
 
         // image
         if ($request->passport_image != 'null') {
