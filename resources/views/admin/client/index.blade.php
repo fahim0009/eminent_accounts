@@ -185,7 +185,7 @@
                 <tbody>
 
                   @php
-                      $count1 = 68;                     
+                      $count1 = $count;                     
                   @endphp
 
                   @foreach ($data as $key => $data)
@@ -250,21 +250,21 @@
 @endsection
 @section('script')
 <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
+    // $(function () {
+    //   $("#example1").DataTable({
+    //     "responsive": true, "lengthChange": false, "autoWidth": false,
+    //     "buttons": ["copy", "csv", "excel", "pdf", "print"]
+    //   }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    //   $('#example2').DataTable({
+    //     "paging": true,
+    //     "lengthChange": false,
+    //     "searching": false,
+    //     "ordering": true,
+    //     "info": true,
+    //     "autoWidth": false,
+    //     "responsive": true,
+    //   });
+    // });
 
     $(function() {
       $('.stsBtn').click(function() {
