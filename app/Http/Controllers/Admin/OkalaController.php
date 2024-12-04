@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Okala;
+use App\Models\OkalaDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,13 +14,13 @@ class OkalaController extends Controller
 {
     public function index()
     {
-        $data = Okala::whereNull('assign_to')->orderby('id','DESC')->get();
+        $data = OkalaDetail::whereNull('assign_to')->orderby('id','DESC')->get();
         return view('admin.okala.index', compact('data'));
     }
 
     public function assignedOkala()
     {
-        $data = Okala::whereNotNull('assign_to')->orderby('id','DESC')->get();
+        $data = OkalaDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
         
         return view('admin.okala.index', compact('data'));
     }
@@ -45,7 +46,7 @@ class OkalaController extends Controller
         $x = $request->datanumber;
         
         for ($i = 0; $i < $x; $i++) {
-            $data = new Okala();
+            $data = new OkalaDetail();
             $data->date = $request->date;
             $data->user_id = $request->user_id;
             $data->vendor_id = $request->vendor_id;
@@ -66,7 +67,7 @@ class OkalaController extends Controller
         $where = [
             'id'=>$id
         ];
-        $info = Okala::where($where)->get()->first();
+        $info = OkalaDetail::where($where)->get()->first();
         return response()->json($info);
     }
 
@@ -92,7 +93,7 @@ class OkalaController extends Controller
 
 
         
-        $data = Okala::find($request->codeid);
+        $data = OkalaDetail::find($request->codeid);
         $data->date = $request->date;
         $data->user_id = $request->user_id;
         $data->vendor_id = $request->vendor_id;
@@ -112,7 +113,7 @@ class OkalaController extends Controller
     public function delete($id)
     {
         
-        $okala = Okala::where('id', $id)->first();
+        $okala = OkalaDetail::where('id', $id)->first();
 
         if (isset($okala->assign_to)) {
             return response()->json(['success'=>true,'message'=>'This Okala have transaction. Do not delete this Okala..']);
@@ -129,7 +130,7 @@ class OkalaController extends Controller
 
     public function addClientToOkala(Request $request)
     {
-        $data = Okala::find($request->okalaId);
+        $data = OkalaDetail::find($request->okalaId);
         $data->assign_to = $request->clientId;
         $data->save();
 

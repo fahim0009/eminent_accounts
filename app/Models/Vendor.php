@@ -9,8 +9,8 @@ class Vendor extends Model
 {
     use HasFactory;
 
-    public function okala()
+    public function okalaDetail()
     {
-        return $this->hasMany(Okala::class);
+        return $this->hasMany(OkalaDetail::class);
     }
 }
