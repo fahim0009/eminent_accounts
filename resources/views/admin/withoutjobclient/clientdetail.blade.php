@@ -644,7 +644,7 @@
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
           form_data.append("client_id", $("#codeid").val());
-          form_data.append("tran_type", "receipt");
+          form_data.append("tran_type", "Received");
 
           $.ajax({
             url: tranurl,

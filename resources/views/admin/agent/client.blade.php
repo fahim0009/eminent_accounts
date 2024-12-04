@@ -177,7 +177,7 @@
                       <th>Decline</th>
                       <th>Receive Amount</th>
                       <th>Due Amount</th>
-                      <th>Net Received</th>
+                      <th>Total Received</th>
                       <th></th>
                     </tr>
                     </thead>
@@ -187,9 +187,9 @@
                         <td style="text-align: center">{{ $processing }}</td>
                         <td style="text-align: center">{{$completed}}</td>
                         <td style="text-align: center">{{$decline}}</td>
-                        <td style="text-align: center">{{$receivedAmnt}}</td>
-                        <td style="text-align: center">{{$dueAmnt - $directReceivedAmnt}}</td>
-                        <td style="text-align: center">{{$netReceivedAmnt}}</td>
+                        <td style="text-align: center">{{$rcvamntForProcessing}}</td>
+                        <td style="text-align: center">{{$totalPackageAmount - $totalReceivedAmnt}}</td>
+                        <td style="text-align: center">{{$totalReceivedAmnt}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                             Receive Amount
@@ -606,7 +606,7 @@
           form_data.append("date", $("#date").val());
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
-          form_data.append("tran_type", "receipt");
+          form_data.append("tran_type", "Received");
 
           $.ajax({
             url: tranurl,

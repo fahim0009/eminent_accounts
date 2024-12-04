@@ -28,16 +28,21 @@ class AgentController extends Controller
         $decline = Client::where('status','2')->where('user_id', $id)->count();
         $completed = Client::where('status','1')->where('user_id', $id)->count();
 
-        
-        $dueAmnt = Client::where('status','0')->where('user_id', $id)->sum('due_amount');
-        $receivedAmnt = Client::where('status','0')->where('user_id', $id)->sum('total_rcv');
-        $netReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','receipt')->sum('amount');
+        $completedPackageAmount = Client::where('status','1')->where('user_id', $id)->sum('package_cost');
+        $processingPackageAmount = Client::where('status','0')->where('user_id', $id)->sum('package_cost');
+        $totalPackageAmount = $completedPackageAmount + $processingPackageAmount;
+
+        $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('amount');
+
+        $rcvamntForProcessing = $totalReceivedAmnt - $completedPackageAmount;
+
+
         $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','receipt')->sum('amount');
 
         $agents = User::where('id',$id)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','dueAmnt','netReceivedAmnt','receivedAmnt','id','directReceivedAmnt'));
+        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','directReceivedAmnt','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing'));
     }
 
 

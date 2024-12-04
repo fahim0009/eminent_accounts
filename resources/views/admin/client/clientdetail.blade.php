@@ -528,11 +528,11 @@
 
           var visa_image = $('#visa_image').prop('files')[0];
           if(typeof visa_image === 'undefined'){
-            visa_image = 'null';
+            visa_image = '';
           }
           var manpower_image = $('#manpower_image').prop('files')[0];
           if(typeof manpower_image === 'undefined'){
-            manpower_image = 'null';
+            manpower_image = '';
           }
 
           var form_data = new FormData();
@@ -644,7 +644,7 @@
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
           form_data.append("client_id", $("#codeid").val());
-          form_data.append("tran_type", "receipt");
+          form_data.append("tran_type", "Received");
 
           $.ajax({
             url: tranurl,

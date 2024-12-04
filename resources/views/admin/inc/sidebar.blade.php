@@ -178,14 +178,7 @@
       </li>
 
       
-      {{-- <li class="nav-item {{ (request()->is('admin/okala*')) ? 'menu-open' : '' }}">
-        <a href="{{route('admin.okala')}}" class="nav-link {{ (request()->is('admin/okala*')) ? 'active' : '' }}">
-          <i class="nav-icon fas fa-th"></i>
-          <p>
-            Okala
-          </p>
-        </a>
-      </li> --}}
+      
 
 
       <li class="nav-item {{ (request()->is('admin/okala*')) ? 'menu-open' : '' }}">
@@ -211,15 +204,16 @@
             </a>
           </li>
 
-          
-          <li class="nav-item">
-            <a href="{{route('admin.okalasales')}}" class="nav-link {{ (request()->is('admin/okala-sales')) ? 'active' : '' }}">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Sales</p>
-            </a>
-          </li>
-          
         </ul>
+      </li>
+
+      <li class="nav-item {{ (request()->is('admin/okala-sales')) ? 'menu-open' : '' }}">
+        <a href="{{route('admin.okalasales')}}" class="nav-link {{ (request()->is('admin/okala-sales')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            Okala Sales
+          </p>
+        </a>
       </li>
 
 

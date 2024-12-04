@@ -245,7 +245,7 @@ class ClientController extends Controller
         // image
         if ($request->passport_image != 'null') {
             $request->validate([
-                'passport_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'passport_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             ]);
             $rand = mt_rand(100000, 999999);
             $passporImageName = time(). $rand .'.'.$request->passport_image->extension();
@@ -257,7 +257,7 @@ class ClientController extends Controller
         // image
         if ($request->client_image != 'null') {
             $request->validate([
-                'client_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'client_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             ]);
             $rand = mt_rand(100000, 999999);
             $client_imageName = time(). $rand .'.'.$request->client_image->extension();
@@ -267,9 +267,9 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->visa_image) {
+        if (isset($request->visa_image)) {
             $request->validate([
-                'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'visa_image' => 'nullable|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             ]);
             $rand = mt_rand(100000, 999999);
             $visaImageName = time(). $rand .'.'.$request->visa_image->extension();
@@ -279,9 +279,9 @@ class ClientController extends Controller
         // end
 
         // image
-        if ($request->manpower_image) {
+        if (isset($request->manpower_image)) {
             $request->validate([
-                'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:8048',
+                'manpower_image' => 'nullable|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             ]);
             $rand = mt_rand(100000, 999999);
             $manpower_imageName = time(). $rand .'.'.$request->manpower_image->extension();
