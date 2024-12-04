@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('okalas', function (Blueprint $table) {
+        Schema::create('r_l_details', function (Blueprint $table) {
             $table->id();
-            $table->string('date')->nullable();
-            $table->string('number')->nullable();
-            $table->string('code')->nullable();
-            $table->boolean('status')->default(0);
+            $table->string('name')->nullable();
+            $table->string('address')->nullable();
+            $table->boolean('status')->default(1);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
             $table->timestamps();
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('okalas');
+        Schema::dropIfExists('r_l_details');
     }
 };
