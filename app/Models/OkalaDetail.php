@@ -9,10 +9,21 @@ class OkalaDetail extends Model
 {
     use HasFactory;
 
+    public function okala()
+    {
+        return $this->belongsTo(Okala::class);
+    }
+
+    public function rldetail()
+    {
+        return $this->belongsTo(RLDetail::class);
+    }
+
     public function vendor()
     {
         return $this->belongsTo(Vendor::class);
     }
+
 
     public function client()
     {

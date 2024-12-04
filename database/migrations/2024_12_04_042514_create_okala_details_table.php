@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreign('r_l_detail_id')->references('id')->on('r_l_details')->onDelete('cascade');
             $table->bigInteger('vendor_id')->unsigned()->nullable();
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
+            $table->bigInteger('okala_id')->unsigned()->nullable();
+            $table->foreign('okala_id')->references('id')->on('okalas')->onDelete('cascade');
             $table->integer('visaid')->nullable();
             $table->integer('sponsorid')->nullable();
             $table->string('trade')->nullable();

@@ -44,15 +44,21 @@ class OkalaController extends Controller
         }
         
         $x = $request->datanumber;
+        $okala = new Okala();
+        $okala->number = $request->datanumber;
+        $okala->created_by = Auth::user()->id;
+        $okala->save();
         
         for ($i = 0; $i < $x; $i++) {
             $data = new OkalaDetail();
             $data->date = $request->date;
+            $data->okala_id = $okala->id;
             $data->user_id = $request->user_id;
             $data->vendor_id = $request->vendor_id;
             $data->trade = $request->trade;
             $data->sponsorid = $request->sponsorid;
             $data->visaid = $request->visaid;
+            $data->r_l_detail_id = $request->r_l_detail_id;
             $data->created_by = Auth::user()->id;
             $data->save();
         }

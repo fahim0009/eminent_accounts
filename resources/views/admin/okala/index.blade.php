@@ -64,8 +64,22 @@
                         <input type="number" id="sponsorid" name="sponsorid" class="form-control">
                       </div>
                     </div>
+
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label>RL </label>
+                        <select name="r_l_detail_id" id="r_l_detail_id" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\RLDetail::orderby('id', 'DESC')->where('status', 1)->get() as $rl)
+
+                          <option value="{{$rl->id}}">{{$rl->name}}</option>
+                              
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
                     
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                       <div class="form-group">
                         <label>Trade</label>
                         <select name="trade" id="trade" class="form-control">
@@ -76,11 +90,10 @@
                               
                           @endforeach
                         </select>
-
                       </div>
                     </div>
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                       <div class="form-group">
                         <label>Vendor</label>
                         <select name="vendor_id" id="vendor_id" class="form-control">
@@ -138,6 +151,7 @@
                   <th>Date</th>
                   <th>Visa Id</th>
                   <th>Sponsor Id</th>
+                  <th>RL Id</th>
                   <th>Trade</th>
                   <th>Assign To</th>
                   <th>Vendor</th>
@@ -148,12 +162,16 @@
                   @foreach ($data as $key => $data)
                   @php
                       $tradename = \App\Models\Trade::where('id', $data->trade)->first();
+                      $rl = \App\Models\RLDetail::where('id', $data->r_l_detail_id)->first();
                   @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
+                    <td style="text-align: center">@if (isset($rl))
+                      {{$rl->name}}
+                      @endif</td>
                     <td style="text-align: center">
                       @if (isset($tradename))
                       {{$tradename->name}}
@@ -301,6 +319,7 @@
               form_data.append("trade", $("#trade").val());
               form_data.append("agent_id", $("#agent_id").val());
               form_data.append("vendor_id", $("#vendor_id").val());
+              form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
               $.ajax({
                 url: url,
                 method: "POST",
@@ -342,6 +361,7 @@
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
               form_data.append("vendor_id", $("#vendor_id").val());
+              form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
               form_data.append("codeid", $("#codeid").val());
               
               $.ajax({
@@ -422,6 +442,7 @@
           $("#sponsorid").val(data.sponsorid);
           $("#trade").val(data.trade);
           $("#vendor_id").val(data.vendor_id);
+          $("#r_l_detail_id").val(data.r_l_detail_id);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');
           $("#addBtn").html('Update');

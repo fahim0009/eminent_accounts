@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class RLDetail extends Model
 {
     use HasFactory;
+
+    
+    public function okalaDetail()
+    {
+        return $this->hasMany(OkalaDetail::class);
+    }
 }
