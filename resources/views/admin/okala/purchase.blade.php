@@ -148,56 +148,21 @@
                 <tr>
                   <th>Sl</th>
                   <th>Date</th>
-                  <th>Visa Id</th>
-                  <th>Sponsor Id</th>
-                  <th>RL Id</th>
-                  <th>Trade</th>
-                  <th>Assign To</th>
+                  <th>Number</th>
+                  <th>Visa Number</th>
+                  <th>Sponsor ID</th>
                   <th>Vendor</th>
-                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
                   @foreach ($data as $key => $data)
-                  @php
-                      $tradename = \App\Models\Trade::where('id', $data->trade)->first();
-                      $rl = \App\Models\RLDetail::where('id', $data->r_l_detail_id)->first();
-                  @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
+                    <td style="text-align: center">{{$data->number}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">@if (isset($rl))
-                      {{$rl->name}}
-                      @endif</td>
-                    <td style="text-align: center">
-                      @if (isset($tradename))
-                      {{$tradename->name}}
-                      @endif
-                    </td>
-                    <td style="text-align: center">
-                      @if (isset($data->assign_to))
-                      {{$data->client->passport_name}}
-                      @else
-                      <select name="assignto" id="assignto" class="form-control clientselect assignto"  data-okala-id="{{ $data->id }}">
-                        <option value="">Select</option>
-                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
-
-                        <option value="{{$client->id}}">{{$client->passport_name}}</option>
-                            
-                        @endforeach
-                      </select>
-                      @endif
-                      
-                      <p id="message"></p>
-                    </td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
-                    
-                    <td style="text-align: center">
-                      <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                      <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
-                    </td>
                   </tr>
                   @endforeach
                 

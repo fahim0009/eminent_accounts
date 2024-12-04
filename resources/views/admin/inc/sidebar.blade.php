@@ -191,16 +191,24 @@
         </a>
 
         <ul class="nav nav-treeview">
+          
+          <li class="nav-item">
+            <a href="{{route('admin.okalapurchase')}}" class="nav-link {{ (request()->is('admin/okala-purchase')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Okala Purchase</p>
+            </a>
+          </li>
+
           <li class="nav-item">
             <a href="{{route('admin.okala')}}" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
-              <p>New</p>
+              <p>Okala Details</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{route('admin.assignokala')}}" class="nav-link {{ (request()->is('admin/okala-assigned')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
-              <p>Assign</p>
+              <p>Assigned</p>
             </a>
           </li>
 

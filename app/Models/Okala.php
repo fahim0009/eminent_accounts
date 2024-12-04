@@ -13,4 +13,6 @@ class Okala extends Model
     {
         return $this->hasMany(OkalaDetail::class);
     }
+
+    
 }

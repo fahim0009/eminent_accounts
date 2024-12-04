@@ -19,6 +19,12 @@ class OkalaController extends Controller
         return view('admin.okala.index', compact('data'));
     }
 
+    public function okalaPurchase()
+    {
+        $data = Okala::with('okalaDetail')->orderby('id','DESC')->get();
+        return view('admin.okala.purchase', compact('data'));
+    }
+
     public function assignedOkala()
     {
         $data = OkalaDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
@@ -46,7 +52,10 @@ class OkalaController extends Controller
         
         $x = $request->datanumber;
         $okala = new Okala();
-        $okala->number = $request->datanumber;
+        $okala->date = $request->date;
+        $okala->vendor_id = $request->vendor_id;
+        $okala->sponsorid = $request->sponsorid;
+        $okala->visaid = $request->visaid;
         $okala->created_by = Auth::user()->id;
         $okala->save();
         

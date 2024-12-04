@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('date')->nullable();
             $table->string('number')->nullable();
             $table->string('code')->nullable();
+            $table->bigInteger('vendor_id')->unsigned()->nullable();
+            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
+            $table->integer('visaid')->nullable();
+            $table->integer('sponsorid')->nullable();
             $table->boolean('status')->default(0);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
