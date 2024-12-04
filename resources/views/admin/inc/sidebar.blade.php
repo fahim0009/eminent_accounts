@@ -210,6 +210,14 @@
               <p>Assign</p>
             </a>
           </li>
+
+          
+          <li class="nav-item">
+            <a href="{{route('admin.okalasales')}}" class="nav-link {{ (request()->is('admin/okala-sales')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Sales</p>
+            </a>
+          </li>
           
         </ul>
       </li>
