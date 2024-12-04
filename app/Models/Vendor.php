@@ -13,4 +13,9 @@ class Vendor extends Model
     {
         return $this->hasMany(OkalaDetail::class);
     }
+
+    public function okala()
+    {
+        return $this->hasMany(Okala::class);
+    }
 }

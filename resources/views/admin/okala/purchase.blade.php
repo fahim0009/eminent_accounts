@@ -107,6 +107,20 @@
                       </div>
                     </div>
 
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Amount in BDT</label>
+                        <input type="number" id="bdt_amount" name="bdt_amount" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Amount in Riyal</label>
+                        <input type="number" id="riyal_amount" name="riyal_amount" class="form-control">
+                      </div>
+                    </div>
+
                   </div>
 
                 </form>
@@ -284,6 +298,8 @@
               form_data.append("agent_id", $("#agent_id").val());
               form_data.append("vendor_id", $("#vendor_id").val());
               form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
+              form_data.append("bdt_amount", $("#bdt_amount").val());
+              form_data.append("riyal_amount", $("#riyal_amount").val());
               $.ajax({
                 url: url,
                 method: "POST",

@@ -53,9 +53,14 @@ class OkalaController extends Controller
         $x = $request->datanumber;
         $okala = new Okala();
         $okala->date = $request->date;
+        $okala->number = $x;
         $okala->vendor_id = $request->vendor_id;
         $okala->sponsorid = $request->sponsorid;
         $okala->visaid = $request->visaid;
+        $okala->riyal_amount = $request->riyal_amount;
+        $okala->bdt_amount = $request->bdt_amount;
+        $okala->total_riyal = $request->riyal_amount * $x;
+        $okala->total_bdt = $request->bdt_amount * $x;
         $okala->created_by = Auth::user()->id;
         $okala->save();
         

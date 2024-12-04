@@ -20,6 +20,10 @@ return new class extends Migration
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
             $table->integer('visaid')->nullable();
             $table->integer('sponsorid')->nullable();
+            $table->double('bdt_amount',10,2)->default(0);
+            $table->double('riyal_amount',10,2)->default(0);
+            $table->double('total_riyal',10,2)->default(0);
+            $table->double('total_bdt',10,2)->default(0);
             $table->boolean('status')->default(0);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();

@@ -14,5 +14,11 @@ class Okala extends Model
         return $this->hasMany(OkalaDetail::class);
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+
     
 }
