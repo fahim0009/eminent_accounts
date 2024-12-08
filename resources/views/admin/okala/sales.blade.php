@@ -248,9 +248,15 @@
               <div class="modal-body">
                 <div class="permsg"></div>
                   <div class="form-group">
-                      <label for="paymentAmount">Payment Amount <span style="color: red;">*</span></label>
+                      <label for="paymentAmount">Amount in Bdt <span style="color: red;">*</span></label>
                       <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
                   </div>
+
+                  
+                  <div class="form-group">
+                    <label for="paymentriyalAmount">Amount in Riyal <span style="color: red;">*</span></label>
+                    <input type="number" class="form-control" id="paymentriyalAmount" name="paymentriyalAmount" >
+                </div>
 
                   <div class="form-group">
                       <label for="account_id">Payment Type <span style="color: red;">*</span></label>
@@ -657,7 +663,7 @@
                     }
                     
                       console.log(response);
-                      $('#payModal').modal('hide');
+                      $('#rcvModal').modal('hide');
 
                   },
                   error: function (xhr) {
@@ -667,9 +673,9 @@
           });
       });
 
-        $('#payModal').on('hidden.bs.modal', function () {
-            $('#paymentAmount').val('');
-            $('#paymentNote').val('');
+        $('#rcvModal').on('hidden.bs.modal', function () {
+            $('#rcvamount').val('');
+            $('#note').val('');
         });
       // receive end 
 
@@ -694,6 +700,7 @@
               form_data.append("vendorId", vendorId);
               form_data.append('document', document);
               form_data.append("paymentAmount", $("#paymentAmount").val());
+              form_data.append("riyalamount", $("#paymentriyalAmount").val());
               form_data.append("account_id", $("#account_id").val());
               form_data.append("paymentNote", $("#paymentNote").val());
 

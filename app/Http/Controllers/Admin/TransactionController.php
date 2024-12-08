@@ -304,6 +304,7 @@ class TransactionController extends Controller
         $request->validate([
             'vendorId' => 'required',
             'paymentAmount' => 'required',
+            'riyalamount' => 'required',
             'account_id' => 'required',
             'paymentNote' => 'nullable',
         ]);
@@ -323,6 +324,7 @@ class TransactionController extends Controller
             $transaction->okala_sale_id = $okala->id;
             $transaction->vendor_id = $request->vendorId;
             $transaction->amount = $request->paymentAmount;
+            $transaction->riyalamount = $request->riyalamount;
             $transaction->account_id = $request->account_id;
             $transaction->payment_type = "Payment";
             $transaction->note = $request->paymentNote;
