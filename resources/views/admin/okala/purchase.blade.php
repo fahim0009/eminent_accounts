@@ -182,7 +182,7 @@
                     <td style="text-align: center">
                       <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-rl-id="">Pay</span>
 
-                      <span class="btn btn-block btn-success btn-xs" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
+                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
 
                     </td>
                     <td style="text-align: center">
@@ -272,7 +272,9 @@
                   <th>Date</th>
                   <th>Transaction ID</th>
                   <th>Payment Type</th>
-                  <th>Amount</th>
+                  <th>Payment Method</th>
+                  <th>Dr. Amount</th>
+                  <th>Cr. Amount</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -590,7 +592,7 @@
                     
                       console.log(response);
                       $('#payModal').modal('hide');
-                      
+
                   },
                   error: function (xhr) {
                       console.log(xhr.responseText);
@@ -608,14 +610,11 @@
         $("#contentContainer").on('click', '.trn-btn', function () {
           var id = $(this).data('id');
           var vendorId = $(this).data('vendor-id');
-          var programId = $(this).data('program-id');
-          console.log(vendorId);
           $('#tranModal').modal('show');
-
+              console.log(id, vendorId);
               var form_data = new FormData();
-              form_data.append("id", id);
+              form_data.append("okalaId", id);
               form_data.append("vendorId", vendorId);
-              form_data.append("programId", programId);
 
               $.ajax({
                   url: '{{ URL::to('/admin/vendor-transaction') }}',

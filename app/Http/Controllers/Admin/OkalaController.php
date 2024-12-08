@@ -97,6 +97,8 @@ class OkalaController extends Controller
         $tran->note =  "Okala Purchase";
         $tran->created_by = Auth::user()->id;
         $tran->save();
+        $tran->tran_id = 'AE' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
+        $tran->save();
 
         
         $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";

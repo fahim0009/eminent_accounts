@@ -250,11 +250,20 @@ class TransactionController extends Controller
 
     public function vendorTran(Request $request)
     {
-        $data = Transaction::where('program_id',$request->programId)->where('vendor_id',$request->vendorId)->get();
+        $data = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->get();
 
         $prop = '';
         
             foreach ($data as $tran){
+
+                $account = Account::where('id', $tran->account_id)->first();
+                if (isset($account)) {
+                    $accountName = $account;
+                } else {
+                    $accountName = '';
+                }
+                
+
                 // <!-- Single Property Start -->
                 $prop.= '<tr>
                             <td>
@@ -267,9 +276,22 @@ class TransactionController extends Controller
                                 '.$tran->payment_type.'
                             </td>
                             <td>
-                                '.$tran->amount.'
-                            </td>
-                        </tr>';
+                                '.$accountName->name.'
+                            </td>';
+
+                            if ($tran->tran_type == "Purchase") {
+                                $prop.= '<td>
+                                            '.$tran->amount.'
+                                        </td>
+                                        <td> </td>';
+                            } else {
+                                $prop.= '<td> </td>
+                                        <td>
+                                            '.$tran->amount.'
+                                        </td>';
+                            }
+                            
+                        $prop.= '</tr>';
             }
 
         return response()->json(['status'=> 300,'data'=>$prop]);
