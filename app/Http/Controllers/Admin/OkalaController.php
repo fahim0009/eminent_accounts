@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Okala;
 use App\Models\OkalaDetail;
 use App\Models\OkalaSale;
+use App\Models\OkalaSaleDetail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -192,7 +193,7 @@ class OkalaController extends Controller
 
     public function salesindex()
     {
-        $data = OkalaSale::orderby('id','DESC')->get();
+        $data = OkalaSaleDetail::orderby('id','DESC')->get();
         return view('admin.okala.sales', compact('data'));
     }
 
@@ -218,9 +219,26 @@ class OkalaController extends Controller
         
         $x = $request->datanumber;
 
+        $sale = new OkalaSale();
+        $sale->date = $request->date;
+        $sale->number = $request->datanumber;
+        $sale->user_id = $request->user_id;
+        $sale->vendor_id = $request->vendor_id;
+        $sale->trade = $request->trade;
+        $sale->sponsorid = $request->sponsorid;
+        $sale->r_l_detail_id = $request->r_l_detail_id;
+        $sale->visaid = $request->visaid;
+        $sale->purchase_bdt_amount = $request->bdt_amount * $x;
+        $sale->purchase_riyal_amount = $request->riyal_amount * $x;
+        $sale->sales_bdt_amount = $request->sales_bdt_amount * $x;
+        $sale->sales_riyal_amount = $request->sales_riyal_amount * $x;
+        $sale->created_by = Auth::user()->id;
+        $sale->save();
+
         for ($i = 0; $i < $x; $i++) {
-            $data = new OkalaSale();
+            $data = new OkalaSaleDetail();
             $data->date = $request->date;
+            $data->okala_sale_id = $sale->id;
             $data->user_id = $request->user_id;
             $data->vendor_id = $request->vendor_id;
             $data->trade = $request->trade;
@@ -237,14 +255,30 @@ class OkalaController extends Controller
 
         $ptran = new Transaction();
         $ptran->date = $request->date;
+        $ptran->okala_sale_id = $sale->id;
         $ptran->user_id = $request->user_id;
         $ptran->vendor_id = $request->vendorId;
         $ptran->amount = $request->paymentAmount;
         $ptran->account_id = $request->account_id;
-        $ptran->bdt_amount = $request->bdt_amount * $x;
-        $ptran->riyal_amount = $request->riyal_amount * $x;
-        $ptran->payment_type = "Purchase";
+        $ptran->amount = $request->bdt_amount * $x;
+        $ptran->riyalamount = $request->riyal_amount * $x;
+        $ptran->payment_type = "Credit";
         $ptran->tran_type = "Purchase";
+        $ptran->save();
+        $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
+        $ptran->save();
+
+        $ptran = new Transaction();
+        $ptran->date = $request->date;
+        $ptran->okala_sale_id = $sale->id;
+        $ptran->user_id = $request->user_id;
+        $ptran->vendor_id = $request->vendorId;
+        $ptran->amount = $request->paymentAmount;
+        $ptran->account_id = $request->account_id;
+        $ptran->amount = $request->sales_bdt_amount * $x;
+        $ptran->riyalamount = $request->sales_riyal_amount * $x;
+        $ptran->payment_type = "Sales";
+        $ptran->tran_type = "Sales";
         $ptran->save();
         $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
         $ptran->save();

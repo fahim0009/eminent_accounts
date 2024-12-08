@@ -193,8 +193,8 @@
                   <th>Visa Id</th>
                   <th>Sponsor Id</th>
                   <th>Trade</th>
-                  <th>Assign To</th>
                   <th>Vendor</th>
+                  <th>Transaction</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -213,23 +213,15 @@
                       {{$tradename->name}}
                       @endif
                     </td>
-                    <td style="text-align: center">
-                      @if (isset($data->assign_to))
-                      {{$data->client->passport_name}}
-                      @else
-                      <select name="assignto" id="assignto" class="form-control clientselect assignto"  data-okala-id="{{ $data->id }}">
-                        <option value="">Select</option>
-                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
-
-                        <option value="{{$client->id}}">{{$client->passport_name}}</option>
-                            
-                        @endforeach
-                      </select>
-                      @endif
-                      
-                      <p id="message"></p>
-                    </td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
+
+                    
+                    <td style="text-align: center">
+                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-rl-id="">Pay</span>
+
+                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
+
+                    </td>
                     
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>

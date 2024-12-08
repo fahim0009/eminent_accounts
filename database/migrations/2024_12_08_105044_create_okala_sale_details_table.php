@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('okala_sales', function (Blueprint $table) {
+        Schema::create('okala_sale_details', function (Blueprint $table) {
             $table->id();
             $table->string('date')->nullable();
-            $table->string('number')->nullable();
+            $table->bigInteger('okala_sale_id')->unsigned()->nullable();
+            $table->foreign('okala_sale_id')->references('id')->on('okala_sales')->onDelete('cascade');
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('vendor_id')->unsigned()->nullable();
@@ -42,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('okala_sales');
+        Schema::dropIfExists('okala_sale_details');
     }
 };
