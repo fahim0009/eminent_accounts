@@ -161,6 +161,10 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/okala-sales-update', [OkalaController::class, 'salesupdate']);
     Route::get('/okala-sales/{id}', [OkalaController::class, 'salesdelete']);
 
+    
+    // vendor payment
+    Route::post('/vendor-pay', [TransactionController::class,'vendorPay'])->name('vendorPay');
+    Route::post('/vendor-transaction', [TransactionController::class,'vendorTran'])->name('vendorTran');
 
 });
   

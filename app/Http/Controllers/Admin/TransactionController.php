@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Country;
+use App\Models\Okala;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
@@ -204,5 +205,64 @@ class TransactionController extends Controller
         }else{
             return response()->json(['status'=> 303,'message'=>'Server Error!!']);
         }
+    }
+
+    public function vendorPay(Request $request)
+    {
+        $request->validate([
+            'vendorId' => 'required',
+            'paymentAmount' => 'required',
+            'payment_type' => 'required',
+            'paymentNote' => 'nullable',
+        ]);
+
+        $okala = Okala::where('id', $request->okalaId)->first();
+
+        
+            $transaction = new Transaction();
+            $transaction->okala_id = $okala->id;
+            $transaction->vendor_id = $request->vendorId;
+            $transaction->vendor_id = $request->vendorId;
+            $transaction->amount = $request->paymentAmount;
+            $transaction->account_id = $request->account_id;
+            $transaction->payment_type = "Payment";
+            $transaction->note = $request->paymentNote;
+            $transaction->tran_type = "Payment";
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
+            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Payment processed successfully!',
+        ]);
+    }
+
+    public function vendorTran(Request $request)
+    {
+        $data = Transaction::where('program_id',$request->programId)->where('vendor_id',$request->vendorId)->get();
+
+        $prop = '';
+        
+            foreach ($data as $tran){
+                // <!-- Single Property Start -->
+                $prop.= '<tr>
+                            <td>
+                                '.$tran->date.'
+                            </td>
+                            <td>
+                                '.$tran->tran_id.'
+                            </td>
+                            <td>
+                                '.$tran->payment_type.'
+                            </td>
+                            <td>
+                                '.$tran->amount.'
+                            </td>
+                        </tr>';
+            }
+
+        return response()->json(['status'=> 300,'data'=>$prop]);
     }
 }

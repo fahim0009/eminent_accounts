@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Okala;
 use App\Models\OkalaDetail;
 use App\Models\OkalaSale;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -84,6 +85,19 @@ class OkalaController extends Controller
             $data->created_by = Auth::user()->id;
             $data->save();
         }
+
+        $tran = new Transaction();
+        $tran->date = $request->date;
+        $tran->okala_id = $okala->id;
+        $tran->vendor_id = $request->vendor_id;
+        $tran->amount = $request->bdt_amount * $x;
+        $tran->riyalamount =  $request->riyal_amount * $x;
+        $tran->tran_type = "Purchase";
+        $tran->payment_type = "Due";
+        $tran->note =  "Okala Purchase";
+        $tran->created_by = Auth::user()->id;
+        $tran->save();
+
         
         $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
         return response()->json(['status'=> 300,'message'=>$message]);

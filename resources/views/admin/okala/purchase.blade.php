@@ -166,6 +166,7 @@
                   <th>Visa Number</th>
                   <th>Sponsor ID</th>
                   <th>Vendor</th>
+                  <th>Payment</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -178,6 +179,12 @@
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
+                    <td style="text-align: center">
+                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-rl-id="">Pay</span>
+
+                      <span class="btn btn-block btn-success btn-xs" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
+
+                    </td>
                     <td style="text-align: center">
                       <a href="{{route('admin.okalapurchaseDetails', $data->id)}}"><i class="fa fa-eye" style="color: #2cc16a;font-size:16px;"></i></a>
                     </td>
@@ -199,6 +206,85 @@
 </section>
 <!-- /.content -->
 
+
+<div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="payModalLabel">Vendor Payment Form</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form id="payForm">
+              <div class="modal-body">
+                  <div class="form-group">
+                      <label for="paymentAmount">Payment Amount <span style="color: red;">*</span></label>
+                      <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
+                  </div>
+
+                  <div class="form-group">
+                      <label for="account_id">Payment Type <span style="color: red;">*</span></label>
+                      <select name="account_id" id="account_id" class="form-control" >
+                        <option value="">Select</option>
+                        @foreach (\App\Models\Account::orderby('id', 'ASC')->get() as $acc)
+                          <option value="{{$acc->id}}">{{$acc->name}}</option>
+                        @endforeach
+                      </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="document">Document</label>
+                    <input type="file" class="form-control" id="document" name="document">
+                </div>
+
+                  <div class="form-group">
+                      <label for="paymentNote">Payment Note</label>
+                      <textarea class="form-control" id="paymentNote" name="paymentNote" rows="3" placeholder="Enter payment note"></textarea>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-warning">Pay</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tranModal" tabindex="-1" role="dialog" aria-labelledby="tranModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="tranModalLabel">Vendor Payment Form</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+
+
+          <div class="modal-body">
+            
+            <table id="trantable" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Transaction ID</th>
+                  <th>Payment Type</th>
+                  <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+          </div>
+        
+          
+      </div>
+  </div>
+</div>
 
 @endsection
 @section('script')
@@ -438,6 +524,100 @@
           $('#createThisForm')[0].reset();
           $("#addBtn").val('Create');
       }
+
+
+
+
+      $("#contentContainer").on('click', '.payment-btn', function () {
+          var id = $(this).data('id');
+          var vendorId = $(this).data('vendor-id');
+          console.log(vendorId);
+          $('#payModal').modal('show');
+          $('#payForm').off('submit').on('submit', function (event) {
+              event.preventDefault();
+
+              var form_data = new FormData();
+              form_data.append("okalaId", id);
+              form_data.append("vendorId", vendorId);
+              form_data.append("paymentAmount", $("#paymentAmount").val());
+              form_data.append("account_id", $("#account_id").val());
+              form_data.append("paymentNote", $("#paymentNote").val());
+
+              if (!$("#paymentAmount").val()) {
+                  alert('Please enter a payment amount.');
+                  return;
+              }
+
+              if (!$("#account_id").val()) {
+                  alert('Please enter a payment type.');
+                  return;
+              }
+
+              $.ajax({
+                  url: '{{ URL::to('/admin/vendor-pay') }}',
+                  method: 'POST',
+                  data:form_data,
+                  contentType: false,
+                  processData: false,
+                  // dataType: 'json',
+                  success: function (response) {
+                    console.log(response);
+                      $('#payModal').modal('hide');
+                      swal({
+                          text: "Payment store successfully",
+                          icon: "success",
+                          button: {
+                              text: "OK",
+                              className: "swal-button--confirm"
+                          }
+                      }).then(() => {
+                          location.reload();
+                      });
+                  },
+                  error: function (xhr) {
+                      console.log(xhr.responseText);
+                  }
+              });
+          });
+      });
+
+        $('#payModal').on('hidden.bs.modal', function () {
+            $('#paymentAmount').val('');
+            $('#paymentNote').val('');
+        });
+
+
+        $("#contentContainer").on('click', '.trn-btn', function () {
+          var id = $(this).data('id');
+          var vendorId = $(this).data('vendor-id');
+          var programId = $(this).data('program-id');
+          console.log(vendorId);
+          $('#tranModal').modal('show');
+
+              var form_data = new FormData();
+              form_data.append("id", id);
+              form_data.append("vendorId", vendorId);
+              form_data.append("programId", programId);
+
+              $.ajax({
+                  url: '{{ URL::to('/admin/vendor-transaction') }}',
+                  method: 'POST',
+                  data:form_data,
+                  contentType: false,
+                  processData: false,
+                  // dataType: 'json',
+                  success: function (response) {
+                    console.log(response);
+                      $('#trantable tbody').html(response.data);
+                  },
+                  error: function (xhr) {
+                      console.log(xhr.responseText);
+                  }
+              });
+        });
+
+
+
   });
 </script>
 @endsection

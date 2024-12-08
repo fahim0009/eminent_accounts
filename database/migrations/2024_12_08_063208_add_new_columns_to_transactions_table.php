@@ -25,6 +25,7 @@ return new class extends Migration
             $table->bigInteger('vendor_id')->unsigned()->nullable()->after('tran_type');
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
             $table->double('riyalamount',10,2)->default(0)->after('tran_type');
+            $table->string('document',191)->nullable()->after('note');
         });
     }
 

@@ -9,7 +9,6 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-2">
-            {{-- <button type="button" class="btn btn-secondary my-3" id="newBtn">Add new</button> --}}
             <a href="{{route('admin.okalapurchase')}}" class="btn btn-secondary my-3">Back</a>
         </div>
       </div>
