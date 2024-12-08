@@ -61,6 +61,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     //ksa without job
     Route::get('/ksa-without-job-client', [ClientController::class, 'withoutjobindex'])->name('withoutjob.client');
+    Route::get('/ksa-without-job-new-clients', [ClientController::class, 'withoutjobnew'])->name('withoutjob.newclient');
     Route::get('/ksa-without-job-processing-clients', [ClientController::class, 'withoutjobprocessing'])->name('withoutjob.processingclient');
     Route::get('/ksa-without-job-decline-clients', [ClientController::class, 'withoutjobdecline'])->name('withoutjob.declineclient');
     Route::get('/ksa-without-job-completed-clients', [ClientController::class, 'withoutjobcompleted'])->name('withoutjob.completedclient');

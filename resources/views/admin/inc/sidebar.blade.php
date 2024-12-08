@@ -108,7 +108,7 @@
       </li>
 
 
-      <li class="nav-item {{ (request()->is('admin/ksa-without-job-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-processing-clients*')) ? 'menu-open' : '' }}">
+      <li class="nav-item {{ (request()->is('admin/ksa-without-job-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-processing-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/ksa-without-job-new-clients*')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('admin/ksa-without-job*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
@@ -117,6 +117,14 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
+          
+          <li class="nav-item">
+            <a href="{{route('withoutjob.newclient')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-new-clients*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>New</p>
+            </a>
+          </li>
+
           <li class="nav-item">
             <a href="{{route('withoutjob.processingclient')}}" class="nav-link {{ (request()->is('admin/ksa-without-job-processing-clients*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
