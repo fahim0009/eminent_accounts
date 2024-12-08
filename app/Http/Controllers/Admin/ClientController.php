@@ -369,8 +369,28 @@ class ClientController extends Controller
         $user = Client::find($request->id);
         $user->status = $request->status;
         if($user->save()){
+
+            if ($request->status == 1) {
+                $tran = new Transaction();
+                $tran->date = date('Y-m-d');
+                $tran->tran_type = "Receivable";
+                $tran->payment_type = "Credit";
+                $tran->amount = $user->package_cost;
+                $tran->user_id = $user->user_id;
+                $tran->client_id = $user->id;
+                $tran->save();
+                $tran->tran_id = 'VS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
+                $tran->save();
+            }
+
+            
+
+
+
+
             if ($user->status == 1) {
                 $stsval = "Processing";
+
             }elseif($user->status == 2){
                 $stsval = "Complete";
             }elseif($user->status == 0){

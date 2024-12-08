@@ -241,7 +241,7 @@ class TransactionController extends Controller
             $transaction->tran_type = "Payment";
             $transaction->date = date('Y-m-d');
             $transaction->save();
-            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
@@ -331,7 +331,7 @@ class TransactionController extends Controller
             $transaction->tran_type = "Payment";
             $transaction->date = date('Y-m-d');
             $transaction->save();
-            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
@@ -370,7 +370,7 @@ class TransactionController extends Controller
             $transaction->tran_type = "Received";
             $transaction->date = date('Y-m-d');
             $transaction->save();
-            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
