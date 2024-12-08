@@ -5,11 +5,12 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- Main content -->
-<section class="content" id="newBtnSection">
+<section class="content pt-5" id="newBtnSection">
     <div class="container-fluid">
       <div class="row">
         <div class="col-2">
-            <button type="button" class="btn btn-secondary my-3" id="newBtn">Add new</button>
+            {{-- <button type="button" class="btn btn-secondary my-3" id="newBtn">Add new</button> --}}
+            <a href="{{route('admin.okalapurchase')}}" class="btn btn-secondary my-3">Back</a>
         </div>
       </div>
     </div>
@@ -19,7 +20,7 @@
 
 
     <!-- Main content -->
-    <section class="content" id="addThisFormContainer">
+    <section class="content " id="addThisFormContainer">
       <div class="container-fluid">
         <div class="row justify-content-md-center">
           <!-- right column -->

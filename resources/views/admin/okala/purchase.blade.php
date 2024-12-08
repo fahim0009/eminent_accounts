@@ -166,6 +166,7 @@
                   <th>Visa Number</th>
                   <th>Sponsor ID</th>
                   <th>Vendor</th>
+                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -177,6 +178,9 @@
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->vendor->name}}</td>
+                    <td style="text-align: center">
+                      <a href="{{route('admin.okalapurchaseDetails', $data->id)}}"><i class="fa fa-eye" style="color: #2cc16a;font-size:16px;"></i></a>
+                    </td>
                   </tr>
                   @endforeach
                 
