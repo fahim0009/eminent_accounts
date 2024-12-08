@@ -270,7 +270,6 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Transaction ID</th>
                   <th>Payment Type</th>
                   <th>Payment Method</th>
                   <th>Dr. Amount</th>
@@ -280,6 +279,9 @@
                 <tbody>
 
                 </tbody>
+                <tfoot>
+                  <p>Balance: <span id="balance"></span></p>
+                </tfoot>
             </table>
 
           </div>
@@ -626,6 +628,7 @@
                   success: function (response) {
                     console.log(response);
                       $('#trantable tbody').html(response.data);
+                      $('#balance').html(response.balance);
                   },
                   error: function (xhr) {
                       console.log(xhr.responseText);

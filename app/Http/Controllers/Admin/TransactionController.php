@@ -250,50 +250,51 @@ class TransactionController extends Controller
 
     public function vendorTran(Request $request)
     {
-        $data = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->get();
+        $data = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->orderby('id', 'ASC')->get();
 
+        $drAmount = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->where('tran_type', 'Payment')->sum('amount');
+
+        $crAmount = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('amount');
+        $balance =  $crAmount - $drAmount;
         $prop = '';
         
             foreach ($data as $tran){
 
-                $account = Account::where('id', $tran->account_id)->first();
-                if (isset($account)) {
-                    $accountName = $account;
-                } else {
-                    $accountName = '';
+                if (isset($tran->account_id)) {
+                    $account = Account::where('id', $tran->account_id)->first();
+                    $accountName = $account->name;
+                }else{
+                    $accountName = ' ';
                 }
                 
-
                 // <!-- Single Property Start -->
                 $prop.= '<tr>
                             <td>
                                 '.$tran->date.'
                             </td>
                             <td>
-                                '.$tran->tran_id.'
-                            </td>
-                            <td>
                                 '.$tran->payment_type.'
                             </td>
                             <td>
-                                '.$accountName->name.'
+                                '.$accountName.'
                             </td>';
 
                             if ($tran->tran_type == "Purchase") {
-                                $prop.= '<td>
-                                            '.$tran->amount.'
-                                        </td>
-                                        <td> </td>';
-                            } else {
                                 $prop.= '<td> </td>
                                         <td>
                                             '.$tran->amount.'
                                         </td>';
+                            } else {
+                                
+                                $prop.= '<td>
+                                            '.$tran->amount.'
+                                        </td>
+                                        <td> </td>'; 
                             }
                             
                         $prop.= '</tr>';
             }
 
-        return response()->json(['status'=> 300,'data'=>$prop]);
+        return response()->json(['status'=> 300,'data'=>$prop, 'balance'=>$balance]);
     }
 }
