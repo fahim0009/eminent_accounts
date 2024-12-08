@@ -165,6 +165,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     
     // vendor payment
     Route::post('/vendor-pay', [TransactionController::class,'vendorPay'])->name('vendorPay');
+    Route::post('/vendor-okala-sales-pay', [TransactionController::class,'vendorOkalaSalesPay'])->name('vendorOkalaSalesPay');
+    Route::post('/okala-sales-receive', [TransactionController::class,'okalaSalesReceive'])->name('okalaSalesReceive');
     Route::post('/vendor-transaction', [TransactionController::class,'vendorTran'])->name('vendorTran');
 
 });

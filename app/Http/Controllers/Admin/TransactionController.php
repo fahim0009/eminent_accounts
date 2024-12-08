@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\Okala;
+use App\Models\OkalaSale;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
@@ -295,5 +296,82 @@ class TransactionController extends Controller
             }
 
         return response()->json(['status'=> 300,'data'=>$prop, 'balance'=>$balance]);
+    }
+
+
+    public function vendorOkalaSalesPay(Request $request)
+    {
+        $request->validate([
+            'vendorId' => 'required',
+            'paymentAmount' => 'required',
+            'account_id' => 'required',
+            'paymentNote' => 'nullable',
+        ]);
+
+        $okala = OkalaSale::where('id', $request->okalaId)->first();
+
+        
+            $transaction = new Transaction();
+            // image
+            if ($request->document != 'null') {
+                $rand = mt_rand(100000, 999999);
+                $ImageName = time(). $rand .'.'.$request->document->extension();
+                $request->document->move(public_path('images/okala/document'), $ImageName);
+                $transaction->document = $ImageName;
+            }
+            // end
+            $transaction->okala_sale_id = $okala->id;
+            $transaction->vendor_id = $request->vendorId;
+            $transaction->amount = $request->paymentAmount;
+            $transaction->account_id = $request->account_id;
+            $transaction->payment_type = "Payment";
+            $transaction->note = $request->paymentNote;
+            $transaction->tran_type = "Payment";
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
+            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->save();
+
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
+    }
+
+    public function okalaSalesReceive(Request $request)
+    {
+        $request->validate([
+            'agentId' => 'required',
+            'amount' => 'required',
+            'riyalamount' => 'required',
+            'account_id' => 'required',
+            'note' => 'nullable',
+        ]);
+
+        $okala = OkalaSale::where('id', $request->okalaId)->first();
+
+        
+            $transaction = new Transaction();
+            // image
+            if ($request->document != 'null') {
+                $rand = mt_rand(100000, 999999);
+                $ImageName = time(). $rand .'.'.$request->document->extension();
+                $request->document->move(public_path('images/okala/document'), $ImageName);
+                $transaction->document = $ImageName;
+            }
+            // end
+            $transaction->okala_sale_id = $okala->id;
+            $transaction->user_id = $request->agentId;
+            $transaction->amount = $request->amount;
+            $transaction->riyalamount = $request->riyalamount;
+            $transaction->account_id = $request->account_id;
+            $transaction->payment_type = "Received";
+            $transaction->note = $request->note;
+            $transaction->tran_type = "Received";
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
+            $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->save();
+
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
     }
 }

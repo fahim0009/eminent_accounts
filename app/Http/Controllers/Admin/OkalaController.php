@@ -94,7 +94,7 @@ class OkalaController extends Controller
         $tran->amount = $request->bdt_amount * $x;
         $tran->riyalamount =  $request->riyal_amount * $x;
         $tran->tran_type = "Purchase";
-        $tran->payment_type = "Due";
+        $tran->payment_type = "Payable";
         $tran->note =  "Okala Purchase";
         $tran->created_by = Auth::user()->id;
         $tran->save();
@@ -268,7 +268,7 @@ class OkalaController extends Controller
         $ptran->account_id = $request->account_id;
         $ptran->amount = $request->bdt_amount * $x;
         $ptran->riyalamount = $request->riyal_amount * $x;
-        $ptran->payment_type = "Credit";
+        $ptran->payment_type = "Payable";
         $ptran->tran_type = "Purchase";
         $ptran->save();
         $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
@@ -283,7 +283,7 @@ class OkalaController extends Controller
         $ptran->account_id = $request->account_id;
         $ptran->amount = $request->sales_bdt_amount * $x;
         $ptran->riyalamount = $request->sales_riyal_amount * $x;
-        $ptran->payment_type = "Sales";
+        $ptran->payment_type = "Receivable";
         $ptran->tran_type = "Sales";
         $ptran->save();
         $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
