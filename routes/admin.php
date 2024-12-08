@@ -54,6 +54,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     //ksa with job
     Route::get('/client', [ClientController::class, 'index'])->name('admin.client');
+    Route::get('/new-clients', [ClientController::class, 'newClient'])->name('admin.newclient');
     Route::get('/processing-clients', [ClientController::class, 'processing'])->name('admin.processingclient');
     Route::get('/decline-clients', [ClientController::class, 'decline'])->name('admin.declineclient');
     Route::get('/completed-clients', [ClientController::class, 'completed'])->name('admin.completedclient');

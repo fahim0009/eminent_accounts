@@ -35,7 +35,7 @@ class ClientController extends Controller
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners','count'));
+        return view('admin.client.new', compact('data','agents','countries','accounts','bpartners','count'));
     }
 
 

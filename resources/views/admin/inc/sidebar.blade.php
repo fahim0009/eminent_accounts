@@ -63,7 +63,7 @@
       
 
       
-      <li class="nav-item {{ (request()->is('admin/client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/processing-clients*')) ? 'menu-open' : '' }}">
+      <li class="nav-item {{ (request()->is('admin/client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/completed-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/decline-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/processing-clients*')) ? 'menu-open' : '' }}{{ (request()->is('admin/new-clients*')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('admin/client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
@@ -72,6 +72,12 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{{route('admin.newclient')}}" class="nav-link {{ (request()->is('admin/new-clients*')) ? 'active' : '' }}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>New</p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="{{route('admin.processingclient')}}" class="nav-link {{ (request()->is('admin/processing-clients*')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>

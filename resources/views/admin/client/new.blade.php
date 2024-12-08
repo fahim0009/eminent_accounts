@@ -204,7 +204,7 @@
                           <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Complete</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Processing</button>
                           <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
                         </div>
                       </div>
