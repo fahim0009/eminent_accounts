@@ -233,7 +233,6 @@ class TransactionController extends Controller
 
             $transaction->okala_id = $okala->id;
             $transaction->vendor_id = $request->vendorId;
-            $transaction->vendor_id = $request->vendorId;
             $transaction->amount = $request->paymentAmount;
             $transaction->account_id = $request->account_id;
             $transaction->payment_type = "Payment";

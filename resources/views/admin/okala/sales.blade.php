@@ -64,34 +64,89 @@
                         <input type="number" id="sponsorid" name="sponsorid" class="form-control">
                       </div>
                     </div>
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>RL</label>
+                        <select name="r_l_detail_id" id="r_l_detail_id" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\RLDetail::orderby('id', 'DESC')->where('status', 1)->get() as $rl)
+                          <option value="{{$rl->id}}">{{$rl->name}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+
                     
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Agent</label>
+                        <select name="user_id" id="user_id" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\User::orderby('id', 'DESC')->where('is_type', 2)->get() as $agent)
+                          <option value="{{$agent->id}}">{{$agent->name}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
                       <div class="form-group">
                         <label>Trade</label>
                         <select name="trade" id="trade" class="form-control">
                           <option value="">Select</option>
                           @foreach (\App\Models\Trade::orderby('id', 'DESC')->where('status', 1)->get() as $trade)
-
                           <option value="{{$trade->id}}">{{$trade->name}}</option>
-                              
                           @endforeach
                         </select>
                       </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <div class="form-group">
                         <label>Vendor</label>
                         <select name="vendor_id" id="vendor_id" class="form-control">
                           <option value="">Select</option>
                           @foreach (\App\Models\Vendor::orderby('id', 'DESC')->where('status', 1)->get() as $vendor)
-
                           <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                              
                           @endforeach
                         </select>
                       </div>
                     </div>
+                    <div class="col-sm-12">
+                      <h3>Purchase </h3> 
+                    </div>
+
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Purchase Amount in BDT</label>
+                          <input type="number" id="bdt_amount" name="bdt_amount" class="form-control">
+                        </div>
+                      </div>
+  
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Purchase Amount in Riyal</label>
+                          <input type="number" id="riyal_amount" name="riyal_amount" class="form-control">
+                        </div>
+                      </div>
+                    
+                    <div class="col-sm-12">
+                      <h3>Sales </h3> 
+                    </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label> Sales Amount in BDT</label>
+                          <input type="number" id="sales_bdt_amount" name="sales_bdt_amount" class="form-control">
+                        </div>
+                      </div>
+  
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Sales Amount in Riyal</label>
+                          <input type="number" id="sales_riyal_amount" name="sales_riyal_amount" class="form-control">
+                        </div>
+                      </div>
+                    
 
                   </div>
 
@@ -229,44 +284,7 @@
     });
 
   </script>
-<script>
-  $(document).ready(function() {
-    var okalaurl = "{{URL::to('/admin/client-add-okala')}}";
-      $('.assignto').change(function() {
-          let clientId = $(this).val();
-          let okalaId = $(this).data('okala-id'); 
-
-          console.log(clientId, okalaId);
-          $.ajax({
-              url: okalaurl,
-              type: 'POST',
-              data: {
-                clientId: clientId,
-                okalaId: okalaId,
-                  _token: '{{ csrf_token() }}'
-              },
-              success: function(response) {
-                $(function() {
-                  var Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                  });
-                  Toast.fire({
-                    icon: 'success',
-                    title: 'Data assigned successfully.'
-                  });
-                });
-                window.setTimeout(function(){location.reload()},2000)
-              },
-              error: function(xhr) {
-                  $('#message').text('Error updating status');
-              }
-          });
-      });
-  });
-</script>
+  
 
 <script>
   $(document).ready(function () {
@@ -285,8 +303,8 @@
       //header for csrf-token is must in laravel
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
-      var url = "{{URL::to('/admin/okala')}}";
-      var upurl = "{{URL::to('/admin/okala-update')}}";
+      var url = "{{URL::to('/admin/okala-sales')}}";
+      var upurl = "{{URL::to('/admin/okala-sales-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
         $(this).prop('disabled', true);
@@ -298,8 +316,13 @@
               form_data.append("visaid", $("#visaid").val());
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
-              form_data.append("agent_id", $("#agent_id").val());
+              form_data.append("user_id", $("#user_id").val());
               form_data.append("vendor_id", $("#vendor_id").val());
+              form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
+              form_data.append("bdt_amount", $("#bdt_amount").val());
+              form_data.append("riyal_amount", $("#riyal_amount").val());
+              form_data.append("sales_bdt_amount", $("#sales_bdt_amount").val());
+              form_data.append("sales_riyal_amount", $("#sales_riyal_amount").val());
               $.ajax({
                 url: url,
                 method: "POST",
@@ -337,10 +360,17 @@
           if($(this).val() == 'Update'){
               var form_data = new FormData();
               form_data.append("date", $("#date").val());
+              form_data.append("datanumber", $("#datanumber").val());
               form_data.append("visaid", $("#visaid").val());
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
+              form_data.append("user_id", $("#user_id").val());
               form_data.append("vendor_id", $("#vendor_id").val());
+              form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
+              form_data.append("bdt_amount", $("#bdt_amount").val());
+              form_data.append("riyal_amount", $("#riyal_amount").val());
+              form_data.append("sales_bdt_amount", $("#sales_bdt_amount").val());
+              form_data.append("sales_riyal_amount", $("#sales_riyal_amount").val());
               form_data.append("codeid", $("#codeid").val());
               
               $.ajax({
@@ -420,7 +450,13 @@
           $("#visaid").val(data.visaid);
           $("#sponsorid").val(data.sponsorid);
           $("#trade").val(data.trade);
+          $("#user_id").val(data.user_id);
           $("#vendor_id").val(data.vendor_id);
+          $("#r_l_detail_id").val(data.r_l_detail_id);
+          $("#bdt_amount").val(data.bdt_amount);
+          $("#riyal_amount").val(data.riyal_amount);
+          $("#sales_bdt_amount").val(data.sales_bdt_amount);
+          $("#sales_riyal_amount").val(data.sales_riyal_amount);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');
           $("#addBtn").html('Update');

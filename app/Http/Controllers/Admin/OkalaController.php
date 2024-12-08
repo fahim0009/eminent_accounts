@@ -217,23 +217,37 @@ class OkalaController extends Controller
         }
         
         $x = $request->datanumber;
-        $okala = new Okala();
-        $okala->number = $request->datanumber;
-        $okala->created_by = Auth::user()->id;
-        $okala->save();
-        
+
         for ($i = 0; $i < $x; $i++) {
             $data = new OkalaSale();
             $data->date = $request->date;
-            $data->okala_id = $okala->id;
             $data->user_id = $request->user_id;
             $data->vendor_id = $request->vendor_id;
             $data->trade = $request->trade;
             $data->sponsorid = $request->sponsorid;
+            $data->r_l_detail_id = $request->r_l_detail_id;
             $data->visaid = $request->visaid;
+            $data->purchase_bdt_amount = $request->bdt_amount;
+            $data->purchase_riyal_amount = $request->riyal_amount;
+            $data->sales_bdt_amount = $request->sales_bdt_amount;
+            $data->sales_riyal_amount = $request->sales_riyal_amount;
             $data->created_by = Auth::user()->id;
             $data->save();
         }
+
+        $ptran = new Transaction();
+        $ptran->date = $request->date;
+        $ptran->user_id = $request->user_id;
+        $ptran->vendor_id = $request->vendorId;
+        $ptran->amount = $request->paymentAmount;
+        $ptran->account_id = $request->account_id;
+        $ptran->bdt_amount = $request->bdt_amount * $x;
+        $ptran->riyal_amount = $request->riyal_amount * $x;
+        $ptran->payment_type = "Purchase";
+        $ptran->tran_type = "Purchase";
+        $ptran->save();
+        $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
+        $ptran->save();
         
         $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
         return response()->json(['status'=> 300,'message'=>$message]);

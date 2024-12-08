@@ -18,9 +18,15 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('vendor_id')->unsigned()->nullable();
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
+            $table->bigInteger('r_l_detail_id')->unsigned()->nullable();
+            $table->foreign('r_l_detail_id')->references('id')->on('r_l_details')->onDelete('cascade');
             $table->integer('visaid')->nullable();
             $table->integer('sponsorid')->nullable();
             $table->string('trade')->nullable();
+            $table->double('purchase_bdt_amount', 10,2)->nullable();
+            $table->double('purchase_riyal_amount', 10,2)->nullable();
+            $table->double('sales_bdt_amount', 10,2)->nullable();
+            $table->double('sales_riyal_amount', 10,2)->nullable();
             $table->string('action')->nullable();
             $table->string('aqama')->nullable();
             $table->boolean('status')->default(0);

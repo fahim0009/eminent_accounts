@@ -181,8 +181,8 @@
       
 
 
-      <li class="nav-item {{ (request()->is('admin/okala*')) ? 'menu-open' : '' }}">
-        <a href="#" class="nav-link {{ (request()->is('admin/okala*')) ? 'active' : '' }}">
+      <li class="nav-item {{ (request()->is('admin/okala')) ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-table"></i>
           <p>
             My Okala
