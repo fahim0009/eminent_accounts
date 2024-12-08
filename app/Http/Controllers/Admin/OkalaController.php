@@ -197,6 +197,12 @@ class OkalaController extends Controller
         return view('admin.okala.sales', compact('data'));
     }
 
+    public function salesDetails($id)
+    {
+        $data = OkalaSaleDetail::where('okala_sale_id', $id)->orderby('id','DESC')->get();
+        return view('admin.okala.salesdetails', compact('data'));
+    }
+
 
 
     public function salesstore(Request $request)

@@ -156,6 +156,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     // okala sales
     Route::get('/okala-sales', [OkalaController::class, 'salesindex'])->name('admin.okalasales');
+    Route::get('/okala-sales-details/{id}', [OkalaController::class, 'salesDetails'])->name('okalasalesDetails');
     Route::post('/okala-sales', [OkalaController::class, 'salesstore']);
     Route::get('/okala-sales/{id}/edit', [OkalaController::class, 'salesedit']);
     Route::post('/okala-sales-update', [OkalaController::class, 'salesupdate']);

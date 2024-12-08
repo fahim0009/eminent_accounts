@@ -171,79 +171,70 @@
     <!-- /.content -->
 
 
-<!-- Main content -->
+    <!-- Main content -->
 <section class="content" id="contentContainer">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <!-- /.card -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- /.card -->
 
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">All Data</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <input type="hidden" id="okalaCount" value="{{$data->count()}}">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Date</th>
-                  <th>Visa Id</th>
-                  <th>Sponsor Id</th>
-                  <th>Trade</th>
-                  <th>Vendor</th>
-                  <th>Transaction</th>
-                  <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
-                  @php
-                      $tradename = \App\Models\Trade::where('id', $data->trade)->first();
-                  @endphp
-                  <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->visaid}}</td>
-                    <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">
-                      @if (isset($tradename))
-                      {{$tradename->name}}
-                      @endif
-                    </td>
-                    <td style="text-align: center">{{$data->vendor->name}}</td>
-
-                    
-                    <td style="text-align: center">
-                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-rl-id="">Pay</span>
-
-                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
-
-                    </td>
-                    
-                    <td style="text-align: center">
-                      <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                      <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
-                    </td>
-                  </tr>
-                  @endforeach
-                
-                </tbody>
-              </table>
-            </div>
-            <!-- /.card-body -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">All Data</h3>
           </div>
-          <!-- /.card -->
+          <!-- /.card-header -->
+          <div class="card-body">
+            <input type="hidden" id="okalaCount" value="{{$data->count()}}">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Sl</th>
+                <th>Date</th>
+                <th>Visa Id</th>
+                <th>Sponsor Id</th>
+                <th>Transaction</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+                @foreach (\App\Models\OkalaSale::orderby('id', 'DESC')->get() as $key => $okala)
+                <tr>
+                  <td style="text-align: center">{{ $key + 1 }}</td>
+                  <td style="text-align: center">{{$okala->date}}</td>
+                  <td style="text-align: center">{{$okala->number}}</td>
+                  <td style="text-align: center">{{$okala->sponsorid}}</td>
+                  <td style="text-align: center">
+                    <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-rl-id="">Payment</span>
+
+                    <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-rl-id="">Receive</span>
+
+                    <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-program-id="">Transaction</span>
+                  </td>
+                  
+                  <td style="text-align: center">
+                    <a href="{{route('okalasalesDetails', $okala->id)}}"><i class="fa fa-eye" style="color: #24ae2f;font-size:16px;"></i></a>
+                    <a id="EditBtn" rid="{{$okala->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                    <a id="deleteBtn" rid="{{$okala->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
+                  </td>
+                </tr>
+                @endforeach
+              
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
         </div>
-        <!-- /.col -->
+        <!-- /.card -->
       </div>
-      <!-- /.row -->
+      <!-- /.col -->
     </div>
-    <!-- /.container-fluid -->
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
 </section>
 <!-- /.content -->
+
+
 
 
 @endsection
