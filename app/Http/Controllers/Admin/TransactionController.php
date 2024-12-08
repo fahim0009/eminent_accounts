@@ -212,7 +212,7 @@ class TransactionController extends Controller
         $request->validate([
             'vendorId' => 'required',
             'paymentAmount' => 'required',
-            'payment_type' => 'required',
+            'account_id' => 'required',
             'paymentNote' => 'nullable',
         ]);
 
@@ -220,6 +220,17 @@ class TransactionController extends Controller
 
         
             $transaction = new Transaction();
+
+            // image
+            if ($request->document != 'null') {
+                $rand = mt_rand(100000, 999999);
+                $ImageName = time(). $rand .'.'.$request->document->extension();
+                $request->document->move(public_path('images/okala/document'), $ImageName);
+                $transaction->document = $ImageName;
+            }
+            // end
+
+
             $transaction->okala_id = $okala->id;
             $transaction->vendor_id = $request->vendorId;
             $transaction->vendor_id = $request->vendorId;
@@ -233,10 +244,8 @@ class TransactionController extends Controller
             $transaction->tran_id = 'AE' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Payment processed successfully!',
-        ]);
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
     }
 
     public function vendorTran(Request $request)

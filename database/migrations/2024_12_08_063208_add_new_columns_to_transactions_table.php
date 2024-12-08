@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
+            $table->string('tran_id')->nullable()->after('date');
 
             $table->bigInteger('okala_id')->unsigned()->nullable()->after('tran_type');
             $table->foreign('okala_id')->references('id')->on('okalas')->onDelete('cascade');

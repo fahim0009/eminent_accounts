@@ -218,6 +218,7 @@
           </div>
           <form id="payForm">
               <div class="modal-body">
+                <div class="permsg"></div>
                   <div class="form-group">
                       <label for="paymentAmount">Payment Amount <span style="color: red;">*</span></label>
                       <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
@@ -536,9 +537,16 @@
           $('#payForm').off('submit').on('submit', function (event) {
               event.preventDefault();
 
+              
+              var document = $('#document').prop('files')[0];
+              if(typeof document === 'undefined'){
+                document = 'null';
+              }
+
               var form_data = new FormData();
               form_data.append("okalaId", id);
               form_data.append("vendorId", vendorId);
+              form_data.append('document', document);
               form_data.append("paymentAmount", $("#paymentAmount").val());
               form_data.append("account_id", $("#account_id").val());
               form_data.append("paymentNote", $("#paymentNote").val());
@@ -561,18 +569,28 @@
                   processData: false,
                   // dataType: 'json',
                   success: function (response) {
-                    console.log(response);
+                    if (response.status == 303) {
+                        $(".permsg").html(d.message);
+                    }else if(response.status == 300){
+
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: 'Data create successfully.'
+                          });
+                        });
+                      window.setTimeout(function(){location.reload()},2000)
+                    }
+                    
+                      console.log(response);
                       $('#payModal').modal('hide');
-                      swal({
-                          text: "Payment store successfully",
-                          icon: "success",
-                          button: {
-                              text: "OK",
-                              className: "swal-button--confirm"
-                          }
-                      }).then(() => {
-                          location.reload();
-                      });
+                      
                   },
                   error: function (xhr) {
                       console.log(xhr.responseText);
