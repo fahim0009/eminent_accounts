@@ -27,7 +27,7 @@ class ClientController extends Controller
         return view('admin.client.index', compact('data','agents','countries','accounts','bpartners','count'));
     }
 
-    public function processing()
+    public function newClient()
     {
         $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
         $count = $data->count();
@@ -38,9 +38,21 @@ class ClientController extends Controller
         return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners','count'));
     }
 
+
+    public function processing()
+    {
+        $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
+        $count = $data->count();
+        $agents = User::where('is_type','2')->where('status', 1)->get();
+        $countries = Country::orderby('id','DESC')->get();
+        $accounts = Account::orderby('id','DESC')->get();
+        $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners','count'));
+    }
+
     public function decline()
     {
-        $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','3')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -50,7 +62,7 @@ class ClientController extends Controller
 
     public function completed()
     {
-        $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -74,7 +86,7 @@ class ClientController extends Controller
 
     public function withoutjobprocessing()
     {
-        $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
@@ -85,7 +97,7 @@ class ClientController extends Controller
 
     public function withoutjobdecline()
     {
-        $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','3')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -95,7 +107,7 @@ class ClientController extends Controller
 
     public function withoutjobcompleted()
     {
-        $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -150,6 +162,7 @@ class ClientController extends Controller
         $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
         $data->is_job = $request->is_job ?? 1;
+        $data->status = $request->status ?? 0;
 
         // image
         if ($request->passport_image != 'null') {
@@ -345,10 +358,12 @@ class ClientController extends Controller
         $user = Client::find($request->id);
         $user->status = $request->status;
         if($user->save()){
-            if ($user->status == 0) {
+            if ($user->status == 1) {
                 $stsval = "Processing";
-            }elseif($user->status == 1){
+            }elseif($user->status == 2){
                 $stsval = "Complete";
+            }elseif($user->status == 0){
+                $stsval = "New";
             }else {
                 $stsval = "Decline";
             }

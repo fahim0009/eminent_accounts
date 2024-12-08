@@ -195,16 +195,19 @@
                           Not Assigned
                       @endif
                     </td>
+                    
                     <td style="text-align: center">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) Processing
-                        @elseif($data->status == 1) Complete @else Decline @endif</span></button>
+                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) New
+                          @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span></button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                           <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</button>
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Decline</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">New</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Processing</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Complete</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
                         </div>
                       </div>
                     </td>
