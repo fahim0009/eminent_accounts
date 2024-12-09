@@ -86,7 +86,7 @@ class ClientController extends Controller
 
     public function withoutjobnew()
     {
-        $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = Country::orderby('id','DESC')->get();
