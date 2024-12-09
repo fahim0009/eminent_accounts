@@ -115,7 +115,18 @@
                   
 
                   <div class="row">
-                    <div class="col-sm-12">
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Ticket</label>
+                        <select class="form-control" id="with_ticket" name="with_ticket">
+                          <option value="0">No Ticket</option>
+                          <option value="1">With Ticket</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Description</label>
                         <input type="text" class="form-control" id="description" name="description">
@@ -355,6 +366,7 @@
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
               form_data.append("is_job", $("#is_job").val());
+              form_data.append("with_ticket", $("#with_ticket").val());
 
 
 
@@ -412,6 +424,7 @@
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
+              form_data.append("with_ticket", $("#with_ticket").val());
               form_data.append("codeid", $("#codeid").val());
               
               $.ajax({
@@ -493,6 +506,7 @@
           $("#user_id").val(data.user_id);
           $("#package_cost").val(data.package_cost);
           $("#description").val(data.description);
+          $("#with_ticket").val(data.with_ticket);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');
           $("#addBtn").html('Update');

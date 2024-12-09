@@ -174,6 +174,7 @@ class ClientController extends Controller
         $data->description = $request->description;
         $data->is_job = $request->is_job ?? 1;
         $data->status = $request->status ?? 0;
+        $data->with_ticket = $request->with_ticket ?? null;
 
         // image
         if ($request->passport_image != 'null') {
@@ -261,6 +262,7 @@ class ClientController extends Controller
         $data->description = $request->description;
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
+        $data->with_ticket = $request->with_ticket ?? null;
 
         if ($request->flight_date) {
             $data->status = 1;
@@ -382,11 +384,6 @@ class ClientController extends Controller
                 $tran->tran_id = 'VS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
                 $tran->save();
             }
-
-            
-
-
-
 
             if ($user->status == 1) {
                 $stsval = "Processing";
