@@ -24,12 +24,12 @@ class AgentController extends Controller
     public function getClient($id)
     {
         $data = Client::where('user_id', $id)->orderby('id','DESC')->get();
-        $processing = Client::where('status','0')->where('user_id', $id)->count();
-        $decline = Client::where('status','2')->where('user_id', $id)->count();
-        $completed = Client::where('status','1')->where('user_id', $id)->count();
+        $processing = Client::where('status','1')->where('user_id', $id)->count();
+        $decline = Client::where('status','3')->where('user_id', $id)->count();
+        $completed = Client::where('status','2')->where('user_id', $id)->count();
 
-        $completedPackageAmount = Client::where('status','1')->where('user_id', $id)->sum('package_cost');
-        $processingPackageAmount = Client::where('status','0')->where('user_id', $id)->sum('package_cost');
+        $completedPackageAmount = Client::where('status','2')->where('user_id', $id)->sum('package_cost');
+        $processingPackageAmount = Client::where('status','1')->where('user_id', $id)->sum('package_cost');
         $totalPackageAmount = $completedPackageAmount + $processingPackageAmount;
 
         $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('amount');
@@ -48,7 +48,7 @@ class AgentController extends Controller
 
     public function getTran($id)
     {
-        $data = Transaction::where('user_id',$id)->where('tran_type','receipt')->get();
+        $data = Transaction::where('user_id',$id)->where('tran_type','Received')->get();
 
         return view('admin.agent.tran', compact('data','id'));
     }
