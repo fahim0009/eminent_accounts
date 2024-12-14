@@ -52,14 +52,14 @@
           </p>
         </a>
       </li>
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a href="{{route('admin.businesspartner')}}" class="nav-link {{ (request()->is('admin/business-partner*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>
             Business Partner
           </p>
         </a>
-      </li>
+      </li> --}}
       
 
       

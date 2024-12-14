@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CodeMaster;
 use Illuminate\Support\Facades\Auth;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
-class CountryController extends Controller
+class CodeMasterController extends Controller
 {
     public function index()
     {
@@ -23,14 +24,14 @@ class CountryController extends Controller
             exit();
         }
 
-        $chkname = Country::where('name',$request->name)->first();
+        $chkname = CodeMaster::where('type_name',$request->name)->first();
         if($chkname){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This name already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
-        $data = new Country;
-        $data->name = $request->name;
+        $data = new CodeMaster;
+        $data->type_name = $request->name;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
@@ -45,21 +46,19 @@ class CountryController extends Controller
         $where = [
             'id'=>$id
         ];
-        $info = Country::where($where)->get()->first();
+        $info = CodeMaster::where($where)->get()->first();
         return response()->json($info);
     }
 
     public function update(Request $request)
     {
-
-        
         if(empty($request->name)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
 
-        $duplicatename = Country::where('name',$request->name)->where('id','!=', $request->codeid)->first();
+        $duplicatename = CodeMaster::where('type_name',$request->name)->where('id','!=', $request->codeid)->first();
         if($duplicatename){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This name already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
@@ -67,8 +66,8 @@ class CountryController extends Controller
         }
 
 
-        $data = Country::find($request->codeid);
-        $data->name = $request->name;
+        $data = CodeMaster::find($request->codeid);
+        $data->type_name = $request->name;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";
@@ -82,7 +81,7 @@ class CountryController extends Controller
     public function delete($id)
     {
 
-        if(Country::destroy($id)){
+        if(CodeMaster::destroy($id)){
             return response()->json(['success'=>true,'message'=>'Data has been deleted successfully']);
         }else{
             return response()->json(['success'=>false,'message'=>'Delete Failed']);

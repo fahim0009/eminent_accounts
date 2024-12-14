@@ -23,14 +23,15 @@ class OkalaController extends Controller
 
     public function okalaPurchase()
     {
-        $data = OkalaPurchase::with('okalaDetail')->orderby('id','DESC')->get();
+        $data = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->get();
+        
         return view('admin.okala.purchase', compact('data'));
     }
 
     public function okalapurchaseDetails($id)
     {
         
-        $data = OkalaPurchaseDetail::where('okala_id', $id)->orderby('id','DESC')->get();
+        $data = OkalaPurchaseDetail::where('okala_Purchase_id', $id)->orderby('id','DESC')->get();
         return view('admin.okala.index', compact('data'));
     }
 
@@ -63,25 +64,25 @@ class OkalaController extends Controller
         $okala = new OkalaPurchase();
         $okala->date = $request->date;
         $okala->number = $x;
-        $okala->vendor_id = $request->vendor_id;
+        $okala->user_id = $request->user_id;
         $okala->sponsorid = $request->sponsorid;
         $okala->visaid = $request->visaid;
         $okala->riyal_amount = $request->riyal_amount;
         $okala->bdt_amount = $request->bdt_amount;
         $okala->total_riyal = $request->riyal_amount * $x;
         $okala->total_bdt = $request->bdt_amount * $x;
+        $okala->purchase_type = $request->purchase_type;
+        $okala->trade = $request->trade;
         $okala->created_by = Auth::user()->id;
         $okala->save();
         
         for ($i = 0; $i < $x; $i++) {
             $data = new OkalaPurchaseDetail();
+            $data->okala_purchase_id  = $okala->id;
             $data->date = $request->date;
-            $data->okala_id = $okala->id;
             $data->user_id = $request->user_id;
-            $data->vendor_id = $request->vendor_id;
-            $data->trade = $request->trade;
-            $data->sponsorid = $request->sponsorid;
-            $data->visaid = $request->visaid;
+            $data->sponsor_id = $request->sponsorid;
+            $data->visa_id = $request->visaid;
             $data->r_l_detail_id = $request->r_l_detail_id;
             $data->created_by = Auth::user()->id;
             $data->save();
@@ -89,19 +90,19 @@ class OkalaController extends Controller
 
         $tran = new Transaction();
         $tran->date = $request->date;
-        $tran->okala_id = $okala->id;
-        $tran->vendor_id = $request->vendor_id;
-        $tran->amount = $request->bdt_amount * $x;
-        $tran->riyalamount =  $request->riyal_amount * $x;
+        $tran->user_id = $request->vendor_id;
         $tran->tran_type = "Purchase";
-        $tran->payment_type = "Payable";
         $tran->note =  "Okala Purchase";
+        $tran->okala_purchase_id  = $okala->id;
+        $tran->foreign_amount =  $request->riyal_amount * $x;
+        $tran->foreign_amount_type =  'riyal';
+        $tran->bdt_amount = $request->bdt_amount * $x;
+        $tran->payment_type = "Payable";
         $tran->created_by = Auth::user()->id;
         $tran->save();
         $tran->tran_id = 'AE' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
         $tran->save();
-
-        
+       
         $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
         return response()->json(['status'=> 300,'message'=>$message]);
         

@@ -70,7 +70,7 @@
                         <label>RL </label>
                         <select name="r_l_detail_id" id="r_l_detail_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\RLDetail::orderby('id', 'DESC')->where('status', 1)->get() as $rl)
+                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->where('status', 1)->get() as $rl)
 
                           <option value="{{$rl->id}}">{{$rl->name}}</option>
                               
@@ -84,7 +84,7 @@
                         <label>Trade</label>
                         <select name="trade" id="trade" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Trade::orderby('id', 'DESC')->where('status', 1)->get() as $trade)
+                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->where('status', 1)->get() as $trade)
 
                           <option value="{{$trade->id}}">{{$trade->name}}</option>
                               
@@ -98,9 +98,9 @@
                         <label>Vendor</label>
                         <select name="vendor_id" id="vendor_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Vendor::orderby('id', 'DESC')->where('status', 1)->get() as $vendor)
+                          @foreach (\App\Models\User::orderby('id', 'DESC')->where('status', 1)->get() as $user)
 
-                          <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                          <option value="{{$user->id}}">{{$user->name}}</option>
                               
                           @endforeach
                         </select>
@@ -152,6 +152,7 @@
                   <th>Sponsor Id</th>
                   <th>RL Id</th>
                   <th>Trade</th>
+                  <th>Purchase Type</th>
                   <th>Assign To</th>
                   <th>Vendor</th>
                   <th>Action</th>
@@ -160,20 +161,30 @@
                 <tbody>
                   @foreach ($data as $key => $data)
                   @php
-                      $tradename = \App\Models\Trade::where('id', $data->trade)->first();
-                      $rl = \App\Models\RLDetail::where('id', $data->r_l_detail_id)->first();
+                      $tradename = \App\Models\CodeMaster::where('id', 
+                      \App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->trade)->first();
+                      $rl = \App\Models\CodeMaster::where('id', $data->r_l_detail_id)->first();
+                      $purchaseType =\App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->purchase_type
+                      // dd( $data);
                   @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->visaid}}</td>
-                    <td style="text-align: center">{{$data->sponsorid}}</td>
+                    <td style="text-align: center">{{$data->visa_id}}</td>
+                    <td style="text-align: center">{{$data->sponsor_id}}</td>
                     <td style="text-align: center">@if (isset($rl))
-                      {{$rl->name}}
+                      {{$rl->type_name}}
                       @endif</td>
                     <td style="text-align: center">
+                      @if (($purchaseType)=='0')
+                      {{'Own'}}
+                      @else
+                      {{'Other'}}
+                      @endif
+                    </td>
+                    <td style="text-align: center">
                       @if (isset($tradename))
-                      {{$tradename->name}}
+                      {{$tradename->type_name}}
                       @endif
                     </td>
                     <td style="text-align: center">
@@ -192,7 +203,8 @@
                       
                       <p id="message"></p>
                     </td>
-                    <td style="text-align: center">{{$data->vendor->name}}</td>
+                    <td style="text-align: center">{{$name= \App\Models\User::where('id', $data->user_id)->first()?->name }}
+                     </td>
                     
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>

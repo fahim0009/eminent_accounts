@@ -65,44 +65,54 @@
                       </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>RL </label>
                         <select name="r_l_detail_id" id="r_l_detail_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\RLDetail::orderby('id', 'DESC')->where('status', 1)->get() as $rl)
+                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->where('status', 1)->get() as $rl)
 
-                          <option value="{{$rl->id}}">{{$rl->name}}</option>
+                          <option value="{{$rl->id}}">{{$rl->type_name}}</option>
                               
                           @endforeach
                         </select>
                       </div>
                     </div>
                     
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Trade</label>
                         <select name="trade" id="trade" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Trade::orderby('id', 'DESC')->where('status', 1)->get() as $trade)
+                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->where('status', 1)->get() as $trade)
 
-                          <option value="{{$trade->id}}">{{$trade->name}}</option>
+                          <option value="{{$trade->id}}">{{$trade->type_name}}</option>
+                              
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Vendor</label>
+                        <select name="user_id" id="user_id" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\User::where('is_type', '3')->where('status', 1)->get() as $vendor)
+
+                          <option value="{{$vendor->id}}">{{$vendor->name}}</option>
                               
                           @endforeach
                         </select>
                       </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                       <div class="form-group">
-                        <label>Vendor</label>
-                        <select name="vendor_id" id="vendor_id" class="form-control">
+                        <label>Purchase Type</label>
+                        <select name="purchase_type" id="purchase_type" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Vendor::orderby('id', 'DESC')->where('status', 1)->get() as $vendor)
-
-                          <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                              
-                          @endforeach
+                          <option value="0">Own</option>
+                          <option value="1">Other</option>
                         </select>
                       </div>
                     </div>
@@ -178,11 +188,11 @@
                     <td style="text-align: center">{{$data->number}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">{{$data->vendor->name}}</td>
+                    {{-- <td style="text-align: center">{{$data->vendor->name}}</td> --}}
                     <td style="text-align: center">
-                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-rl-id="">Pay</span>
+                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
 
-                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->vendor_id }}" data-program-id="">Transaction</span>
+                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-program-id="">Transaction</span>
 
                     </td>
                     <td style="text-align: center">
@@ -226,12 +236,12 @@
 
                   <div class="form-group">
                       <label for="account_id">Payment Type <span style="color: red;">*</span></label>
-                      <select name="account_id" id="account_id" class="form-control" >
+                      {{-- <select name="account_id" id="account_id" class="form-control" >
                         <option value="">Select</option>
                         @foreach (\App\Models\Account::orderby('id', 'ASC')->get() as $acc)
                           <option value="{{$acc->id}}">{{$acc->name}}</option>
                         @endforeach
-                      </select>
+                      </select> --}}
                   </div>
 
                   <div class="form-group">
@@ -390,11 +400,12 @@
               form_data.append("visaid", $("#visaid").val());
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
-              form_data.append("agent_id", $("#agent_id").val());
-              form_data.append("vendor_id", $("#vendor_id").val());
+              // form_data.append("agent_id", $("#agent_id").val());
+              form_data.append("user_id", $("#user_id").val());
               form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
               form_data.append("bdt_amount", $("#bdt_amount").val());
               form_data.append("riyal_amount", $("#riyal_amount").val());
+              form_data.append("purchase_type", $("#purchase_type").val());
               $.ajax({
                 url: url,
                 method: "POST",
@@ -435,7 +446,7 @@
               form_data.append("visaid", $("#visaid").val());
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
-              form_data.append("vendor_id", $("#vendor_id").val());
+              form_data.append("user_id", $("#user_id").val());
               form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
               form_data.append("codeid", $("#codeid").val());
               
@@ -516,7 +527,7 @@
           $("#visaid").val(data.visaid);
           $("#sponsorid").val(data.sponsorid);
           $("#trade").val(data.trade);
-          $("#vendor_id").val(data.vendor_id);
+          $("#user_id").val(data.user_id);
           $("#r_l_detail_id").val(data.r_l_detail_id);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');

@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\AgentController;
-use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\CodeMasterController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
@@ -102,11 +102,11 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/loan-return-update', [LoanController::class, 'loanReturnUpdate']);
 
     
-    Route::get('/country', [CountryController::class, 'index'])->name('admin.country');
-    Route::post('/country', [CountryController::class, 'store']);
-    Route::get('/country/{id}/edit', [CountryController::class, 'edit']);
-    Route::post('/country-update', [CountryController::class, 'update']);
-    Route::get('/country/{id}', [CountryController::class, 'delete']);
+    Route::get('/country', [CodeMasterController::class, 'index'])->name('admin.country');
+    Route::post('/country', [CodeMasterController::class, 'store']);
+    Route::get('/country/{id}/edit', [CodeMasterController::class, 'edit']);
+    Route::post('/country-update', [CodeMasterController::class, 'update']);
+    Route::get('/country/{id}', [CodeMasterController::class, 'delete']);
 
     
     Route::get('/business-partner', [BusinessPartnerController::class, 'index'])->name('admin.businesspartner');
