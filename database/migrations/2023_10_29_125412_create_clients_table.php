@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('visa')->nullable();
             $table->string('manpower_image')->nullable();
             $table->bigInteger('country_id')->unsigned()->nullable();
-            $table->foreign('country_id')->references('id')->on('code_master')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('code_masters')->onDelete('cascade');
             $table->double('package_cost',10,2)->default(0);
             $table->string('passport_rcv_date')->nullable();
             $table->double('refund',10,2)->default(0);

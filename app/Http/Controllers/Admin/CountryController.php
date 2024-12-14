@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Country;
+use App\Models\CodeMaster;
 use Illuminate\Support\Facades\Auth;
 
 class CountryController extends Controller
 {
     public function index()
     {
-        $data = Country::orderby('id','DESC')->get();
+        $data = CodeMaster::where('type','COUNTRY')->get();
         return view('admin.country.index', compact('data'));
     }
 

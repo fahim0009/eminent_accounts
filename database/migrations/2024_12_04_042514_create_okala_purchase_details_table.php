@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('r_l_detail_id')->unsigned()->nullable();
-            $table->foreign('r_l_detail_id')->references('id')->on('code_master')->onDelete('cascade');
+            $table->foreign('r_l_detail_id')->references('id')->on('code_masters')->onDelete('cascade');
             $table->integer('visa_id')->nullable();
             $table->integer('sponsor_id')->nullable();
             $table->string('assign_to')->nullable();
