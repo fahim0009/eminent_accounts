@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Okala;
+use App\Models\OkalaPurchase;
 use Illuminate\Http\Request;
-use App\Models\Vendor;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class VendorController extends Controller
 {
     public function index()
     {
-        $data = Vendor::orderby('id','DESC')->get();
+        $data = User::where('is_type', 3)->get();
         return view('admin.vendor.index', compact('data'));
+
     }
 
     public function store(Request $request)
@@ -34,13 +35,13 @@ class VendorController extends Controller
             exit();
         }
         
-        $chkemail = Vendor::where('email',$request->email)->first();
+        $chkemail = User::where('email',$request->email)->first();
         if($chkemail){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This email already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
-        $data = new Vendor;
+        $data = new User;
         $data->name = $request->name;
         $data->address = $request->address;
         $data->phone = $request->phone;
@@ -59,7 +60,7 @@ class VendorController extends Controller
         $where = [
             'id'=>$id
         ];
-        $info = Vendor::where($where)->get()->first();
+        $info = User::where($where)->get()->first();
         return response()->json($info);
     }
 
@@ -83,7 +84,7 @@ class VendorController extends Controller
             exit();
         }
         
-        $duplicateemail = Vendor::where('email',$request->email)->where('id','!=', $request->codeid)->first();
+        $duplicateemail = User::where('email',$request->email)->where('id','!=', $request->codeid)->first();
         if($duplicateemail){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This email already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
@@ -91,7 +92,7 @@ class VendorController extends Controller
         }
 
 
-        $data = Vendor::find($request->codeid);
+        $data = User::find($request->codeid);
         $data->name = $request->name;
         $data->address = $request->address;
         $data->phone = $request->phone;
@@ -108,12 +109,12 @@ class VendorController extends Controller
     public function delete($id)
     {
         
-        $okala = Okala::where('vendor_id', $id)->first();
+        $okala = OkalaPurchase::where('vendor_id', $id)->first();
 
         if (isset($okala)) {
             return response()->json(['success'=>true,'message'=>'This vendor have transaction. Do not delete this vendor..']);
         } else {
-            if(Vendor::destroy($id)){
+            if(User::destroy($id)){
                 return response()->json(['success'=>true,'message'=>'Agent has been deleted successfully']);
             }else{
                 return response()->json(['success'=>false,'message'=>'Delete Failed']);
@@ -124,7 +125,7 @@ class VendorController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $user = Vendor::findOrFail($id);
+        $user = User::findOrFail($id);
         $user->status = $request->status;
         $user->save();
 

@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OkalaDetail extends Model
+class OkalaPurchaseDetail extends Model
 {
     use HasFactory;
 
-    public function okala()
+    public function okalaPurchase()
     {
-        return $this->belongsTo(Okala::class);
+        return $this->belongsTo(OkalaPurchase::class);
     }
 
     public function rldetail()
@@ -19,9 +19,9 @@ class OkalaDetail extends Model
         return $this->belongsTo(RLDetail::class);
     }
 
-    public function vendor()
+    public function user()
     {
-        return $this->belongsTo(Vendor::class);
+        return $this->belongsTo(User::class);
     }
 
 

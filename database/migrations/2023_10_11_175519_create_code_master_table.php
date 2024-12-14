@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('r_l_details', function (Blueprint $table) {
+        Schema::create('code_master', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('address')->nullable();
+            $table->string('type')->nullable();
+            $table->string('type_code')->nullable();
+            $table->string('type_name')->nullable();
+            $table->string('type_description')->nullable();
             $table->boolean('status')->default(1);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('r_l_details');
+        Schema::dropIfExists('code_master');
     }
 };

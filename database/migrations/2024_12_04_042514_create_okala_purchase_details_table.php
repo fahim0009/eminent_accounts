@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('okala_details', function (Blueprint $table) {
+        Schema::create('okala_purchase_details', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('okala_purchase_id')->unsigned()->nullable();
+            $table->foreign('okala_purchase_id')->references('id')->on('okala_purchases')->onDelete('cascade');
             $table->string('date')->nullable();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('r_l_detail_id')->unsigned()->nullable();
-            $table->foreign('r_l_detail_id')->references('id')->on('r_l_details')->onDelete('cascade');
-            $table->bigInteger('vendor_id')->unsigned()->nullable();
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
-            $table->bigInteger('okala_id')->unsigned()->nullable();
-            $table->foreign('okala_id')->references('id')->on('okalas')->onDelete('cascade');
-            $table->integer('visaid')->nullable();
-            $table->integer('sponsorid')->nullable();
-            $table->string('trade')->nullable();
+            $table->foreign('r_l_detail_id')->references('id')->on('code_master')->onDelete('cascade');
+            $table->integer('visa_id')->nullable();
+            $table->integer('sponsor_id')->nullable();
             $table->string('assign_to')->nullable();
             $table->string('action')->nullable();
             $table->string('aqama')->nullable();
