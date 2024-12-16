@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Country;
-use App\Models\Okala;
+use App\Models\OkalaPurchase;
 use App\Models\OkalaSale;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
@@ -213,11 +213,10 @@ class TransactionController extends Controller
         $request->validate([
             'vendorId' => 'required',
             'paymentAmount' => 'required',
-            'account_id' => 'required',
             'paymentNote' => 'nullable',
         ]);
 
-        $okala = Okala::where('id', $request->okalaId)->first();
+        $okala = OkalaPurchase::where('id', $request->okalaId)->first();
 
         
             $transaction = new Transaction();
@@ -232,16 +231,17 @@ class TransactionController extends Controller
             // end
 
 
-            $transaction->okala_id = $okala->id;
-            $transaction->vendor_id = $request->vendorId;
-            $transaction->amount = $request->paymentAmount;
-            $transaction->account_id = $request->account_id;
-            $transaction->payment_type = "Payment";
+            $transaction->okala_purchase_id = $okala->id;
+            $transaction->user_id = $request->vendorId;
+            $transaction->bdt_amount = $request->paymentAmount;
+            $transaction->foreign_amount = $request->paymentRiyalAmount;
+            !empty($request->account_id) && $transaction->account_id = $request->account_id;
+            $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
             $transaction->tran_type = "Payment";
-            $transaction->date = date('Y-m-d');
+            $transaction->date = $request->paymentDate;
             $transaction->save();
-            $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->tran_id = 'OKPAY' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";

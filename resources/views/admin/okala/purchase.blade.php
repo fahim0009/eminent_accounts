@@ -229,20 +229,35 @@
           <form id="payForm">
               <div class="modal-body">
                 <div class="permsg"></div>
+                <div class="form-group">
+                  <label for="paymentDate">Payment Date <span style="color: red;">*</span></label>
+                  <input type="date" class="form-control" id="paymentDate" name="paymentDate" placeholder="Enter payment Date">
+              </div>
                   <div class="form-group">
                       <label for="paymentAmount">Payment Amount <span style="color: red;">*</span></label>
                       <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
                   </div>
-
                   <div class="form-group">
-                      <label for="account_id">Payment Type <span style="color: red;">*</span></label>
-                      {{-- <select name="account_id" id="account_id" class="form-control" >
+                      <label for="paymentRiyalAmount">Payment Riyal Amount <span style="color: red;">*</span></label>
+                      <input type="number" class="form-control" id="paymentRiyalAmount" name="paymentRiyalAmount" placeholder="Enter payment amount">
+                  </div>
+                  <div class="form-group">
+                    <label for="paymentType">Payment Type <span style="color: red;">*</span></label>
+                    <select name="paymentType" id="paymentType" class="form-control" >
+                      <option value="">Select</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Bank">Bank</option>
+                    </select>
+                </div>
+                  <div class="form-group" id="accountField" style="display: none;">
+                    <label for="account_id">Account Id</label>
+                    <select name="account_id" id="account_id" class="form-control">
                         <option value="">Select</option>
                         @foreach (\App\Models\Account::orderby('id', 'ASC')->get() as $acc)
-                          <option value="{{$acc->id}}">{{$acc->name}}</option>
+                            <option value="{{$acc->id}}">{{$acc->name}}</option>
                         @endforeach
-                      </select> --}}
-                  </div>
+                    </select>
+                </div>
 
                   <div class="form-group">
                     <label for="document">Document</label>
@@ -304,6 +319,18 @@
 @endsection
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script>
+  // Use plain JavaScript
+  document.getElementById('paymentType').addEventListener('change', function () {
+      const paymentType = this.value;
+      const accountField = document.getElementById('accountField');
+      if (paymentType === 'Bank') {
+          accountField.style.display = 'block'; // Show the Account Id field
+      } else {
+          accountField.style.display = 'none'; // Hide the Account Id field
+      }
+  });
+</script>
 <script>
 
     $(function () {
@@ -400,7 +427,6 @@
               form_data.append("visaid", $("#visaid").val());
               form_data.append("sponsorid", $("#sponsorid").val());
               form_data.append("trade", $("#trade").val());
-              // form_data.append("agent_id", $("#agent_id").val());
               form_data.append("user_id", $("#user_id").val());
               form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
               form_data.append("bdt_amount", $("#bdt_amount").val());
@@ -562,17 +588,28 @@
               form_data.append("okalaId", id);
               form_data.append("vendorId", vendorId);
               form_data.append('document', document);
+              form_data.append("paymentDate", $("#paymentDate").val());
               form_data.append("paymentAmount", $("#paymentAmount").val());
-              form_data.append("account_id", $("#account_id").val());
+              form_data.append("paymentRiyalAmount", $("#paymentRiyalAmount").val());
+              $("#account_id").val() && form_data.append("account_id", $("#account_id").val());
+              form_data.append("paymentType", $("#paymentType").val());
               form_data.append("paymentNote", $("#paymentNote").val());
 
+              if (!$("#paymentDate").val()) {
+                  alert('Please enter a payment date.');
+                  return;
+              }
               if (!$("#paymentAmount").val()) {
                   alert('Please enter a payment amount.');
                   return;
               }
 
-              if (!$("#account_id").val()) {
-                  alert('Please enter a payment type.');
+              if (!$("#account_id").val() && $("#paymentType").val() == 'Bank') {
+                  alert('Please enter a Account type.');
+                  return;
+              }
+              if (!$("#paymentType").val()) {
+                  alert('Please enter a Account type.');
                   return;
               }
 

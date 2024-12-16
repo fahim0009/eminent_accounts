@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('visa_exp_date')->nullable();
             $table->boolean('is_job')->nullable();
             $table->boolean('is_ticket')->nullable();
+            $table->string('assign')->default(0);
             $table->string('status')->default(0);
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();

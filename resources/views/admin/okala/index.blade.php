@@ -151,8 +151,8 @@
                   <th>Visa Id</th>
                   <th>Sponsor Id</th>
                   <th>RL Id</th>
+                  {{-- <th>Purchase Type</th> --}}
                   <th>Trade</th>
-                  <th>Purchase Type</th>
                   <th>Assign To</th>
                   <th>Vendor</th>
                   <th>Action</th>
@@ -164,7 +164,7 @@
                       $tradename = \App\Models\CodeMaster::where('id', 
                       \App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->trade)->first();
                       $rl = \App\Models\CodeMaster::where('id', $data->r_l_detail_id)->first();
-                      $purchaseType =\App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->purchase_type
+                      // $purchaseType =\App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->purchase_type
                       // dd( $data);
                   @endphp
                   <tr>
@@ -175,13 +175,13 @@
                     <td style="text-align: center">@if (isset($rl))
                       {{$rl->type_name}}
                       @endif</td>
-                    <td style="text-align: center">
+                    {{-- <td style="text-align: center">
                       @if (($purchaseType)=='0')
                       {{'Own'}}
                       @else
                       {{'Other'}}
                       @endif
-                    </td>
+                    </td> --}}
                     <td style="text-align: center">
                       @if (isset($tradename))
                       {{$tradename->type_name}}
@@ -191,12 +191,10 @@
                       @if (isset($data->assign_to))
                       {{$data->client->passport_name}}
                       @else
-                      <select name="assignto" id="assignto" class="form-control clientselect assignto"  data-okala-id="{{ $data->id }}">
+                      <select name="assignto" id="assignto" class="form-control assignto"  data-okala-id="{{ $data->id }}">
                         <option value="">Select</option>
-                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('status', 0)->get() as $client)
-
+                        @foreach (\App\Models\Client::select('id', 'passport_name', 'status')->where('assign', 0)->get() as $client)
                         <option value="{{$client->id}}">{{$client->passport_name}}</option>
-                            
                         @endforeach
                       </select>
                       @endif

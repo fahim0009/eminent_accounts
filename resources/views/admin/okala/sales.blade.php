@@ -37,14 +37,24 @@
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
                   <div class="row">
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                       <div class="form-group">
                         <label>Date</label>
                         <input type="date" class="form-control" id="date" name="date">
                       </div>
                     </div>
-
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label>Oakala No</label>
+                        <select name="okalaNo" id="okalaNo" class="form-control">
+                          <option value="">Select</option>
+                          @foreach (\App\Models\OkalaPurchase::where('purchase_type', '1')->where('status', '0')->get() as $purchase)
+                          <option value="{{$purchase->id}}">Visa Id-{{$purchase->visaid}}- Total Visa-{{($purchase->number)}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    {{-- <div class="col-sm-6">
                       <div class="form-group">
                         <label>Number of Okala</label>
                         <input type="number" id="datanumber" name="datanumber" class="form-control">
@@ -69,7 +79,7 @@
                         <label>RL</label>
                         <select name="r_l_detail_id" id="r_l_detail_id" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\RLDetail::orderby('id', 'DESC')->where('status', 1)->get() as $rl)
+                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->where('status', 1)->get() as $rl)
                           <option value="{{$rl->id}}">{{$rl->name}}</option>
                           @endforeach
                         </select>
@@ -87,49 +97,31 @@
                           @endforeach
                         </select>
                       </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="col-sm-3">
+                    {{-- <div class="col-sm-3">
                       <div class="form-group">
                         <label>Trade</label>
                         <select name="trade" id="trade" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Trade::orderby('id', 'DESC')->where('status', 1)->get() as $trade)
+                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->where('status', 1)->get() as $trade)
                           <option value="{{$trade->id}}">{{$trade->name}}</option>
                           @endforeach
                         </select>
                       </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                       <div class="form-group">
-                        <label>Vendor</label>
-                        <select name="vendor_id" id="vendor_id" class="form-control">
+                        <label>Agent</label>
+                        <select name="agentId" id="agentId" class="form-control">
                           <option value="">Select</option>
-                          @foreach (\App\Models\Vendor::orderby('id', 'DESC')->where('status', 1)->get() as $vendor)
-                          <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                          @foreach (\App\Models\User::orderby('id', 'DESC')->where('is_type', 2)->get() as $agent)
+                          <option value="{{$agent->id}}">{{$agent->name}}</option>
                           @endforeach
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12">
-                      <h3>Purchase </h3> 
-                    </div>
-
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label>Purchase Amount in BDT</label>
-                          <input type="number" id="bdt_amount" name="bdt_amount" class="form-control">
-                        </div>
-                      </div>
-  
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label>Purchase Amount in Riyal</label>
-                          <input type="number" id="riyal_amount" name="riyal_amount" class="form-control">
-                        </div>
-                      </div>
-                    
                     <div class="col-sm-12">
                       <h3>Sales </h3> 
                     </div>
@@ -438,15 +430,8 @@
           if($(this).val() == 'Create') {
               var form_data = new FormData();
               form_data.append("date", $("#date").val());
-              form_data.append("datanumber", $("#datanumber").val());
-              form_data.append("visaid", $("#visaid").val());
-              form_data.append("sponsorid", $("#sponsorid").val());
-              form_data.append("trade", $("#trade").val());
-              form_data.append("user_id", $("#user_id").val());
-              form_data.append("vendor_id", $("#vendor_id").val());
-              form_data.append("r_l_detail_id", $("#r_l_detail_id").val());
-              form_data.append("bdt_amount", $("#bdt_amount").val());
-              form_data.append("riyal_amount", $("#riyal_amount").val());
+              form_data.append("okalaNo", $("#okalaNo").val());
+              form_data.append("agentId", $("#agentId").val());
               form_data.append("sales_bdt_amount", $("#sales_bdt_amount").val());
               form_data.append("sales_riyal_amount", $("#sales_riyal_amount").val());
               $.ajax({

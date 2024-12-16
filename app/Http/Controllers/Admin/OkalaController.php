@@ -73,6 +73,7 @@ class OkalaController extends Controller
         $okala->total_bdt = $request->bdt_amount * $x;
         $okala->purchase_type = $request->purchase_type;
         $okala->trade = $request->trade;
+        $okala->r_l_detail_id = $request->r_l_detail_id;
         $okala->created_by = Auth::user()->id;
         $okala->save();
         
@@ -90,7 +91,7 @@ class OkalaController extends Controller
 
         $tran = new Transaction();
         $tran->date = $request->date;
-        $tran->user_id = $request->vendor_id;
+        $tran->user_id = $request->user_id;
         $tran->tran_type = "Purchase";
         $tran->note =  "Okala Purchase";
         $tran->okala_purchase_id  = $okala->id;
@@ -213,83 +214,59 @@ class OkalaController extends Controller
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
-        if(empty($request->visaid)){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Visa id \" field..!</b></div>";
-            return response()->json(['status'=> 303,'message'=>$message]);
-            exit();
-        }
-        if(empty($request->sponsorid)){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Sponsor Id \" field..!</b></div>";
-            return response()->json(['status'=> 303,'message'=>$message]);
-            exit();
-        }
         
-        $x = $request->datanumber;
-
-        $sale = new OkalaSale();
-        $sale->date = $request->date;
-        $sale->number = $request->datanumber;
-        $sale->user_id = $request->user_id;
-        $sale->vendor_id = $request->vendor_id;
-        $sale->trade = $request->trade;
-        $sale->sponsorid = $request->sponsorid;
-        $sale->r_l_detail_id = $request->r_l_detail_id;
-        $sale->visaid = $request->visaid;
-        $sale->purchase_bdt_amount = $request->bdt_amount * $x;
-        $sale->purchase_riyal_amount = $request->riyal_amount * $x;
-        $sale->sales_bdt_amount = $request->sales_bdt_amount * $x;
-        $sale->sales_riyal_amount = $request->sales_riyal_amount * $x;
-        $sale->created_by = Auth::user()->id;
-        $sale->save();
-
+        $purchaseData = OkalaPurchase::where('id', $request->okalaNo)->first();
+        $x = $purchaseData->number;
+        $okala = new OkalaSale();
+        $okala->date = $request->date;
+        $okala->okala_purchase_id  = $request->okalaNo;
+        $okala->number = $x;
+        $okala->user_id = $request->agentId;
+        $okala->r_l_detail_id = $purchaseData->r_l_detail_id;
+        $okala->visaid = $purchaseData->visaid;
+        $okala->sponsor_id = $purchaseData->sponsorid;
+        $okala->trade = $purchaseData->trade;
+        $okala->bdt_amount = $request->sales_bdt_amount*$x;
+        $okala->riyal_amount = $request->sales_riyal_amount*$x;
+        $okala->created_by = Auth::user()->id;
+        $okala->save();
+        
         for ($i = 0; $i < $x; $i++) {
             $data = new OkalaSaleDetail();
             $data->date = $request->date;
-            $data->okala_sale_id = $sale->id;
-            $data->user_id = $request->user_id;
-            $data->vendor_id = $request->vendor_id;
-            $data->trade = $request->trade;
-            $data->sponsorid = $request->sponsorid;
-            $data->r_l_detail_id = $request->r_l_detail_id;
-            $data->visaid = $request->visaid;
-            $data->purchase_bdt_amount = $request->bdt_amount;
-            $data->purchase_riyal_amount = $request->riyal_amount;
-            $data->sales_bdt_amount = $request->sales_bdt_amount;
-            $data->sales_riyal_amount = $request->sales_riyal_amount;
+            $data->okala_sale_id  = $okala->id;
+            $data->user_id = $request->agentId;
+            $data->r_l_detail_id = NULL;
+            $okala->visaid = $purchaseData->visaid;
+            $data->sponsorid = $purchaseData->sponsorid;
+            $okala->trade = $purchaseData->trade;
+            $okala->bdt_amount = $purchaseData->sales_bdt_amount;
+            $okala->riyal_amount = $purchaseData->sales_riyal_amount;
+
             $data->created_by = Auth::user()->id;
             $data->save();
         }
 
-        $ptran = new Transaction();
-        $ptran->date = $request->date;
-        $ptran->okala_sale_id = $sale->id;
-        $ptran->user_id = $request->user_id;
-        $ptran->vendor_id = $request->vendorId;
-        $ptran->amount = $request->paymentAmount;
-        $ptran->account_id = $request->account_id;
-        $ptran->amount = $request->bdt_amount * $x;
-        $ptran->riyalamount = $request->riyal_amount * $x;
-        $ptran->payment_type = "Payable";
-        $ptran->tran_type = "Purchase";
-        $ptran->save();
-        $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
-        $ptran->save();
+        $tran = new Transaction();
+        $tran->date = $request->date;
+        $tran->user_id = $request->agentId;
+        $tran->tran_type = "Sales";
+        $tran->note =  "Okala Sales";
+        $tran->okala_sale_id  = $okala->id;
+        $tran->foreign_amount =  $request->sales_riyal_amount * $x;
+        $tran->foreign_amount_type =  'riyal';
+        $tran->bdt_amount = $request->sales_bdt_amount * $x;
+        $tran->payment_type = Null;
+        $tran->created_by = Auth::user()->id;
+        $tran->save();
+        $tran->tran_id = 'OKS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
+        $tran->save();
 
-        $ptran = new Transaction();
-        $ptran->date = $request->date;
-        $ptran->okala_sale_id = $sale->id;
-        $ptran->user_id = $request->user_id;
-        $ptran->vendor_id = $request->vendorId;
-        $ptran->amount = $request->paymentAmount;
-        $ptran->account_id = $request->account_id;
-        $ptran->amount = $request->sales_bdt_amount * $x;
-        $ptran->riyalamount = $request->sales_riyal_amount * $x;
-        $ptran->payment_type = "Receivable";
-        $ptran->tran_type = "Sales";
-        $ptran->save();
-        $ptran->tran_id = 'AE' . date('ymd') . str_pad($ptran->id, 4, '0', STR_PAD_LEFT);
-        $ptran->save();
-        
+        $data = OkalaPurchase::find($request->okalaNo);
+        $data->status = 1;
+        $data->created_by = Auth::user()->id;
+        $data->save();
+
         $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
         return response()->json(['status'=> 300,'message'=>$message]);
         

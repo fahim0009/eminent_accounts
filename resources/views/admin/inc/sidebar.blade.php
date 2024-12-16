@@ -195,8 +195,8 @@
       
 
 
-      <li class="nav-item {{ (request()->is('admin/okala')) ? 'menu-open' : '' }} {{ (request()->is('admin/okala-purchase')) ? 'menu-open' : '' }}">
-        <a href="#" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }} {{ (request()->is('admin/okala-purchase')) ? 'active' : '' }}">
+      <li class="nav-item {{ (request()->is('admin/okala')) ? 'menu-open' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
           <i class="nav-icon fas fa-table"></i>
           <p>
             My Okala
@@ -205,14 +205,6 @@
         </a>
 
         <ul class="nav nav-treeview">
-          
-          <li class="nav-item">
-            <a href="{{route('admin.okalapurchase')}}" class="nav-link {{ (request()->is('admin/okala-purchase')) ? 'active' : '' }}">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Okala Purchase</p>
-            </a>
-          </li>
-
           <li class="nav-item">
             <a href="{{route('admin.okala')}}" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
@@ -228,7 +220,12 @@
 
         </ul>
       </li>
-
+      <li class="nav-item">
+        <a href="{{route('admin.okalapurchase')}}" class="nav-link {{ (request()->is('admin/okala-purchase')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>Okala Purchase</p>
+        </a>
+      </li>
       <li class="nav-item">
         <a href="{{route('admin.okalasales')}}" class="nav-link {{ (request()->is('admin/okala-sales')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
