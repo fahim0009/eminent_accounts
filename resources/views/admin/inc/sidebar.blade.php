@@ -190,11 +190,6 @@
 
         </ul>
       </li>
-
-      
-      
-
-
       <li class="nav-item {{ (request()->is('admin/okala')) ? 'menu-open' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
           <i class="nav-icon fas fa-table"></i>
