@@ -25,7 +25,7 @@
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
-                <h3 class="card-title">Add new country</h3>
+                <h3 class="card-title">Add new setting</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -36,8 +36,26 @@
                   <div class="row">
                     <div class="col-sm-12">
                       <div class="form-group">
+                        <label>Type</label>
+                        <input type="text" class="form-control" id="type" name="type" value="">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>Type Code</label>
+                        <input type="text" class="form-control" id="type_code" name="type_code" value="">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="name">
+                        <input type="text" class="form-control" id="name" name="name" value="">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>Type Description</label>
+                        <input type="text" class="form-control" id="type_description" name="type_description" value="">
                       </div>
                     </div>
                   </div>
@@ -81,7 +99,10 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
-                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Type Code</th>
+                  <th>Type Name</th>
+                  <th>Type Description</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -89,7 +110,10 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
+                    <td style="text-align: center">{{$data->type}}</td>
+                    <td style="text-align: center">{{$data->type_code}}</td>
                     <td style="text-align: center">{{$data->type_name}}</td>
+                    <td style="text-align: center">{{$data->type_description}}</td>
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                       <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
@@ -150,14 +174,17 @@
       //header for csrf-token is must in laravel
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
-      var url = "{{URL::to('/admin/country')}}";
-      var upurl = "{{URL::to('/admin/country-update')}}";
+      var url = "{{URL::to('/admin/setting')}}";
+      var upurl = "{{URL::to('/admin/setting-update')}}";
       // console.log(url);
       $("#addBtn").click(function(){
       //   alert("#addBtn");
           if($(this).val() == 'Create') {
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
+              form_data.append("type", $("#type").val());
+              form_data.append("type_code", $("#type_code").val());
+              form_data.append("type_description", $("#type_description").val());
               $.ajax({
                 url: url,
                 method: "POST",

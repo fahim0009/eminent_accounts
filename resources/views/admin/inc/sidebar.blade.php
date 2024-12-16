@@ -37,10 +37,10 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{route('admin.country')}}" class="nav-link {{ (request()->is('admin/country*')) ? 'active' : '' }}">
+        <a href="{{route('admin.setting')}}" class="nav-link {{ (request()->is('admin/setting*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>
-            Country
+            Setting
           </p>
         </a>
       </li>

@@ -12,8 +12,8 @@ class CodeMasterController extends Controller
 {
     public function index()
     {
-        $data = CodeMaster::where('type','COUNTRY')->get();
-        return view('admin.country.index', compact('data'));
+        $data = CodeMaster::get();
+        return view('admin.setting.index', compact('data'));
     }
 
     public function store(Request $request)
@@ -31,7 +31,10 @@ class CodeMasterController extends Controller
             exit();
         }
         $data = new CodeMaster;
+        $data->type = $request->type;
+        $data->type_code = $request->type_code;
         $data->type_name = $request->name;
+        $data->type_description = $request->type_description;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";

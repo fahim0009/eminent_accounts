@@ -102,11 +102,11 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/loan-return-update', [LoanController::class, 'loanReturnUpdate']);
 
     
-    Route::get('/country', [CodeMasterController::class, 'index'])->name('admin.country');
-    Route::post('/country', [CodeMasterController::class, 'store']);
-    Route::get('/country/{id}/edit', [CodeMasterController::class, 'edit']);
-    Route::post('/country-update', [CodeMasterController::class, 'update']);
-    Route::get('/country/{id}', [CodeMasterController::class, 'delete']);
+    Route::get('/setting', [CodeMasterController::class, 'index'])->name('admin.setting');
+    Route::post('/setting', [CodeMasterController::class, 'store']);
+    Route::get('/setting/{id}/edit', [CodeMasterController::class, 'edit']);
+    Route::post('/setting-update', [CodeMasterController::class, 'update']);
+    Route::get('/setting/{id}', [CodeMasterController::class, 'delete']);
 
     
     Route::get('/business-partner', [BusinessPartnerController::class, 'index'])->name('admin.businesspartner');
