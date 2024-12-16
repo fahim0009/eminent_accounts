@@ -27,7 +27,7 @@
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
-                <h3 class="card-title">Add new okala</h3>
+                <h3 class="card-title">Add new okala Sales</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -194,13 +194,13 @@
                   <td style="text-align: center">{{ $key + 1 }}</td>
                   <td style="text-align: center">{{$okala->date}}</td>
                   <td style="text-align: center">{{$okala->number}}</td>
-                  <td style="text-align: center">{{$okala->sponsorid}}</td>
+                  <td style="text-align: center">{{$okala->sponsor_id}}</td>
                   <td style="text-align: center">
-                    <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-rl-id="">Payment</span>
+                    {{-- <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-rl-id="">Payment</span> --}}
 
                     <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
 
-                    <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-program-id="">Transaction</span>
+                    <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
                   </td>
                   
                   <td style="text-align: center">
@@ -293,6 +293,10 @@
           <form id="rcvForm">
               <div class="modal-body">
                 <div class="permsg"></div>
+                <div class="form-group">
+                  <label for="paymentDate">Payment Date <span style="color: red;">*</span></label>
+                  <input type="date" class="form-control" id="paymentDate" name="paymentDate" placeholder="Enter payment Date">
+              </div>
                   <div class="form-group">
                       <label for="rcvamount">Amount in Bdt <span style="color: red;">*</span></label>
                       <input type="number" class="form-control" id="rcvamount" name="rcvamount">
@@ -304,7 +308,7 @@
                     <input type="number" class="form-control" id="rcvriyalamount" name="rcvriyalamount">
                   </div>
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                       <label for="rcvaccount_id">Type <span style="color: red;">*</span></label>
                       <select name="rcvaccount_id" id="rcvaccount_id" class="form-control" >
                         <option value="">Select</option>
@@ -312,7 +316,24 @@
                           <option value="{{$acc->id}}">{{$acc->name}}</option>
                         @endforeach
                       </select>
-                  </div>
+                  </div> --}}
+                  <div class="form-group">
+                    <label for="paymentType">Payment Type <span style="color: red;">*</span></label>
+                    <select name="paymentType" id="paymentType" class="form-control" >
+                      <option value="">Select</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Bank">Bank</option>
+                    </select>
+                </div>
+                  <div class="form-group" id="accountField" style="display: none;">
+                    <label for="rcvaccount_id">Account Id</label>
+                    <select name="rcvaccount_id" id="rcvaccount_id" class="form-control">
+                        <option value="">Select</option>
+                        @foreach (\App\Models\Account::orderby('id', 'ASC')->get() as $acc)
+                            <option value="{{$acc->id}}">{{$acc->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
 
                   <div class="form-group">
                     <label for="rcvdocument">Document</label>
@@ -351,8 +372,8 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Payment Type</th>
                   <th>Payment Method</th>
+                  <th>Payment Type</th>
                   <th>Dr. Amount</th>
                   <th>Cr. Amount</th>
                 </tr>
@@ -599,10 +620,12 @@
               var form_data = new FormData();
               form_data.append("okalaId", id);
               form_data.append("agentId", agentId);
+              form_data.append("paymentDate", $("#paymentDate").val());
+              form_data.append("paymentType", $("#paymentType").val());
               form_data.append('document', document);
               form_data.append("amount", $("#rcvamount").val());
               form_data.append("riyalamount", $("#rcvriyalamount").val());
-              form_data.append("account_id", $("#rcvaccount_id").val());
+              $("#rcvaccount_id").val() && form_data.append("account_id", $("#rcvaccount_id").val());
               form_data.append("note", $("#note").val());
 
               if (!$("#rcvamount").val()) {
@@ -615,8 +638,13 @@
                   return;
               }
 
-              if (!$("#rcvaccount_id").val()) {
-                  alert('Please enter a payment type.');
+              if (!$("#rcvaccount_id").val() && $("#paymentType").val() == 'Bank') {
+                  alert('Please enter a Account type.');
+                  return;
+              }
+
+              if (!$("#paymentType").val()) {
+                  alert('Please enter a Account type.');
                   return;
               }
 
@@ -770,6 +798,18 @@
               });
         });
 
+  });
+</script>
+<script>
+  // Use plain JavaScript
+  document.getElementById('paymentType').addEventListener('change', function () {
+      const paymentType = this.value;
+      const accountField = document.getElementById('accountField');
+      if (paymentType === 'Bank') {
+          accountField.style.display = 'block'; // Show the Account Id field
+      } else {
+          accountField.style.display = 'none'; // Hide the Account Id field
+      }
   });
 </script>
 @endsection

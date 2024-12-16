@@ -248,13 +248,12 @@ class TransactionController extends Controller
             return response()->json(['status'=> 300,'message'=>$message]);
     }
 
-    public function vendorTran(Request $request)
+    public function purchaseTran(Request $request)
     {
-        $data = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->orderby('id', 'ASC')->get();
+        $data = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->orderby('id', 'ASC')->get();
+        $drAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Received')->sum('bdt_amount');
 
-        $drAmount = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->where('tran_type', 'Payment')->sum('amount');
-
-        $crAmount = Transaction::where('okala_id',$request->okalaId)->where('vendor_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('amount');
+        $crAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('bdt_amount');
         $balance =  $crAmount - $drAmount;
         $prop = '';
         
@@ -282,12 +281,61 @@ class TransactionController extends Controller
                             if ($tran->tran_type == "Purchase") {
                                 $prop.= '<td> </td>
                                         <td>
-                                            '.$tran->amount.'
+                                            '.$tran->bdt_amount.'
                                         </td>';
                             } else {
                                 
                                 $prop.= '<td>
-                                            '.$tran->amount.'
+                                            '.$tran->bdt_amount.'
+                                        </td>
+                                        <td> </td>'; 
+                            }
+                            
+                        $prop.= '</tr>';
+            }
+
+        return response()->json(['status'=> 300,'data'=>$prop, 'balance'=>$balance]);
+    }
+
+    public function vendorTran(Request $request)
+    {
+        $data = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->orderby('id', 'ASC')->get();
+        $drAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Received')->sum('bdt_amount');
+
+        $crAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('bdt_amount');
+        $balance =  $crAmount - $drAmount;
+        $prop = '';
+        
+            foreach ($data as $tran){
+
+                if (isset($tran->account_id)) {
+                    $account = Account::where('id', $tran->account_id)->first();
+                    $accountName = $account->name;
+                }else{
+                    $accountName = ' ';
+                }
+                
+                // <!-- Single Property Start -->
+                $prop.= '<tr>
+                            <td>
+                                '.$tran->date.'
+                            </td>
+                            <td>
+                                '.$tran->payment_type.'
+                            </td>
+                            <td>
+                                '.$accountName.'
+                            </td>';
+
+                            if ($tran->tran_type == "Sales") {
+                                $prop.= '<td> </td>
+                                        <td>
+                                            '.$tran->bdt_amount.'
+                                        </td>';
+                            } else {
+                                
+                                $prop.= '<td>
+                                            '.$tran->bdt_amount.'
                                         </td>
                                         <td> </td>'; 
                             }
@@ -326,7 +374,7 @@ class TransactionController extends Controller
             $transaction->amount = $request->paymentAmount;
             $transaction->riyalamount = $request->riyalamount;
             $transaction->account_id = $request->account_id;
-            $transaction->payment_type = "Payment";
+            $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
             $transaction->tran_type = "Payment";
             $transaction->date = date('Y-m-d');
@@ -344,7 +392,7 @@ class TransactionController extends Controller
             'agentId' => 'required',
             'amount' => 'required',
             'riyalamount' => 'required',
-            'account_id' => 'required',
+            // 'account_id' => 'required',
             'note' => 'nullable',
         ]);
 
@@ -362,15 +410,16 @@ class TransactionController extends Controller
             // end
             $transaction->okala_sale_id = $okala->id;
             $transaction->user_id = $request->agentId;
-            $transaction->amount = $request->amount;
-            $transaction->riyalamount = $request->riyalamount;
+            $transaction->bdt_amount = $request->amount;
+            $transaction->foreign_amount = $request->riyalamount;
+            $transaction->foreign_amount_type = 'riyal';
             $transaction->account_id = $request->account_id;
-            $transaction->payment_type = "Received";
+            $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->note;
             $transaction->tran_type = "Received";
-            $transaction->date = date('Y-m-d');
+            $transaction->date = $request->paymentDate;
             $transaction->save();
-            $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->tran_id = 'OKR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
             $transaction->save();
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data store Successfully.</b></div>";

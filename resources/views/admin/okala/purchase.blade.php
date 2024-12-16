@@ -667,7 +667,7 @@
               form_data.append("vendorId", vendorId);
 
               $.ajax({
-                  url: '{{ URL::to('/admin/vendor-transaction') }}',
+                  url: '{{ URL::to('/admin/purchase-transaction') }}',
                   method: 'POST',
                   data:form_data,
                   contentType: false,
