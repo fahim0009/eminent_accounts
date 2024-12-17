@@ -43,10 +43,12 @@ class VendorController extends Controller
         }
         $data = new User;
         $data->name = $request->name;
+        $data->surname = $request->name;
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->email = $request->email;
         $data->password = Hash::make("123456");
+        $data->is_type = 3;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
             return response()->json(['status'=> 300,'message'=>$message]);

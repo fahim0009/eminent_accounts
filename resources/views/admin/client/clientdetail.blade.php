@@ -157,7 +157,7 @@
                             <select class="form-control" id="country" name="country" disabled>
                               <option value="">Select</option>
                               @foreach ($countries as $country)
-                                <option value="{{$country->id}}"@if ($country->id == $data->country_id) selected @endif >{{$country->name}}</option>
+                                <option value="{{$country->id}}"@if ($country->id == $data->country_id) selected @endif >{{$country->type_name}}</option>
                               @endforeach
                             </select>
                         </div>
@@ -449,7 +449,7 @@
                                     <td style="text-align: center">{{ $key + 1 }}</td>
                                     <td style="text-align: center">{{$tran->date}}</td>
                                     <td style="text-align: center">{{$tran->account->name}}</td>
-                                    <td style="text-align: center">{{$tran->amount}}</td>
+                                    <td style="text-align: center">{{$tran->bdt_amount}}</td>
                                     <td style="text-align: center">
                                       <a id="tranEditBtn" rid="{{$tran->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                                     </td>
@@ -694,9 +694,10 @@
       });
 
       function populateForm(data){
+        console.log({data})
           $("#account_id").val(data.account_id);
           $("#date").val(data.date);
-          $("#amount").val(data.amount);
+          $("#amount").val(data.bdt_amount);
           $("#note").val(data.note);
           $("#tran_id").val(data.id);
           $(".rcptUpBtn").show(300);
@@ -824,7 +825,7 @@
       function populateForm(data){
           $("#account_id").val(data.account_id);
           $("#date").val(data.date);
-          $("#amount").val(data.amount);
+          $("#amount").val(data.bdt_amount);
           $("#note").val(data.note);
           $("#tran_id").val(data.id);
           $(".rcptUpBtn").show(300);

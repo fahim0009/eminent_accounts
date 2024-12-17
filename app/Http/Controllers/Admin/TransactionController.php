@@ -35,21 +35,18 @@ class TransactionController extends Controller
         $data->date = $request->date;
         $data->account_id = $request->account_id;
         $data->user_id = $request->user_id;
-        $data->amount = $request->amount;
+        $data->bdt_amount = $request->amount;
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
-
-            if ($request->client_id) {
-                $client = Client::find($request->client_id);
-                $client->total_rcv = $client->total_rcv + $request->amount;
-                $client->due_amount = $client->due_amount - $request->amount;
-                $client->save();
-            }
-            
-
+            // if ($request->client_id) {
+            //     $client = Client::find($request->client_id);
+            //     $client->total_rcv = $client->total_rcv + $request->amount;
+            //     $client->due_amount = $client->due_amount - $request->amount;
+            //     $client->save();
+            // }
             $account = Account::find($request->account_id);
             $account->balance = $account->balance + $request->amount;
             $account->save();
@@ -85,10 +82,10 @@ class TransactionController extends Controller
 
         $data = Transaction::find($request->tran_id);
 
-            $client = Client::find($request->client_id);
-            $client->total_rcv = $client->total_rcv + $request->amount - $data->amount;
-            $client->due_amount = $client->due_amount - $request->amount + $data->amount;
-            $client->save();
+            // $client = Client::find($request->client_id);
+            // $client->total_rcv = $client->total_rcv + $request->amount - $data->amount;
+            // $client->due_amount = $client->due_amount - $request->amount + $data->amount;
+            // $client->save();
 
             $account = Account::find($data->account_id);
             $account->balance = $account->balance - $data->amount;
@@ -96,7 +93,7 @@ class TransactionController extends Controller
 
         $data->date = $request->date;
         $data->account_id = $request->account_id;
-        $data->amount = $request->amount;
+        $data->bdt_amount = $request->amount;
         $data->note = $request->note;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
@@ -138,7 +135,7 @@ class TransactionController extends Controller
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
-        $data->business_partner_id = $request->business_partner_id;
+        // $data->business_partner_id = $request->business_partner_id;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
 

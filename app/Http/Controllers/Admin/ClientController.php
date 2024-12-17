@@ -8,6 +8,7 @@ use App\Models\BusinessPartner;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
+use App\Models\CodeMaster;
 use App\Models\Country;
 use App\Models\Transaction;
 // use Illuminate\Http\Response;
@@ -21,10 +22,10 @@ class ClientController extends Controller
         $data = Client::where('is_job','1')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.index', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.index', compact('data','agents','countries','accounts','count'));
     }
 
     public function newClient()
@@ -32,10 +33,10 @@ class ClientController extends Controller
         $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.new', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.new', compact('data','agents','countries','accounts','count'));
     }
 
 
@@ -44,30 +45,30 @@ class ClientController extends Controller
         $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.processing', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.processing', compact('data','agents','countries','accounts','count'));
     }
 
     public function decline()
     {
         $data = Client::where('is_job','1')->where('status','3')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.decline', compact('data','agents','countries','accounts','bpartners'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.decline', compact('data','agents','countries','accounts'));
     }
 
     public function completed()
     {
         $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.completed', compact('data','agents','countries','accounts','bpartners'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.completed', compact('data','agents','countries','accounts'));
     }
 
 
@@ -78,10 +79,10 @@ class ClientController extends Controller
         $data = Client::where('is_job','0')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.withoutjobclient.index', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.index', compact('data','agents','countries','accounts','count'));
     }
 
     public function withoutjobnew()
@@ -89,10 +90,10 @@ class ClientController extends Controller
         $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.withoutjobclient.new', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.new', compact('data','agents','countries','accounts','count'));
     }
 
     public function withoutjobprocessing()
@@ -100,44 +101,44 @@ class ClientController extends Controller
         $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.withoutjobclient.processing', compact('data','agents','countries','accounts','bpartners','count'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.processing', compact('data','agents','countries','accounts','count'));
     }
 
     public function withoutjobdecline()
     {
         $data = Client::where('is_job','0')->where('status','3')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.withoutjobclient.decline', compact('data','agents','countries','accounts','bpartners'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.decline', compact('data','agents','countries','accounts'));
     }
 
     public function withoutjobcompleted()
     {
         $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.withoutjobclient.completed', compact('data','agents','countries','accounts','bpartners'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.withoutjobclient.completed', compact('data','agents','countries','accounts'));
     }
     // ksa without job end
 
     public function getClientInfo($id)
     {
         $data = Client::where('id',$id)->first();
-        $recepts = Transaction::where('client_id',$id)->where('tran_type','receipt')->orderby('id','DESC')->get();
+        $recepts = Transaction::where('client_id',$id)->where('tran_type','Received')->orderby('id','DESC')->get();
         $payments = Transaction::where('client_id',$id)->where('tran_type','payment')->orderby('id','DESC')->get();
         // dd($data);
         $agents = User::where('is_type','2')->where('status', 1)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','bpartners','recepts','payments'));
+        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','recepts','payments'));
     }
 
     public function store(Request $request)
@@ -170,11 +171,11 @@ class ClientController extends Controller
         $data->passport_rcv_date = $request->passport_rcv_date;
         $data->country_id = $request->country;
         $data->package_cost = $request->package_cost;
-        $data->due_amount = $request->package_cost - $request->total_rcv;
+        // $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
         $data->is_job = $request->is_job ?? 1;
         $data->status = $request->status ?? 0;
-        $data->with_ticket = $request->with_ticket ?? null;
+        $data->is_ticket = $request->with_ticket ?? null;
 
         // image
         if ($request->passport_image != 'null') {
@@ -262,7 +263,7 @@ class ClientController extends Controller
         $data->description = $request->description;
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
-        $data->with_ticket = $request->with_ticket ?? null;
+        $data->is_ticket = $request->with_ticket ?? null;
 
         if ($request->flight_date) {
             $data->status = 1;
@@ -377,7 +378,7 @@ class ClientController extends Controller
                 $tran->date = $user->passport_rcv_date;
                 $tran->tran_type = "Receivable";
                 $tran->payment_type = "Credit";
-                $tran->amount = $user->package_cost;
+                $tran->bdt_amount = $user->package_cost;
                 $tran->user_id = $user->user_id;
                 $tran->client_id = $user->id;
                 $tran->save();

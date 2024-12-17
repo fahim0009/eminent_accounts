@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Client;
+use App\Models\CodeMaster;
 use App\Models\Country;
 use App\Models\Loan;
 use App\Models\LoanTransaction;
@@ -32,15 +33,15 @@ class AgentController extends Controller
         $processingPackageAmount = Client::where('status','1')->where('user_id', $id)->sum('package_cost');
         $totalPackageAmount = $completedPackageAmount + $processingPackageAmount;
 
-        $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('amount');
+        $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('bdt_amount');
 
         $rcvamntForProcessing = $totalReceivedAmnt - $completedPackageAmount;
 
 
-        $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','receipt')->sum('amount');
+        $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','receipt')->sum('bdt_amount');
 
         $agents = User::where('id',$id)->get();
-        $countries = Country::orderby('id','DESC')->get();
+        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','directReceivedAmnt','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing'));
     }
