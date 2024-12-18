@@ -42,8 +42,8 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$tran->date}}</td>
-                    <td style="text-align: center">{{$tran->account->name}}</td>
-                    <td style="text-align: center">{{$tran->amount}}</td>
+                    <td style="text-align: center">{{$tran->tran_type}}</td>
+                    <td style="text-align: center">{{$tran->bdt_amount}}</td>
                     <td style="text-align: center">
                       {{$tran->note}}
                     </td>

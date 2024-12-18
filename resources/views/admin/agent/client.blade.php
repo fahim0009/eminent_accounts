@@ -195,8 +195,12 @@
                             Receive Amount
                           </button>
 
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModa2">
+                            Create Bill
+                          </button>
+
                           <a href="{{route('admin.agentTran', $id)}}" class="btn btn-primary" >
-                            all transaction
+                            All transaction
                           </a>
 
                         </td>
@@ -212,7 +216,6 @@
                     <thead>
                     <tr>
                       <th>Sl</th>
-                      <th>Client ID</th>
                       <th>Passport Name</th>
                       <th>Passport Number</th>
                       <th>Package Cost</th>
@@ -225,7 +228,6 @@
                       @foreach ($data as $key => $data)
                       <tr>
                         <td style="text-align: center">{{ $key + 1 }}</td>
-                        <td style="text-align: center">{{$data->clientid}}</td>
                         <td style="text-align: center">{{$data->passport_name}}</td>
                         <td style="text-align: center">{{$data->passport_number}}</td>
                         <td style="text-align: center">{{$data->package_cost}}</td>
@@ -261,7 +263,7 @@
     <!-- /.content -->
 
 
-<!-- Modal -->
+<!-- Modal Receive Payment-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -316,6 +318,66 @@
     </div>
   </div>
 </div>
+<!-- end  -->
+
+<!-- modal create bill  -->
+ 
+<!-- Modal -->
+<div class="modal fade" id="exampleModa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New transaction</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="tranermsg"></div>
+        <form class="form-horizontal">
+
+          <div class="row">
+            <!-- <div class="col-sm-6">
+              <label>Transaction method</label>
+              <select class="form-control" id="account_id" name="account_id">
+                <option value="">Select</option>
+                @foreach (\App\Models\Account::all() as $method)
+                  <option value="{{$method->id}}">{{$method->name}}</option>
+                @endforeach
+              </select>
+          </div> -->
+            <div class="col-sm-12">
+                <label>Date</label>
+                <input type="date" class="form-control" id="bdate" name="bdate">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+                <label>Amount</label>
+                <input type="number" class="form-control" id="bamount" name="bamount">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+                <label>Note</label>
+                <input type="text" class="form-control" id="bnote" name="bnote">
+                <input type="hidden" id="bagent_id" name="bagent_id" value="{{$id}}">
+            </div>
+          </div>
+          
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="billBtn">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- create bill end  -->
 
 
 @endsection
@@ -632,6 +694,54 @@
         //update  end
       });
       // add money from agent
+
+// bill create start
+      var bctranurl = "{{URL::to('/admin/bill-create')}}";
+      // console.log(url);
+      $("#billBtn").click(function(){
+
+          var form_data = new FormData();
+          form_data.append("user_id", $("#bagent_id").val());
+          form_data.append("date", $("#bdate").val());
+          form_data.append("amount", $("#bamount").val());
+          form_data.append("note", $("#bnote").val());
+          form_data.append("tran_type", "Sales");
+
+          $.ajax({
+            url: bctranurl,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".tranermsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Bill created successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+      });
+      // bill create end
+
+
   });
 </script>
 @endsection

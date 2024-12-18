@@ -49,7 +49,7 @@ class AgentController extends Controller
 
     public function getTran($id)
     {
-        $data = Transaction::where('user_id',$id)->where('tran_type','Received')->get();
+        $data = Transaction::where('user_id',$id)->get();
 
         return view('admin.agent.tran', compact('data','id'));
     }

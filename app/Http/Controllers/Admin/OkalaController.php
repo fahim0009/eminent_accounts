@@ -256,7 +256,7 @@ class OkalaController extends Controller
         $tran->foreign_amount =  $request->sales_riyal_amount * $x;
         $tran->foreign_amount_type =  'riyal';
         $tran->bdt_amount = $request->sales_bdt_amount * $x;
-        $tran->payment_type = Null;
+        $tran->payment_type = "receivable";
         $tran->created_by = Auth::user()->id;
         $tran->save();
         $tran->tran_id = 'OKS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);

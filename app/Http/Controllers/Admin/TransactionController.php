@@ -41,12 +41,10 @@ class TransactionController extends Controller
         $data->tran_type = $request->tran_type;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
-            // if ($request->client_id) {
-            //     $client = Client::find($request->client_id);
-            //     $client->total_rcv = $client->total_rcv + $request->amount;
-            //     $client->due_amount = $client->due_amount - $request->amount;
-            //     $client->save();
-            // }
+
+            $data->tran_id = 'RCVD' . date('ymd') . str_pad($data->id, 4, '0', STR_PAD_LEFT);
+            $data->save();            
+
             $account = Account::find($request->account_id);
             $account->balance = $account->balance + $request->amount;
             $account->save();
@@ -111,6 +109,37 @@ class TransactionController extends Controller
     }
 
 
+    public function billCreate(Request $request)
+    {
+      
+        if(empty($request->amount)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"amount \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        
+
+        $data = new Transaction;
+        $data->date = $request->date;
+        $data->user_id = $request->user_id;
+        $data->bdt_amount = $request->amount;
+        $data->note = $request->note;
+        $data->client_id = $request->client_id;
+        $data->tran_type = $request->tran_type;
+        $data->created_by = Auth::user()->id;
+        if ($data->save()) {
+
+            $data->tran_id = 'BILL' . date('ymd') . str_pad($data->id, 4, '0', STR_PAD_LEFT);
+            $data->save();
+     
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
+
+
 
     public function moneyPayment(Request $request)
     {
@@ -135,9 +164,11 @@ class TransactionController extends Controller
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
-        // $data->business_partner_id = $request->business_partner_id;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
+
+            $data->tran_id = 'PAY' . date('ymd') . str_pad($data->id, 4, '0', STR_PAD_LEFT);
+            $data->save();
 
             $client = Client::find($request->client_id);
             $client->b2b_payment = $client->b2b_payment + $request->amount;
@@ -152,6 +183,7 @@ class TransactionController extends Controller
         }else{
             return response()->json(['status'=> 303,'message'=>'Server Error!!']);
         }
+        
     }
 
     public function moneyPaymentEdit($id)
