@@ -25,6 +25,22 @@
             <div class="card-header">
               <h3 class="card-title">All Data</h3>
             </div>
+
+            git add .<!--get total balance -->
+                    <?php
+                    $tbalance = 0;
+                    ?> 
+                    @forelse ($data as $sdata)
+                            
+                    @if($sdata->tran_type == 'Sales')
+                    <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
+                    @else
+                    <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
+                    @endif
+     
+                    @empty
+                    @endforelse
+
             <!-- /.card-header -->
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped">
@@ -32,9 +48,10 @@
                 <tr>
                   <th>Sl</th>
                   <th>Date</th>
-                  <th>Transaction Method</th>
-                  <th>Amount</th>
-                  <th>Note</th>
+                  <th>Description</th>
+                  <th>Received</th>
+                  <th>Bill</th>
+                  <th>Balance</th>                  
                 </tr>
                 </thead>
                 <tbody>
@@ -42,11 +59,25 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$tran->date}}</td>
-                    <td style="text-align: center">{{$tran->tran_type}}</td>
+                    <td style="text-align: center">{{$tran->ref}}  ({{$tran->note}})</td>
+
+                    @if($tran->tran_type == 'Received')
+
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>
-                    <td style="text-align: center">
-                      {{$tran->note}}
-                    </td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center">{{$tbalance}}</td>
+                    <?php $tbalance = $tbalance + $tran->bdt_amount;?>
+
+                    @elseif($tran->tran_type == 'Sales')
+
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center">{{$tran->bdt_amount}}</td>
+                    <td style="text-align: center">{{$tbalance}}</td>
+                    <?php $tbalance = $tbalance - $tran->bdt_amount;?>
+
+
+                    @endif
+
                   </tr>
                   @endforeach
                 

@@ -84,7 +84,7 @@
                         <select class="form-control" id="country" name="country">
                           <option value="">Select</option>
                           @foreach ($countries as $country)
-                            <option value="{{$country->id}}">{{$country->name}}</option>
+                            <option value="{{$country->id}}">{{$country->type_name}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -176,7 +176,7 @@
                 <tbody>
 
                   @php
-                      $count1 = 68;                     
+                      $count1 = $count;                     
                   @endphp
 
                   @foreach ($data as $key => $data)
@@ -353,6 +353,8 @@
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
+              form_data.append("is_ticket",1);
+              form_data.append("is_job", 1);
 
 
 

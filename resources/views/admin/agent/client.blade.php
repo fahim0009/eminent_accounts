@@ -404,14 +404,12 @@
         var url = "{{URL::to('/admin/change-client-status')}}";
           var id = $(this).data('id');
           var status = $(this).attr('value');
-          // console.log(value);
           $.ajax({
               type: "GET",
               dataType: "json",
               url: url,
               data: {'status': status, 'id': id},
               success: function(d){
-                // console.log(data.success)
                 if (d.status == 303) {
                         $(function() {
                           var Toast = Swal.mixin({
@@ -660,6 +658,7 @@
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
           form_data.append("tran_type", "Received");
+          form_data.append("ref", "Received");
 
           $.ajax({
             url: tranurl,
@@ -706,6 +705,7 @@
           form_data.append("amount", $("#bamount").val());
           form_data.append("note", $("#bnote").val());
           form_data.append("tran_type", "Sales");
+          form_data.append("ref", "Bill");
 
           $.ajax({
             url: bctranurl,

@@ -32,7 +32,6 @@
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
-                  <input type="hidden" class="form-control" id="is_job" name="is_job" value="0">
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
@@ -85,7 +84,7 @@
                         <select class="form-control" id="country" name="country">
                           <option value="">Select</option>
                           @foreach ($countries as $country)
-                            <option value="{{$country->id}}">{{$country->name}}</option>
+                            <option value="{{$country->id}}">{{$country->type_name}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -365,8 +364,10 @@
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
-              form_data.append("is_job", $("#is_job").val());
-              form_data.append("with_ticket", $("#with_ticket").val());
+              form_data.append("is_job", 0);
+              form_data.append("is_ticket", $("#with_ticket").val());
+              // alert($("#with_ticket").val());
+              // exit;
 
 
 

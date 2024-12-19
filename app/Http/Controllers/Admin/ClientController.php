@@ -81,7 +81,6 @@ class ClientController extends Controller
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
         return view('admin.withoutjobclient.index', compact('data','agents','countries','accounts','count'));
     }
 
@@ -92,7 +91,6 @@ class ClientController extends Controller
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
         return view('admin.withoutjobclient.new', compact('data','agents','countries','accounts','count'));
     }
 
@@ -171,11 +169,10 @@ class ClientController extends Controller
         $data->passport_rcv_date = $request->passport_rcv_date;
         $data->country_id = $request->country;
         $data->package_cost = $request->package_cost;
-        // $data->due_amount = $request->package_cost - $request->total_rcv;
         $data->description = $request->description;
-        $data->is_job = $request->is_job ?? 1;
-        $data->status = $request->status ?? 0;
-        $data->is_ticket = $request->with_ticket ?? null;
+        $data->is_job = $request->is_job;
+        $data->status = 0;
+        $data->is_ticket = $request->is_ticket;
 
         // image
         if ($request->passport_image != 'null') {
@@ -263,8 +260,7 @@ class ClientController extends Controller
         $data->description = $request->description;
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
-        $data->is_ticket = $request->with_ticket ?? null;
-
+        
         if ($request->flight_date) {
             $data->status = 1;
         }
@@ -381,6 +377,7 @@ class ClientController extends Controller
                 $tran->bdt_amount = $user->package_cost;
                 $tran->user_id = $user->user_id;
                 $tran->client_id = $user->id;
+                $tran->ref = "Package ". $user->passport_name . " (".$user->passport_number.")";
                 $tran->save();
                 $tran->tran_id = 'VS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
                 $tran->save();

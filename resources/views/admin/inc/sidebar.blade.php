@@ -52,14 +52,6 @@
           </p>
         </a>
       </li>
-      {{-- <li class="nav-item">
-        <a href="{{route('admin.businesspartner')}}" class="nav-link {{ (request()->is('admin/business-partner*')) ? 'active' : '' }}">
-          <i class="nav-icon fas fa-th"></i>
-          <p>
-            Business Partner
-          </p>
-        </a>
-      </li> --}}
       
 
       
@@ -67,7 +59,7 @@
         <a href="#" class="nav-link {{ (request()->is('admin/client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
-            KSA with Job Client
+            KSA Package 
             <i class="fas fa-angle-left right"></i>
           </p>
         </a>
@@ -112,7 +104,7 @@
         <a href="#" class="nav-link {{ (request()->is('admin/ksa-without-job*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
-            KSA without Job Client
+            KSA VISA
             <i class="fas fa-angle-left right"></i>
           </p>
         </a>

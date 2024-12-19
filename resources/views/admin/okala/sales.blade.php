@@ -122,10 +122,7 @@
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12">
-                      <h3>Sales </h3> 
-                    </div>
-                      <div class="col-sm-6">
+                    <div class="col-sm-6">
                         <div class="form-group">
                           <label> Sales Amount in BDT</label>
                           <input type="number" id="sales_bdt_amount" name="sales_bdt_amount" class="form-control">
@@ -196,7 +193,6 @@
                   <td style="text-align: center">{{$okala->number}}</td>
                   <td style="text-align: center">{{$okala->sponsor_id}}</td>
                   <td style="text-align: center">
-                    {{-- <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->vendor_id }}" data-rl-id="">Payment</span> --}}
 
                     <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
 
@@ -226,58 +222,6 @@
 </section>
 <!-- /.content -->
 
-
-<div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="payModalLabel">Vendor Payment Form</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <form id="payForm">
-              <div class="modal-body">
-                <div class="permsg"></div>
-                  <div class="form-group">
-                      <label for="paymentAmount">Amount in Bdt <span style="color: red;">*</span></label>
-                      <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
-                  </div>
-
-                  
-                  <div class="form-group">
-                    <label for="paymentriyalAmount">Amount in Riyal <span style="color: red;">*</span></label>
-                    <input type="number" class="form-control" id="paymentriyalAmount" name="paymentriyalAmount" >
-                </div>
-
-                  <div class="form-group">
-                      <label for="account_id">Payment Type <span style="color: red;">*</span></label>
-                      <select name="account_id" id="account_id" class="form-control" >
-                        <option value="">Select</option>
-                        @foreach (\App\Models\Account::orderby('id', 'ASC')->get() as $acc)
-                          <option value="{{$acc->id}}">{{$acc->name}}</option>
-                        @endforeach
-                      </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="document">Document</label>
-                    <input type="file" class="form-control" id="document" name="document">
-                </div>
-
-                  <div class="form-group">
-                      <label for="paymentNote">Payment Note</label>
-                      <textarea class="form-control" id="paymentNote" name="paymentNote" rows="3" placeholder="Enter payment note"></textarea>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-warning">Pay</button>
-              </div>
-          </form>
-      </div>
-  </div>
-</div>
 
 
 
@@ -347,7 +291,7 @@
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-warning">Pay</button>
+                  <button type="submit" class="btn btn-warning">Receive</button>
               </div>
           </form>
       </div>
@@ -627,6 +571,10 @@
               form_data.append("riyalamount", $("#rcvriyalamount").val());
               $("#rcvaccount_id").val() && form_data.append("account_id", $("#rcvaccount_id").val());
               form_data.append("note", $("#note").val());
+              form_data.append("ref", "Receive from okala sales");
+
+              // alert("from work");
+              // exit;
 
               if (!$("#rcvamount").val()) {
                   alert('Please enter a amount.');
@@ -691,79 +639,6 @@
             $('#note').val('');
         });
       // receive end 
-
-
-      
-      $("#contentContainer").on('click', '.payment-btn', function () {
-          var id = $(this).data('id');
-          var vendorId = $(this).data('vendor-id');
-          console.log(vendorId);
-          $('#payModal').modal('show');
-          $('#payForm').off('submit').on('submit', function (event) {
-              event.preventDefault();
-
-              
-              var document = $('#document').prop('files')[0];
-              if(typeof document === 'undefined'){
-                document = 'null';
-              }
-
-              var form_data = new FormData();
-              form_data.append("okalaId", id);
-              form_data.append("vendorId", vendorId);
-              form_data.append('document', document);
-              form_data.append("paymentAmount", $("#paymentAmount").val());
-              form_data.append("riyalamount", $("#paymentriyalAmount").val());
-              form_data.append("account_id", $("#account_id").val());
-              form_data.append("paymentNote", $("#paymentNote").val());
-
-              if (!$("#paymentAmount").val()) {
-                  alert('Please enter a payment amount.');
-                  return;
-              }
-
-              if (!$("#account_id").val()) {
-                  alert('Please enter a payment type.');
-                  return;
-              }
-
-              $.ajax({
-                  url: '{{ URL::to('/admin/vendor-okala-sales-pay') }}',
-                  method: 'POST',
-                  data:form_data,
-                  contentType: false,
-                  processData: false,
-                  // dataType: 'json',
-                  success: function (response) {
-                    if (response.status == 303) {
-                        $(".permsg").html(d.message);
-                    }else if(response.status == 300){
-
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: 'Data create successfully.'
-                          });
-                        });
-                      window.setTimeout(function(){location.reload()},2000)
-                    }
-                    
-                      console.log(response);
-                      $('#payModal').modal('hide');
-
-                  },
-                  error: function (xhr) {
-                      console.log(xhr.responseText);
-                  }
-              });
-          });
-      });
 
         $('#payModal').on('hidden.bs.modal', function () {
             $('#paymentAmount').val('');

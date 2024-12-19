@@ -39,6 +39,7 @@ class TransactionController extends Controller
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
+        $data->ref = $request->ref;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
 
@@ -93,6 +94,7 @@ class TransactionController extends Controller
         $data->account_id = $request->account_id;
         $data->bdt_amount = $request->amount;
         $data->note = $request->note;
+        $data->ref = $request->ref;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
 
@@ -126,6 +128,7 @@ class TransactionController extends Controller
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
+        $data->ref = $request->ref;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
 
@@ -164,6 +167,7 @@ class TransactionController extends Controller
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
+        $data->ref = $request->ref;
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
 
@@ -223,6 +227,7 @@ class TransactionController extends Controller
         $data->account_id = $request->account_id;
         $data->amount = $request->amount;
         $data->note = $request->note;
+        $data->ref = $request->ref;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
 
@@ -268,6 +273,7 @@ class TransactionController extends Controller
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
             $transaction->tran_type = "Payment";
+            $transaction->ref = $request->ref;
             $transaction->date = $request->paymentDate;
             $transaction->save();
             $transaction->tran_id = 'OKPAY' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
@@ -406,6 +412,7 @@ class TransactionController extends Controller
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
             $transaction->tran_type = "Payment";
+            $transaction->ref = $request->ref;
             $transaction->date = date('Y-m-d');
             $transaction->save();
             $transaction->tran_id = 'OK' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
@@ -446,6 +453,7 @@ class TransactionController extends Controller
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->note;
             $transaction->tran_type = "Received";
+            $transaction->ref = $request->ref;
             $transaction->date = $request->paymentDate;
             $transaction->save();
             $transaction->tran_id = 'OKR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);

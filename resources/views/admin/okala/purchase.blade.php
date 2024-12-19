@@ -188,7 +188,7 @@
                     <td style="text-align: center">{{$data->number}}</td>
                     <td style="text-align: center">{{$data->visaid}}</td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
-                    {{-- <td style="text-align: center">{{$data->vendor->name}}</td> --}}
+                    <td style="text-align: center">{{$data->user->name}}</td>
                     <td style="text-align: center">
                       <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
 
@@ -234,7 +234,7 @@
                   <input type="date" class="form-control" id="paymentDate" name="paymentDate" placeholder="Enter payment Date">
               </div>
                   <div class="form-group">
-                      <label for="paymentAmount">Payment Amount <span style="color: red;">*</span></label>
+                      <label for="paymentAmount">Payment BDT Amount <span style="color: red;">*</span></label>
                       <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount">
                   </div>
                   <div class="form-group">
@@ -594,6 +594,11 @@
               $("#account_id").val() && form_data.append("account_id", $("#account_id").val());
               form_data.append("paymentType", $("#paymentType").val());
               form_data.append("paymentNote", $("#paymentNote").val());
+              form_data.append("ref", "Payment for okala purchase");
+
+              // alert("from work");
+              // exit;
+
 
               if (!$("#paymentDate").val()) {
                   alert('Please enter a payment date.');
