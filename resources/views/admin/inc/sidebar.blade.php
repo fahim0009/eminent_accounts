@@ -147,14 +147,14 @@
       </li>
 
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a href="{{route('admin.loan')}}" class="nav-link {{ (request()->is('admin/loan*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
           <p>
             Loan
           </p>
         </a>
-      </li>
+      </li> -->
 
 
       <li class="nav-item {{ (request()->is('admin/kafela-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/kafela-completed-clients*')) ? 'menu-open' : '' }}">

@@ -176,6 +176,7 @@
                       <th>Complete</th>
                       <th>Decline</th>
                       <th>Receive Amount</th>
+                      <th>Others Bill</th>
                       <th>Due Amount</th>
                       <th>Total Received</th>
                       <th></th>
@@ -188,7 +189,8 @@
                         <td style="text-align: center">{{$completed}}</td>
                         <td style="text-align: center">{{$decline}}</td>
                         <td style="text-align: center">{{$rcvamntForProcessing}}</td>
-                        <td style="text-align: center">{{$totalPackageAmount - $totalReceivedAmnt}}</td>
+                        <td style="text-align: center">{{$totalBillamt}}</td>
+                        <td style="text-align: center">{{($totalPackageAmount + $totalBillamt) - $totalReceivedAmnt}}</td>
                         <td style="text-align: center">{{$totalReceivedAmnt}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -704,7 +706,7 @@
           form_data.append("date", $("#bdate").val());
           form_data.append("amount", $("#bamount").val());
           form_data.append("note", $("#bnote").val());
-          form_data.append("tran_type", "Sales");
+          form_data.append("tran_type", "Service");
           form_data.append("ref", "Bill");
 
           $.ajax({

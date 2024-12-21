@@ -35,21 +35,23 @@ class AgentController extends Controller
 
         $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('bdt_amount');
 
-        $rcvamntForProcessing = $totalReceivedAmnt - $completedPackageAmount;
+        $totalBillamt = Transaction::where('user_id',$id)->where('ref','Bill')->sum('bdt_amount');
+
+        $rcvamntForProcessing = $totalReceivedAmnt - ($completedPackageAmount + $totalBillamt);
 
 
-        $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','receipt')->sum('bdt_amount');
+        $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','Received')->sum('bdt_amount');
 
         $agents = User::where('id',$id)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','directReceivedAmnt','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing'));
+        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','directReceivedAmnt','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totalBillamt'));
     }
 
 
     public function getTran($id)
     {
-        $data = Transaction::where('user_id',$id)->get();
+        $data = Transaction::where('user_id',$id)->orderby('date','DESC')->get();
 
         return view('admin.agent.tran', compact('data','id'));
     }

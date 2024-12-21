@@ -26,13 +26,13 @@
               <h3 class="card-title">All Data</h3>
             </div>
 
-            git add .<!--get total balance -->
+            <!--get total balance -->
                     <?php
                     $tbalance = 0;
                     ?> 
                     @forelse ($data as $sdata)
                             
-                    @if($sdata->tran_type == 'Sales')
+                    @if(($sdata->tran_type == 'Sales') || ($sdata->tran_type == 'Service'))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
                     @else
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
@@ -59,7 +59,7 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$tran->date}}</td>
-                    <td style="text-align: center">{{$tran->ref}}  ({{$tran->note}})</td>
+                    <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
 
                     @if($tran->tran_type == 'Received')
 
@@ -68,7 +68,7 @@
                     <td style="text-align: center">{{$tbalance}}</td>
                     <?php $tbalance = $tbalance + $tran->bdt_amount;?>
 
-                    @elseif($tran->tran_type == 'Sales')
+                    @elseif(($sdata->tran_type == 'Sales') || ($sdata->tran_type == 'Service'))
 
                     <td style="text-align: center"></td>
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>
