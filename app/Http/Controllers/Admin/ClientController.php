@@ -19,7 +19,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $data = Client::where('is_job','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -30,19 +30,18 @@ class ClientController extends Controller
 
     public function newClient()
     {
-        $data = Client::where('is_job','1')->where('status','0')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','0')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
         return view('admin.client.new', compact('data','agents','countries','accounts','count'));
     }
 
 
     public function processing()
     {
-        $data = Client::where('is_job','1')->where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','1')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -53,7 +52,7 @@ class ClientController extends Controller
 
     public function decline()
     {
-        $data = Client::where('is_job','1')->where('status','3')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','3')->orderby('id','ASC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -63,7 +62,7 @@ class ClientController extends Controller
 
     public function completed()
     {
-        $data = Client::where('is_job','1')->where('status','2')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','1')->where('status','2')->orderby('id','ASC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -76,7 +75,7 @@ class ClientController extends Controller
     // ksa without job start
     public function withoutjobindex()
     {
-        $data = Client::where('is_job','0')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -86,7 +85,7 @@ class ClientController extends Controller
 
     public function withoutjobnew()
     {
-        $data = Client::where('is_job','0')->where('status','0')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','0')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -96,7 +95,7 @@ class ClientController extends Controller
 
     public function withoutjobprocessing()
     {
-        $data = Client::where('is_job','0')->where('status','1')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','1')->orderby('id','ASC')->get();
         $count = $data->count();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -107,7 +106,7 @@ class ClientController extends Controller
 
     public function withoutjobdecline()
     {
-        $data = Client::where('is_job','0')->where('status','3')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','3')->orderby('id','ASC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
@@ -117,7 +116,7 @@ class ClientController extends Controller
 
     public function withoutjobcompleted()
     {
-        $data = Client::where('is_job','0')->where('status','2')->orderby('id','DESC')->get();
+        $data = Client::where('is_job','0')->where('status','2')->orderby('id','ASC')->get();
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
