@@ -145,16 +145,18 @@ class ClientController extends Controller
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
-        // if(empty($request->balance)){
-        //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Balance \" field..!</b></div>";
-        //     return response()->json(['status'=> 303,'message'=>$message]);
-        //     exit();
-        // }
+
+        if(empty($request->package_cost)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Package Cost \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
 
         
-        $chkemail = Client::where('clientid',$request->clientid)->whereNotNull('clientid')->first();
-        if($chkemail){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This client ID already added.</b></div>";
+        $chkpNumber = Client::where('passport_number',$request->passport_number)->whereNotNull('passport_number')->first();
+
+        if($chkpNumber){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This Person $chkpNumber->passport_name  ($chkpNumber->passport_number) already added.</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
