@@ -637,6 +637,8 @@
       // console.log(url);
       $("#rcptBtn").click(function(){
 
+        $(this).prop('disabled', true);
+
           var form_data = new FormData();
           form_data.append("account_id", $("#account_id").val());
           form_data.append("user_id", $("#agent_id").val());
@@ -655,6 +657,7 @@
             success: function (d) {
                 if (d.status == 303) {
                     $(".tranermsg").html(d.message);
+                    $("#rcptBtn").prop('disabled', false);
                 }else if(d.status == 300){
 
                   $(function() {

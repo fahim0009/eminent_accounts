@@ -32,7 +32,7 @@
                     ?> 
                     @forelse ($data as $sdata)
                             
-                    @if(($sdata->tran_type == 'Sales') || ($sdata->tran_type == 'Service'))
+                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales'))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
                     @else
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
@@ -61,14 +61,14 @@
                     <td style="text-align: center">{{$tran->date}}</td>
                     <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
 
-                    @if($tran->tran_type == 'Received')
+                    @if(($tran->tran_type == 'package_received')||($tran->tran_type == 'okala_received'))
 
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>
                     <td style="text-align: center"></td>
                     <td style="text-align: center">{{$tbalance}}</td>
                     <?php $tbalance = $tbalance + $tran->bdt_amount;?>
 
-                    @elseif(($sdata->tran_type == 'Sales') || ($sdata->tran_type == 'Service'))
+                    @elseif(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales'))
 
                     <td style="text-align: center"></td>
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>

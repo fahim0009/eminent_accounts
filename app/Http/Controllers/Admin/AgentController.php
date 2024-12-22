@@ -33,12 +33,11 @@ class AgentController extends Controller
         $processingPackageAmount = Client::where('status','1')->where('user_id', $id)->sum('package_cost');
         $totalPackageAmount = $completedPackageAmount + $processingPackageAmount;
 
-        $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','Received')->sum('bdt_amount');
+        $totalReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','package_received')->sum('bdt_amount');
 
-        $totalBillamt = Transaction::where('user_id',$id)->where('ref','Bill')->sum('bdt_amount');
+        $totalBillamt = Transaction::where('user_id',$id)->where('tran_type','service_sales')->sum('bdt_amount');
 
         $rcvamntForProcessing = $totalReceivedAmnt - ($completedPackageAmount + $totalBillamt);
-
 
         $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','Received')->sum('bdt_amount');
 
@@ -59,7 +58,12 @@ class AgentController extends Controller
     public function store(Request $request)
     {
         if(empty($request->name)){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Name \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(empty($request->surname)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Surname \" field..!</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }

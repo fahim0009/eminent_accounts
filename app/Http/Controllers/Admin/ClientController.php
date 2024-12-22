@@ -128,8 +128,8 @@ class ClientController extends Controller
     public function getClientInfo($id)
     {
         $data = Client::where('id',$id)->first();
-        $recepts = Transaction::where('client_id',$id)->where('tran_type','Received')->orderby('id','DESC')->get();
-        $payments = Transaction::where('client_id',$id)->where('tran_type','Payment')->orderby('id','DESC')->get();
+        $recepts = Transaction::where('client_id',$id)->where('tran_type','package_received')->orderby('id','DESC')->get();
+        $payments = Transaction::where('client_id',$id)->where('tran_type','package_payment')->orderby('id','DESC')->get();
         // dd($data);
         $agents = User::where('is_type','2')->where('status', 1)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -373,7 +373,7 @@ class ClientController extends Controller
             if ($request->status == 1) {
                 $tran = new Transaction();
                 $tran->date = $user->passport_rcv_date;
-                $tran->tran_type = "Sales";
+                $tran->tran_type = "package_sales";
                 $tran->payment_type = "Receivable";
                 $tran->bdt_amount = $user->package_cost;
                 $tran->user_id = $user->user_id;

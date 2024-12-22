@@ -164,6 +164,7 @@
 
               <div class="card">
                 <div class="card-header">
+                  <h2 class="card-title"></h2>
                   <h3 class="card-title">All Data</h3>
                 </div>
                 <!-- /.card-header -->
@@ -296,7 +297,16 @@
           </div>
 
           <div class="row">
-            <div class="col-sm-12">
+          <div class="col-sm-6">
+              <label>Transaction Type</label>
+              <select class="form-control" id="tran_type" name="tran_type">
+                <option value="">Select</option>               
+                  <option value="visa_received">Visa Received</option>
+                  <option value="okala_received">Okala Received</option>
+                  <option value="service_received">Service Received</option>
+              </select>
+          </div>
+            <div class="col-sm-6">
                 <label>Amount</label>
                 <input type="number" class="form-control" id="amount" name="amount">
             </div>
@@ -339,15 +349,6 @@
         <form class="form-horizontal">
 
           <div class="row">
-            <!-- <div class="col-sm-6">
-              <label>Transaction method</label>
-              <select class="form-control" id="account_id" name="account_id">
-                <option value="">Select</option>
-                @foreach (\App\Models\Account::all() as $method)
-                  <option value="{{$method->id}}">{{$method->name}}</option>
-                @endforeach
-              </select>
-          </div> -->
             <div class="col-sm-12">
                 <label>Date</label>
                 <input type="date" class="form-control" id="bdate" name="bdate">
@@ -659,7 +660,7 @@
           form_data.append("date", $("#date").val());
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
-          form_data.append("tran_type", "Received");
+          form_data.append("tran_type", $("#tran_type").val());
           form_data.append("ref", "Received");
 
           $.ajax({
@@ -706,7 +707,7 @@
           form_data.append("date", $("#bdate").val());
           form_data.append("amount", $("#bamount").val());
           form_data.append("note", $("#bnote").val());
-          form_data.append("tran_type", "Service");
+          form_data.append("tran_type", "service_sales");
           form_data.append("ref", "Bill");
 
           $.ajax({

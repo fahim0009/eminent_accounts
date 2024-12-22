@@ -81,10 +81,6 @@ class TransactionController extends Controller
 
         $data = Transaction::find($request->tran_id);
 
-            // $client = Client::find($request->client_id);
-            // $client->total_rcv = $client->total_rcv + $request->amount - $data->amount;
-            // $client->due_amount = $client->due_amount - $request->amount + $data->amount;
-            // $client->save();
 
             $account = Account::find($data->account_id);
             $account->balance = $account->balance - $data->amount;
@@ -272,7 +268,7 @@ class TransactionController extends Controller
             !empty($request->account_id) && $transaction->account_id = $request->account_id;
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
-            $transaction->tran_type = "Payment";
+            $transaction->tran_type = "okala_payment";
             $transaction->ref = $request->ref;
             $transaction->date = $request->paymentDate;
             $transaction->save();
@@ -286,9 +282,9 @@ class TransactionController extends Controller
     public function purchaseTran(Request $request)
     {
         $data = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->orderby('id', 'ASC')->get();
-        $drAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Received')->sum('bdt_amount');
+        $drAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'okala_received')->sum('bdt_amount');
 
-        $crAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('bdt_amount');
+        $crAmount = Transaction::where('okala_purchase_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'okala_purchase')->sum('bdt_amount');
         $balance =  $crAmount - $drAmount;
         $prop = '';
         
@@ -313,7 +309,7 @@ class TransactionController extends Controller
                                 '.$accountName.'
                             </td>';
 
-                            if ($tran->tran_type == "Purchase") {
+                            if ($tran->tran_type == "okala_purchase") {
                                 $prop.= '<td> </td>
                                         <td>
                                             '.$tran->bdt_amount.'
@@ -335,9 +331,9 @@ class TransactionController extends Controller
     public function vendorTran(Request $request)
     {
         $data = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->orderby('id', 'ASC')->get();
-        $drAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Received')->sum('bdt_amount');
+        $drAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'okala_received')->sum('bdt_amount');
 
-        $crAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'Purchase')->sum('bdt_amount');
+        $crAmount = Transaction::where('okala_sale_id',$request->okalaId)->where('user_id',$request->vendorId)->where('tran_type', 'okala_purchase')->sum('bdt_amount');
         $balance =  $crAmount - $drAmount;
         $prop = '';
         
@@ -362,7 +358,7 @@ class TransactionController extends Controller
                                 '.$accountName.'
                             </td>';
 
-                            if ($tran->tran_type == "Sales") {
+                            if ($tran->tran_type == "okala_sales") {
                                 $prop.= '<td> </td>
                                         <td>
                                             '.$tran->bdt_amount.'
@@ -411,7 +407,7 @@ class TransactionController extends Controller
             $transaction->account_id = $request->account_id;
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->paymentNote;
-            $transaction->tran_type = "Payment";
+            $transaction->tran_type = "okala_payment";
             $transaction->ref = $request->ref;
             $transaction->date = date('Y-m-d');
             $transaction->save();
@@ -452,7 +448,7 @@ class TransactionController extends Controller
             $transaction->account_id = $request->account_id;
             $transaction->payment_type = $request->paymentType;
             $transaction->note = $request->note;
-            $transaction->tran_type = "Received";
+            $transaction->tran_type = "okala_received";
             $transaction->ref = $request->ref;
             $transaction->date = $request->paymentDate;
             $transaction->save();

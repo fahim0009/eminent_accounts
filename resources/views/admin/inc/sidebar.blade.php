@@ -157,7 +157,7 @@
       </li> -->
 
 
-      <li class="nav-item {{ (request()->is('admin/kafela-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/kafela-completed-clients*')) ? 'menu-open' : '' }}">
+      <!-- <li class="nav-item {{ (request()->is('admin/kafela-client*')) ? 'menu-open' : '' }}{{ (request()->is('admin/kafela-completed-clients*')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('admin/kafela-client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-copy"></i>
           <p>
@@ -177,10 +177,9 @@
               <i class="far fa-circle nav-icon"></i>
               <p>Complete</p>
             </a>
-          </li>
-          
+          </li>     
+        </ul> -->
 
-        </ul>
       </li>
       <li class="nav-item {{ (request()->is('admin/okala')) ? 'menu-open' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }} {{ (request()->is('admin/okala-assigned')) ? 'menu-open' : '' }}">
