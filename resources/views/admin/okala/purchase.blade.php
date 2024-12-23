@@ -135,7 +135,7 @@
 
                 </form>
               </div>
-
+              <input type="hidden" class="form-control" id="tran_type" name="tran_type" value="okala_purchase">
               
               <!-- /.card-body -->
               <div class="card-footer">
@@ -432,6 +432,7 @@
               form_data.append("bdt_amount", $("#bdt_amount").val());
               form_data.append("riyal_amount", $("#riyal_amount").val());
               form_data.append("purchase_type", $("#purchase_type").val());
+              form_data.append("tran_type", $("#tran_type").val());
               $.ajax({
                 url: url,
                 method: "POST",

@@ -8,6 +8,7 @@ use App\Models\OkalaPurchase;
 use App\Models\OkalaPurchaseDetail;
 use App\Models\OkalaSale;
 use App\Models\OkalaSaleDetail;
+use App\Models\CodeMaster;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,7 +93,7 @@ class OkalaController extends Controller
         $tran = new Transaction();
         $tran->date = $request->date;
         $tran->user_id = $request->user_id;
-        $tran->tran_type = "Purchase";
+        $tran->tran_type = $request->tran_type;
         $tran->note =  "Okala Purchase";
         $tran->okala_purchase_id  = $okala->id;
         $tran->foreign_amount =  $request->riyal_amount * $x;
@@ -251,9 +252,9 @@ class OkalaController extends Controller
         $tran = new Transaction();
         $tran->date = $request->date;
         $tran->user_id = $request->agentId;
-        $tran->tran_type = "Sales";
+        $tran->tran_type = $request->tran_type;
         $tran->ref = "Okala Sales";
-        $tran->note =  "Okala Sales";
+        $tran->note = "(".$x." ".$typeName = CodeMaster::where('id', $purchaseData->trade)->first()->type_name.")";
         $tran->okala_sale_id  = $okala->id;
         $tran->foreign_amount =  $request->sales_riyal_amount * $x;
         $tran->foreign_amount_type =  'riyal';

@@ -387,6 +387,8 @@
                             <label>Date</label>
                             <input type="date" class="form-control" id="date" name="date">
                             <input type="hidden" class="form-control" id="tran_id" name="tran_id">
+                            <input type="hidden" class="form-control" id="tran_type" name="tran_type" value="package_received">
+                            <input type="hidden" class="form-control" id="client_name" name="client_name" value="{{$data->passport_name}}">
                         </div>
                       </div>
 
@@ -644,7 +646,8 @@
           form_data.append("amount", $("#amount").val());
           form_data.append("note", $("#note").val());
           form_data.append("client_id", $("#codeid").val());
-          form_data.append("tran_type", "Received");
+          form_data.append("tran_type", $("#tran_type").val());
+          form_data.append("ref", "Received For ("+$("#client_name").val()+")");
 
           $.ajax({
             url: tranurl,

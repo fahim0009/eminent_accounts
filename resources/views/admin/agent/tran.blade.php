@@ -32,9 +32,9 @@
                     ?> 
                     @forelse ($data as $sdata)
                             
-                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales'))
+                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'okala_sales'))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
-                    @else
+                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'okala_received'))
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
                     @endif
      

@@ -35,6 +35,7 @@
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
+                  <input type="hidden" class="form-control" id="tran_type" name="tran_type" value="okala_sales">
                   <div class="row">
 
                     <div class="col-sm-4">
@@ -399,6 +400,7 @@
               form_data.append("agentId", $("#agentId").val());
               form_data.append("sales_bdt_amount", $("#sales_bdt_amount").val());
               form_data.append("sales_riyal_amount", $("#sales_riyal_amount").val());
+              form_data.append("tran_type", $("#tran_type").val());
               $.ajax({
                 url: url,
                 method: "POST",
@@ -566,12 +568,13 @@
               form_data.append("agentId", agentId);
               form_data.append("paymentDate", $("#paymentDate").val());
               form_data.append("paymentType", $("#paymentType").val());
+              form_data.append("tran_type", $("#tran_type").val());
               form_data.append('document', document);
               form_data.append("amount", $("#rcvamount").val());
               form_data.append("riyalamount", $("#rcvriyalamount").val());
               $("#rcvaccount_id").val() && form_data.append("account_id", $("#rcvaccount_id").val());
               form_data.append("note", $("#note").val());
-              form_data.append("ref", "Receive from okala sales");
+              form_data.append("ref", "Received");
 
               // alert("from work");
               // exit;
