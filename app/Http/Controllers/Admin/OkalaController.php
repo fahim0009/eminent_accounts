@@ -94,7 +94,7 @@ class OkalaController extends Controller
         $tran->date = $request->date;
         $tran->user_id = $request->user_id;
         $tran->tran_type = $request->tran_type;
-        $tran->note =  "Okala Purchase";
+        $tran->note =  null;
         $tran->okala_purchase_id  = $okala->id;
         $tran->foreign_amount =  $request->riyal_amount * $x;
         $tran->foreign_amount_type =  'riyal';
