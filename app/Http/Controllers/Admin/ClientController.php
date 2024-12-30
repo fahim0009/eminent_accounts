@@ -385,6 +385,36 @@ class ClientController extends Controller
     public function changeClientStatus(Request $request)
     {
         $user = Client::find($request->id);
+
+        if ($user->status == 0) {
+            $stsval = "New";
+        }elseif($user->status == 1){
+            $stsval = "Processing";
+        }elseif($user->status == 2){
+            $stsval = "Complete";
+        }elseif($user->status == 3){
+            $stsval = "Decline";
+        }else{
+            $stsval = "Something is wrong";
+        }
+
+        if (($user->status == 1 || $user->status == 2) && ($request->status == 3)) {
+            $message ="Decline is not possible because passenger already in ".$stsval.". It has a transaction data.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }
+
+        if ($user->status == $request->status) {
+            $message ="Passenger already in ".$stsval." .";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }
+
+
+        if ($user->status == $request->status) {
+
+            $message ="Passenger already in ".$stsval." .";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }
+
         $user->status = $request->status;
         if($user->save()){
 
@@ -402,16 +432,18 @@ class ClientController extends Controller
                 $tran->save();
             }
 
-            if ($user->status == 1) {
+            if ($user->status == 0) {
+                $stsval = "New";
+            }elseif($user->status == 1){
                 $stsval = "Processing";
-
             }elseif($user->status == 2){
                 $stsval = "Complete";
-            }elseif($user->status == 0){
-                $stsval = "New";
-            }else {
+            }elseif($user->status == 3){
                 $stsval = "Decline";
+            }else{
+                $stsval = "Something is wrong";
             }
+    
             
             $message ="Status Change Successfully.";
             return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
