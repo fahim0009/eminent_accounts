@@ -40,7 +40,7 @@
 
                 <strong><i class="fas fa-book mr-1"></i> Agent Details</strong>
                 <p class="text-muted">
-                  {{$data->user->name}} <br>
+                  {{$data->user->name}} {{$data->user->surname}}<br>
                   {{$data->user->email}} <br>
                   {{$data->user->phone}} <br>
                   
@@ -85,6 +85,7 @@
                       <div class="row">
                         <div class="col-sm-12">
                             <label>Client ID</label>
+                            <div class="ermsg"></div>
                             <input type="number" class="form-control" id="clientid" name="clientid" value="{{$data->clientid}}" readonly="readonly">
                         </div>
                       </div>
@@ -168,7 +169,7 @@
                             <select name="user_id" id="user_id" class="form-control" disabled>
                               <option value="">Select</option>
                               @foreach ($agents as $item)
-                              <option value="{{$item->id}}" @if ($item->id == $data->user_id) selected @endif>{{$item->name}}</option>
+                              <option value="{{$item->id}}" @if ($item->id == $data->user_id) selected @endif>{{$item->name}} {{$item->surname}}</option>
                               @endforeach
                             </select>
                         </div>

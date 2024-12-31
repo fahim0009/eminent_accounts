@@ -131,7 +131,7 @@ class ClientController extends Controller
         $recepts = Transaction::where('client_id',$id)->where('tran_type','package_received')->orderby('id','DESC')->get();
         $payments = Transaction::where('client_id',$id)->where('tran_type','package_payment')->orderby('id','DESC')->get();
         // dd($data);
-        $agents = User::where('is_type','2')->where('status', 1)->get();
+        $agents = User::where('is_type','2')->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
         // $bpartners = BusinessPartner::orderby('id','DESC')->get();
@@ -241,16 +241,6 @@ class ClientController extends Controller
     {
 
         $alldata = $request->all();
-        // if(empty($request->name)){
-        //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
-        //     return response()->json(['status'=> 303,'message'=>$message]);
-        //     exit();
-        // }
-        // if(empty($request->balance)){
-        //     $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Balance \" field..!</b></div>";
-        //     return response()->json(['status'=> 303,'message'=>$message]);
-        //     exit();
-        // }
 
         if(empty($request->user_id)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Agent \" field..!</b></div>";
@@ -269,6 +259,25 @@ class ClientController extends Controller
 
 
         $data = Client::find($request->codeid);
+
+        if ($data->status == 0) {
+            $stsval = "New";
+        }elseif($data->status == 1){
+            $stsval = "Processing";
+        }elseif($data->status == 2){
+            $stsval = "Complete";
+        }elseif($data->status == 3){
+            $stsval = "Decline";
+        }else{
+            $stsval = "Something is wrong";
+        }
+
+        if (($data->status == 1 || $data->status == 2) && ($data->package_cost != $request->package_cost)) {
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Package cost edit is not possible because passenger already in ".$stsval.". It has a transaction data.</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+
         $data->user_id = $request->user_id;
         $data->clientid = $request->clientid;
         $data->passport_number = $request->passport_number;
@@ -280,8 +289,8 @@ class ClientController extends Controller
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
         
-        if ($request->flight_date) {
-            $data->status = 1;
+        if (($data->status == 1) && isset($request->flight_date)) {
+            $data->status = 2;
         }
 
         // image
