@@ -33,7 +33,7 @@
                 <tbody>
 
                   @php
-                      $count1 = 68;                     
+                      $count1 = $count;                     
                   @endphp
 
                   @foreach ($data as $key => $data)
