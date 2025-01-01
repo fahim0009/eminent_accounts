@@ -301,7 +301,7 @@
               <label>Transaction Type</label>
               <select class="form-control" id="tran_type" name="tran_type">
                 <option value="">Select</option>               
-                  <option value="visa_received">Visa Received</option>
+                  <option value="package_received">Package Received</option>
                   <option value="okala_received">Okala Received</option>
                   <option value="service_received">Service Received</option>
               </select>
