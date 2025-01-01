@@ -29,6 +29,11 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+          <!-- Image loader -->
+        <div id='loading' style='display:none ;'>
+            <img src="{{ asset('assets/common/loader.gif') }}" id="loading-image" alt="Loading..." />
+        </div>
+        <!-- Image loader -->
               <div class="ermsg"></div>
                 <form id="createThisForm">
                   @csrf

@@ -6,6 +6,7 @@
 
     <!-- Main content -->
     <section class="content">
+      
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-3">
@@ -368,10 +369,16 @@
                   <!-- /.tab-pane -->
 
                   <div class="tab-pane" id="settings">
+                <!-- Image loader -->
+                <div id='loading' style='display:none ;'>
+                    <img src="{{ asset('assets/common/loader.gif') }}" id="loading-image" alt="Loading..." />
+                </div>
+                <!-- Image loader -->
                     <div class="row">
                           <h3>Money Received</h3>
                     </div>
                     <div class="tranermsg"></div>
+
                     <form class="form-horizontal">
 
                       <div class="row">
@@ -638,8 +645,9 @@
       var tranurl = "{{URL::to('/admin/money-receipt')}}";
       var tranupurl = "{{URL::to('/admin/money-receipt-update')}}";
       // console.log(url);
-      $("#rcptBtn").click(function(){
-
+      $("#rcptBtn").click(function(){    
+        $("#rcptBtn").prop('disabled', true);
+          $("#loading").show();
           var form_data = new FormData();
           form_data.append("account_id", $("#account_id").val());
           form_data.append("user_id", $("#agent_id").val());
@@ -676,6 +684,10 @@
                   window.setTimeout(function(){location.reload()},2000)
                 }
             },
+            complete:function(d){
+                        $("#loading").hide();
+                        $("#rcptBtn").prop('disabled', false);
+                    },
             error: function (d) {
                 console.log(d);
             }
