@@ -78,6 +78,8 @@ class OkalaController extends Controller
         $okala->created_by = Auth::user()->id;
         $okala->save();
         
+        if($request->purchase_type == 0){
+
         for ($i = 0; $i < $x; $i++) {
             $data = new OkalaPurchaseDetail();
             $data->okala_purchase_id  = $okala->id;
@@ -89,7 +91,7 @@ class OkalaController extends Controller
             $data->created_by = Auth::user()->id;
             $data->save();
         }
-
+    }
         $tran = new Transaction();
         $tran->date = $request->date;
         $tran->user_id = $request->user_id;
@@ -106,7 +108,7 @@ class OkalaController extends Controller
         $tran->tran_id = 'OKP' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
         $tran->save();
        
-        $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
+        $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Okala Purchase Create Successfully.</b></div>";
         return response()->json(['status'=> 300,'message'=>$message]);
         
     }

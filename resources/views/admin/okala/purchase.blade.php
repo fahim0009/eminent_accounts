@@ -110,9 +110,8 @@
                       <div class="form-group">
                         <label>Purchase Type</label>
                         <select name="purchase_type" id="purchase_type" class="form-control">
-                          <option value="">Select</option>
                           <option value="0">Own</option>
-                          <option value="1">Other</option>
+                          <option value="1">Re-Sale</option>
                         </select>
                       </div>
                     </div>
