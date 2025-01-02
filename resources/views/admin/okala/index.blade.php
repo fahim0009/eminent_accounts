@@ -149,11 +149,11 @@
                   <th>Sl</th>
                   <th>Date</th>
                   <th>Visa Id</th>
+                  <th>Trade</th>
                   <th>Sponsor Id</th>
+                  <th>Assign To</th>
                   <th>RL Id</th>
                   {{-- <th>Purchase Type</th> --}}
-                  <th>Trade</th>
-                  <th>Assign To</th>
                   <th>Vendor</th>
                   <!-- <th>Action</th> -->
                 </tr>
@@ -172,16 +172,6 @@
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visa_id}}</td>
                     <td style="text-align: center">{{$data->sponsor_id}}</td>
-                    <td style="text-align: center">@if (isset($rl))
-                      {{$rl->type_name}}
-                      @endif</td>
-                    {{-- <td style="text-align: center">
-                      @if (($purchaseType)=='0')
-                      {{'Own'}}
-                      @else
-                      {{'Other'}}
-                      @endif
-                    </td> --}}
                     <td style="text-align: center">
                       @if (isset($tradename))
                       {{$tradename->type_name}}
@@ -193,14 +183,23 @@
                       @else
                       <select name="assignto" id="assignto" class="form-control assignto"  data-okala-id="{{ $data->id }}">
                         <option value="">Select</option>
-                        @foreach (\App\Models\Client::select('id', 'passport_name','passport_number', 'status')->where('assign', 0)->get() as $client)
+                        @foreach (\App\Models\Client::select('id', 'passport_name','passport_number', 'status')->where('assign', 0)->where('status', 1)->get() as $client)
                         <option value="{{$client->id}}">{{$client->passport_name}} ({{$client->passport_number}})</option>
                         @endforeach
                       </select>
                       @endif
-                      <!-- ->where('status', 1) for next use-->
                       <p id="message"></p>
                     </td>
+                    <td style="text-align: center">@if (isset($rl))
+                      {{$rl->type_name}}
+                      @endif</td>
+                    {{-- <td style="text-align: center">
+                      @if (($purchaseType)=='0')
+                      {{'Own'}}
+                      @else
+                      {{'Other'}}
+                      @endif
+                    </td> --}}
                     <td style="text-align: center">{{$name= \App\Models\User::where('id', $data->user_id)->first()?->name }}
                      </td>
                     
