@@ -176,7 +176,6 @@
                   <th>Sponsor ID</th>
                   <th>Vendor</th>
                   <th>Payment</th>
-                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -185,18 +184,16 @@
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->number}}</td>
-                    <td style="text-align: center">{{$data->visaid}}</td>
+                    <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
                     <td style="text-align: center">{{$data->sponsorid}}</td>
                     <td style="text-align: center">{{$data->user->name}}</td>
                     <td style="text-align: center">
-                      <span class="btn btn-block btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
+                      <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
 
-                      <span class="btn btn-block btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-program-id="">Transaction</span>
+                      <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-program-id="">Transaction</span>
 
                     </td>
-                    <td style="text-align: center">
-                      <a href="{{route('admin.okalapurchaseDetails', $data->id)}}"><i class="fa fa-eye" style="color: #2cc16a;font-size:16px;"></i></a>
-                    </td>
+                   
                   </tr>
                   @endforeach
                 
