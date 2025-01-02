@@ -189,7 +189,7 @@
                     </td>
                     <td style="text-align: center">
                       @if (isset($data->assign_to))
-                      {{$data->client->passport_name}}
+                      {{$data->client->passport_name}} ({{$data->client->passport_number}})
                       @else
                       <select name="assignto" id="assignto" class="form-control assignto"  data-okala-id="{{ $data->id }}">
                         <option value="">Select</option>
