@@ -128,14 +128,11 @@ class ClientController extends Controller
     public function getClientInfo($id)
     {
         $data = Client::where('id',$id)->first();
-        $recepts = Transaction::where('client_id',$id)->where('tran_type','package_received')->orderby('id','DESC')->get();
-        $payments = Transaction::where('client_id',$id)->where('tran_type','package_payment')->orderby('id','DESC')->get();
-        // dd($data);
+        $trans = Transaction::where('client_id',$id)->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        // $bpartners = BusinessPartner::orderby('id','DESC')->get();
-        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','recepts','payments'));
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','trans'));
     }
 
     public function store(Request $request)

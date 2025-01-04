@@ -75,7 +75,6 @@
                     <td style="text-align: center">{{$tbalance}}</td>
                     <?php $tbalance = $tbalance - $tran->bdt_amount;?>
 
-
                     @endif
 
                   </tr>

@@ -40,7 +40,7 @@
                   <tr>
                     <td style="text-align: center">{{ ($count1) }} </td>
                     {{-- <td style="text-align: center">{{$data->clientid}}</td> --}}
-                    <td style="text-align: center">{{$data->passport_name}}</td>
+                    <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
                     <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a> </td>
@@ -68,7 +68,6 @@
                     </td>
                     
                     <td style="text-align: center">
-                      <a href="{{route('admin.clientDetails', $data->id)}}"><i class="fa fa-eye" style="color: #21f34f;font-size:16px;"></i></a>
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
                     </td>
                   </tr>

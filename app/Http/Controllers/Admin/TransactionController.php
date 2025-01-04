@@ -18,7 +18,12 @@ class TransactionController extends Controller
 {
     public function moneyreceived(Request $request)
     {
-        if(empty($request->account_id)){
+        if(empty($request->date)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Date \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(($request->tran_type == "package_received") && empty($request->account_id)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Transaction method \" field..!</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
