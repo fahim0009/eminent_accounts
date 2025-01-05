@@ -50,10 +50,11 @@ class TransactionController extends Controller
 
             $data->tran_id = 'RCVD' . date('ymd') . str_pad($data->id, 4, '0', STR_PAD_LEFT);
             $data->save();            
-
+            if(isset($request->account_id)){
             $account = Account::find($request->account_id);
             $account->balance = $account->balance + $request->amount;
             $account->save();
+            }
 
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
             return response()->json(['status'=> 300,'message'=>$message]);

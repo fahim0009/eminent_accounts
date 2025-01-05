@@ -177,6 +177,7 @@
                       <th>Complete</th>
                       <th>Decline</th>
                       <th>Receive Amount</th>
+                      <th>Discount Amount</th>
                       <th>Others Bill</th>
                       <th>Due Amount</th>
                       <th>Total Received</th>
@@ -190,8 +191,9 @@
                         <td style="text-align: center">{{$completed}}</td>
                         <td style="text-align: center">{{$decline}}</td>
                         <td style="text-align: center">{{$rcvamntForProcessing}}</td>
+                        <td style="text-align: center">{{$totalPkgDiscountAmnt}}</td>
                         <td style="text-align: center">{{$totalBillamt}}</td>
-                        <td style="text-align: center">{{($totalPackageAmount + $totalBillamt) - $totalReceivedAmnt}}</td>
+                        <td style="text-align: center">{{($totalPackageAmount + $totalBillamt) - ($totalReceivedAmnt + $totalPkgDiscountAmnt)}}</td>
                         <td style="text-align: center">{{$totalReceivedAmnt}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">

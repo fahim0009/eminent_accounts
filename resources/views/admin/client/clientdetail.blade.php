@@ -20,8 +20,7 @@
                   src="{{asset('images/client/'.$data->client_image)}}"
                   alt="User profile picture" style="height: 200px; width:auto">
                   @else
-                  <img class="profile-user-img img-fluid img-circle" src="{{asset('default.png')}}" alt="User profile picture" style="height: 200px; width:auto">
-                      
+                  <img class="profile-user-img img-fluid img-circle" src="{{asset('default.png')}}" alt="User profile picture" style="height: 200px; width:auto">                     
                   @endif
                 </div>
 
