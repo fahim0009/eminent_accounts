@@ -173,13 +173,13 @@
                   <table class="table table-bordered table-striped mt-4 mb-5">
                     <thead>
                     <tr>
-                      <th>Processing</th>
-                      <th>Complete</th>
-                      <th>Decline</th>
-                      <th>Receive Amount</th>
-                      <th>Discount Amount</th>
+                      <th>Visa On Processing</th>
+                      <th>Completed Visa</th>
+                      <th>Decline Visa</th>
+                      <th>Receive For Visa Processing</th>
+                      <th>Discount For Visa Amount</th>
                       <th>Others Bill</th>
-                      <th>Due Amount</th>
+                      <th>Due For Visa Amount</th>
                       <th>Total Received</th>
                       <th></th>
                     </tr>
@@ -192,8 +192,8 @@
                         <td style="text-align: center">{{$decline}}</td>
                         <td style="text-align: center">{{$rcvamntForProcessing}}</td>
                         <td style="text-align: center">{{$totalPkgDiscountAmnt}}</td>
-                        <td style="text-align: center">{{$totalBillamt}}</td>
-                        <td style="text-align: center">{{($totalPackageAmount + $totalBillamt) - ($totalReceivedAmnt + $totalPkgDiscountAmnt)}}</td>
+                        <td style="text-align: center">{{$totaServiceamt}}</td>
+                        <td style="text-align: center">{{$dueForvisa}}</td>
                         <td style="text-align: center">{{$totalReceivedAmnt}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">

@@ -32,9 +32,9 @@
                     ?> 
                     @forelse ($data as $sdata)
                             
-                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'okala_sales'))
+                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'okala_sales') || ($sdata->tran_type == 'package_adon') || ($sdata->tran_type == 'service_adon') || ($sdata->tran_type == 'okalasales_adon'))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
-                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'okala_received'))
+                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'okala_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'okalasales_discount') || ($sdata->tran_type == 'service_discount'))
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
                     @endif
      
@@ -61,14 +61,14 @@
                     <td style="text-align: center">{{$tran->date}}</td>
                     <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
 
-                    @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'okala_received'))
+                    @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'okala_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'okalasales_discount') || ($tran->tran_type == 'service_discount'))
 
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>
                     <td style="text-align: center"></td>
                     <td style="text-align: center">{{$tbalance}}</td>
                     <?php $tbalance = $tbalance + $tran->bdt_amount;?>
 
-                    @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'okala_sales'))
+                    @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'okala_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon') || ($tran->tran_type == 'okalasales_adon'))
 
                     <td style="text-align: center"></td>
                     <td style="text-align: center">{{$tran->bdt_amount}}</td>
