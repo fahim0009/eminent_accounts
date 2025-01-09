@@ -25,6 +25,18 @@ class Client extends Model
         return $this->hasMany(OkalaDetail::class, 'assign_to', 'id');
     }
 
+    public function rldetail()
+    {
+        return $this->belongsTo(CodeMaster::class, 'id', 'rlid');
+    }
+
+    public function trade()
+    {
+        return $this->belongsTo(CodeMaster::class, 'mofa_trade', 'id');
+    }
+
+
+
    
 
 }

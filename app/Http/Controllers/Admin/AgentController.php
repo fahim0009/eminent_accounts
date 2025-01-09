@@ -40,7 +40,7 @@ class AgentController extends Controller
         return view('admin.agent.index', compact('data'));
     }
 
-    public function getClient($id)
+    public function getClient(Request $request, $id)
     {
 
         $data = DB::table('clients')
@@ -113,8 +113,29 @@ class AgentController extends Controller
         $agents = User::where('id',$id)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa'));
+
+        
+
+
+      
+        
+        
+        $clientTransactions = Transaction::where('user_id',$id)
+        ->when($request->from_date, function ($query) use ($request) {
+            return $query->where('date', '>=', $request->from_date);
+        })
+        ->when($request->to_date, function ($query) use ($request) {
+            return $query->where('date', '<=', $request->to_date);
+        })
+        ->when($request->from_date && $request->to_date, function ($query) use ($request) {
+            return $query->whereBetween('date', [$request->from_date, $request->to_date]);
+        })
+        ->orderby('date','DESC')->get();
+
+
+        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
     }   
+    
 
 
     public function getTran($id)

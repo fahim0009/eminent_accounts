@@ -196,17 +196,17 @@
                         <td style="text-align: center">{{$dueForvisa}}</td>
                         <td style="text-align: center">{{$totalReceivedAmnt}}</td>
                         <td style="text-align: center">
-                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
                             Receive Amount
                           </button>
 
-                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModa2">
+                          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModa2">
                             Create Bill
                           </button>
 
-                          <a href="{{route('admin.agentTran', $id)}}" class="btn btn-primary" >
+                          {{-- <a href="{{route('admin.agentTran', $id)}}" class="btn btn-primary" >
                             All transaction
-                          </a>
+                          </a> --}}
 
                         </td>
                       </tr>
@@ -214,8 +214,46 @@
                     </tbody>
                   </table>
 
-                  
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
 
+
+    <!-- Main content -->
+<section class="content" id="newBtnSection">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 col-sm-12">
+        <div class="card card-secondary card-tabs">
+          <div class="card-header p-0 pt-1">
+            <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">Client</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Transaction</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Tab 1</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="custom-tabs-one-tabContent">
+              <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                
 
                   <table id="example1" class="table table-bordered table-striped mt-4">
                     <thead>
@@ -256,17 +294,143 @@
                   </table>
                 </div>
                 <!-- /.card-body -->
-              </div>
-              <!-- /.card -->
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+                <table id="example1" class="table table-bordered table-striped mt-4">
+                  <thead>
+                  <tr>
+                    <th>Sl</th>
+                    <th>Passport Name</th>
+                    <th>Passport Number</th>
+                    <th>Package Cost</th>
+                    <th>Received Amount</th>
+                    <th>Status</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($data as $key => $data)
+                    <tr>
+                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
+                      <td style="text-align: center">{{$data->passport_number}}</td>
+                      <td style="text-align: center">{{$data->package_cost}}</td>
+                      <td style="text-align: center">{{$data->total_rcv}}</td>
+                      <td style="text-align: center">
+                        @if ($data->status == 0) New
+                        @elseif($data->status == 1)Processing
+                        @elseif($data->status == 2) Complete @else Decline @endif
+                      </td>
+                      
+                    </tr>
+                    @endforeach
+                  
+                  </tbody>
+                </table>
 
+
+              </div>
+              <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+
+                <form method="GET" action="{{ route('admin.agentClient', $id) }}">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <label>From Date</label>
+                      <input type="date" class="form-control" name="from_date" value="{{ request()->get('from_date') }}">
+                    </div>
+                    <div class="col-sm-3">
+                      <label>To Date</label>
+                      <input type="date" class="form-control" name="to_date" value="{{ request()->get('to_date') }}">
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-sm-12">
+                      <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                  </div>
+                </form>
+                
+                <!--get total balance -->
+                  <?php
+                    $tbalance = 0;
+                  ?> 
+                  @forelse ($clientTransactions as $sdata)
+                          
+                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'okala_sales') || ($sdata->tran_type == 'package_adon') || ($sdata->tran_type == 'service_adon') || ($sdata->tran_type == 'okalasales_adon'))
+                    <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
+                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'okala_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'okalasales_discount') || ($sdata->tran_type == 'service_discount'))
+                    <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
+                    @endif
+  
+                  @empty
+                  @endforelse
+
+                  <!-- /.card-header -->
+
+                    <div class="row">
+                    <div class="col-sm-12 text-center">
+                      <h2>Transaction</h2>
+                      {{-- <h4>Sub Title</h4> --}}
+                      {{-- <p>Client Name: </p> --}}
+                    </div>
+                    </div>
+
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Sl</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Received</th>
+                    <th>Bill</th>
+                    <th>Balance</th>                  
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($clientTransactions as $key => $tran)
+                    <tr>
+                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center">{{$tran->date}}</td>
+                      <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
+  
+                      @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'okala_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'okalasales_discount') || ($tran->tran_type == 'service_discount'))
+  
+                      <td style="text-align: center">{{$tran->bdt_amount}}</td>
+                      <td style="text-align: center"></td>
+                      <td style="text-align: center">{{$tbalance}}</td>
+                      <?php $tbalance = $tbalance + $tran->bdt_amount;?>
+  
+                      @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'okala_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon') || ($tran->tran_type == 'okalasales_adon'))
+  
+                      <td style="text-align: center"></td>
+                      <td style="text-align: center">{{$tran->bdt_amount}}</td>
+                      <td style="text-align: center">{{$tbalance}}</td>
+                      <?php $tbalance = $tbalance - $tran->bdt_amount;?>
+  
+                      @endif
+  
+                    </tr>
+                    @endforeach
+                  
+                  </tbody>
+                </table>
+
+
+
+              </div>
+              <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                coming soon
+              </div>
+              <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
+                coming soon
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+<!-- /.content -->
 
 <!-- Modal Receive Payment-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -52,6 +52,22 @@
           </p>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="{{route('admin.ksaNewClient')}}" class="nav-link {{ (request()->is('admin/ksa-new-client*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            KSA New
+          </p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{route('admin.ksaProcessingClient')}}" class="nav-link {{ (request()->is('admin/ksa-processing-client*')) ? 'active' : '' }}">
+          <i class="nav-icon fas fa-th"></i>
+          <p>
+            KSA Processing
+          </p>
+        </a>
+      </li>
       
 
       

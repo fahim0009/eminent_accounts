@@ -70,6 +70,158 @@ class ClientController extends Controller
         return view('admin.client.completed', compact('data','agents','countries','accounts'));
     }
 
+    // ksa new client
+    public function ksaNewClient()
+    {
+        $data = Client::where('is_job','0')->where('status','0')->orderby('id','ASC')->get();
+        $count = $data->count();
+        return view('admin.client.ksanew', compact('data','count'));
+    }
+
+    // ksa processing client
+    public function ksaProcessingClient()
+    {
+        $data = Client::where('is_job','0')->where('status','1')->orderby('id','ASC')->get();
+        $count = $data->count();
+        return view('admin.client.ksaprocessing', compact('data','count'));
+    }
+
+    public function ksaMedicalExpireDate(Request $request)
+    {
+        $data = Client::find($request->id);
+        $data->medical_exp_date = $request->medical_exp_date;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="Medical Expire Date Updated Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
+
+    public function ksaMofaTrade(Request $request)
+    {
+        $data = Client::find($request->id);
+        $data->mofa_trade = $request->mofa_trade;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="MOFA Trade Updated Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
+
+    public function ksaRL(Request $request)
+    {
+        $data = Client::find($request->id);
+        $data->rlid = $request->rldetail;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="RL Updated Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
+
+    // visaUpdate
+
+    public function visaUpdate(Request $request)
+    {
+
+        $request->validate([
+            'visa_date' => 'required',
+        ]);
+
+
+
+        $data = Client::find($request->id);
+        $data->visa_exp_date = $request->visa_date;
+        // visa_image
+        if ($request->visa_image) {
+            if ($data->visa) {
+                $oldVisaPath = public_path('images/client/visa/') . $data->visa;
+                if (file_exists($oldVisaPath)) {
+                    unlink($oldVisaPath);
+                }
+            }
+            $request->validate([
+                'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            ]);
+            $rand = mt_rand(100000, 999999);
+            $visa_imageName = time(). $rand .'.'.$request->visa_image->extension();
+            $request->visa_image->move(public_path('images/client/visa'), $visa_imageName);
+            $data->visa = $visa_imageName;
+        }
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="Visa Updated Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
+    }
+
+    // medicalUpdate
+    public function medicalUpdate(Request $request)
+    {
+        $request->validate([
+            'medical_exp_date' => 'required',
+        ]);
+
+        $data = Client::find($request->id);
+        $data->medical_exp_date = $request->medical_exp_date;
+
+        if ($request->medical_report) {
+            if ($data->medical_report) {
+                $oldMedicalPath = public_path('images/client/medical/') . $data->medical_report;
+                if (file_exists($oldMedicalPath)) {
+                    unlink($oldMedicalPath);
+                }
+            }
+            $request->validate([
+                'medical_report' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            ]);
+            $rand = mt_rand(100000, 999999);
+            $medical_imageName = time() . $rand . '.' . $request->medical_report->extension();
+            $request->medical_report->move(public_path('images/client/medical'), $medical_imageName);
+            $data->medical_report = $medical_imageName;
+        }
+
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message = "Medical Updated Successfully.";
+            return response()->json(['status' => 300, 'message' => $message]);
+        } else {
+            return response()->json(['status' => 303, 'message' => 'Server Error!!']);
+        }
+    }
+
+    //trainingfingerUpdate
+    public function trainingfingerUpdate(Request $request)
+    {
+        $request->validate([
+            'training' => 'required',
+            'finger' => 'required',
+        ]);
+
+        $data = Client::find($request->id);
+        $data->finger = $request->finger;
+        $data->training = $request->training;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message = "Training Finger Updated Successfully.";
+            return response()->json(['status' => 300, 'message' => $message]);
+        } else {
+            return response()->json(['status' => 303, 'message' => 'Server Error!!']);
+        }
+    }
+
 
 
     // ksa without job start
