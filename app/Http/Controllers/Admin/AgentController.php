@@ -19,15 +19,46 @@ class AgentController extends Controller
 {
     public function index()
     {
-        $data = User::where('is_type', '2')->orderby('id','DESC')->get();
+        // $data = User::where('is_type', '2')->orderby('id','DESC')->get();
+        $data = DB::table('users')
+        ->leftJoin('transactions', 'users.id', '=', 'transactions.user_id')
+        ->select(
+            'users.id',      // Include only necessary columns
+            'users.name',
+            'users.surname',
+            'users.email',   
+            'users.phone',   
+            'users.status',
+            'users.is_type',
+            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon","service_sales","service_adon","okala_sales","okalasales_adon") THEN transactions.bdt_amount ELSE 0 END), 0) as total_receiable'),  
+            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount","service_received","service_discount","okala_received","okalasales_discount") THEN transactions.bdt_amount ELSE 0 END), 0) as total_received')
+        )
+        ->where('users.is_type', '=', '2')
+        ->groupBy('users.id', 'users.name', 'users.surname', 'users.email', 'users.phone','users.status','users.is_type',) // Group by all selected columns
+        ->get();
+
         return view('admin.agent.index', compact('data'));
     }
 
     public function getClient($id)
     {
-        $data = Client::where('user_id', $id)->orderby('id','DESC')->get();
 
-        //  ############################ start visa & service sales calculation  ######################################
+        $data = DB::table('clients')
+                ->leftJoin('transactions', 'clients.id', '=', 'transactions.client_id')
+                ->select(
+                    'clients.id',      // Include only necessary columns
+                    'clients.passport_name',
+                    'clients.passport_number',
+                    'clients.package_cost',   
+                    'clients.status',   
+                    DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount") THEN transactions.bdt_amount ELSE 0 END), 0) as total_received'),
+                    DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon") THEN transactions.bdt_amount ELSE 0 END), 0) as total_package')
+                )
+                ->where('clients.user_id', '=', $id)
+                ->groupBy('clients.id', 'clients.passport_name', 'clients.passport_number', 'clients.package_cost', 'clients.status') // Group by all selected columns
+                ->get();
+
+//  ############################ start visa & service sales calculation  ######################################
 
         $processing = Client::where('status','1')->where('user_id', $id)->count();
         $decline = Client::where('status','3')->where('user_id', $id)->count();

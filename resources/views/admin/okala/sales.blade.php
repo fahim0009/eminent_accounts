@@ -184,16 +184,16 @@
                 <th style="text-align: center">VISA Id</th>
                 <th style="text-align: center">Sponsor Id</th>
                 <th style="text-align: center">Agent</th>
+                <th style="text-align: center">Vendor</th>
                 <th style="text-align: center">Transaction</th>
                 <!-- <th style="text-align: center">Action</th> -->
               </tr>
               </thead>
               <tbody>
-                @foreach (\App\Models\OkalaSale::orderby('id', 'DESC')->get() as $key => $okala)
+                @foreach ($okala_sales as $key => $okala)
                 @php
                 $user = \App\Models\User::where('id', $okala->user_id)->first();
                 @endphp
-
                 <tr>
                   <td style="text-align: center">{{ $key + 1 }}</td>
                   <td style="text-align: center">{{$okala->date}}</td>
@@ -201,11 +201,11 @@
                   <td style="text-align: center">{{$okala->visaid}}</td>
                   <td style="text-align: center">{{$okala->sponsor_id}}</td>
                   <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
+                  <td style="text-align: center">{{$okala->vendor_name}}</td>
                   <td style="text-align: center">
                     <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
                     <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
-                  </td>
-                  
+                  </td>               
                   <!-- <td style="text-align: center">
                     <a href="{{route('okalasalesDetails', $okala->id)}}"><i class="fa fa-eye" style="color: #24ae2f;font-size:16px;"></i></a>
                     <a id="EditBtn" rid="{{$okala->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>

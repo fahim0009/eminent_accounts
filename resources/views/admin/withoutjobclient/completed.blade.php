@@ -23,7 +23,7 @@
                   <th>Passport Name</th>
                   <th>Passport Number</th>
                   <th>Package Cost</th>
-                  <th>Received Amount</th>
+                  <!-- <th>Received Amount</th> -->
                 </tr>
                 </thead>
                 <tbody>
@@ -34,7 +34,7 @@
                     <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <td style="text-align: center">{{$data->package_cost}}</td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
+                    <!-- <td style="text-align: center">{{$data->total_rcv}}</td> -->
                   </tr>
                   @endforeach
                 

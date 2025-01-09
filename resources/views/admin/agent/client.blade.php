@@ -235,8 +235,8 @@
                         <td style="text-align: center">{{ $key + 1 }}</td>
                         <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
                         <td style="text-align: center">{{$data->passport_number}}</td>
-                        <td style="text-align: center">{{$data->package_cost}}</td>
-                        <td style="text-align: center">{{$data->total_rcv}}</td>
+                        <td style="text-align: center">{{$data->total_package}}</td>
+                        <td style="text-align: center">{{$data->total_received}}</td>
                         <td style="text-align: center">
                           @if ($data->status == 0) New
                           @elseif($data->status == 1)Processing
