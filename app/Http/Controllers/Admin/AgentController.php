@@ -43,7 +43,7 @@ class AgentController extends Controller
     public function getClient(Request $request, $id)
     {
 
-        $data = DB::table('clients')
+        $datas = DB::table('clients')
                 ->leftJoin('transactions', 'clients.id', '=', 'transactions.client_id')
                 ->select(
                     'clients.id',      // Include only necessary columns
@@ -112,12 +112,7 @@ class AgentController extends Controller
 
         $agents = User::where('id',$id)->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
-        $accounts = Account::orderby('id','DESC')->get();
-
-        
-
-
-      
+        $accounts = Account::orderby('id','DESC')->get();           
         
         
         $clientTransactions = Transaction::where('user_id',$id)
@@ -133,7 +128,7 @@ class AgentController extends Controller
         ->orderby('date','DESC')->get();
 
 
-        return view('admin.agent.client', compact('data','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
+        return view('admin.agent.client', compact('datas','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
     }   
     
 
