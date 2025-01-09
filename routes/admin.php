@@ -66,6 +66,21 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/ksa-without-job-decline-clients', [ClientController::class, 'withoutjobdecline'])->name('withoutjob.declineclient');
     Route::get('/ksa-without-job-completed-clients', [ClientController::class, 'withoutjobcompleted'])->name('withoutjob.completedclient');
 
+    // ksa new client
+    Route::get('/ksa-new-client', [ClientController::class, 'ksaNewClient'])->name('admin.ksaNewClient');
+
+    // ksa processing client
+    Route::get('/ksa-processing-client', [ClientController::class, 'ksaProcessingClient'])->name('admin.ksaProcessingClient');
+
+    // ksa medical expire date
+    Route::get('/change-client-medical-exp-date', [ClientController::class, 'ksaMedicalExpireDate'])->name('admin.ksaMedicalExpireDate');
+    Route::get('/change-client-mofa-trade', [ClientController::class, 'ksaMofaTrade'])->name('admin.ksaMofaTrade');
+    Route::get('/change-client-rl-detail', [ClientController::class, 'ksaRL'])->name('admin.ksaRL');
+
+    // visa update
+    Route::post('/visa-update', [ClientController::class, 'visaUpdate'])->name('admin.visaUpdate');
+    Route::post('/medical-update', [ClientController::class, 'medicalUpdate'])->name('admin.medicalUpdate');
+    Route::post('/training-finger-update', [ClientController::class, 'trainingfingerUpdate'])->name('admin.trainingfingerUpdate');
 
     Route::post('/client', [ClientController::class, 'store']);
     Route::get('/client/{id}/edit', [ClientController::class, 'edit']);
