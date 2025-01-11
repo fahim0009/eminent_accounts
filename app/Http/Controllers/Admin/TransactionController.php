@@ -34,6 +34,12 @@ class TransactionController extends Controller
             exit();
         }
 
+        if(($request->tran_type == "okala_received") && empty($request->riyal_amount)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Riyal amount \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+
         
 
         $data = new Transaction;
@@ -41,6 +47,7 @@ class TransactionController extends Controller
         $data->account_id = $request->account_id;
         $data->user_id = $request->user_id;
         $data->bdt_amount = $request->amount;
+        $data->foreign_amount = $request->riyal_amount;
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;

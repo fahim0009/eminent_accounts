@@ -210,6 +210,7 @@ class OkalaController extends Controller
     {
         $data = OkalaPurchaseDetail::find($request->okalaId);
         $data->assign_to = $request->clientId;
+        $data->assign_date = now();
         $data->save();
 
         $client = Client::find($request->clientId);

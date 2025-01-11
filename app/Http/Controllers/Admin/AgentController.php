@@ -56,6 +56,7 @@ class AgentController extends Controller
                 )
                 ->where('clients.user_id', '=', $id)
                 ->groupBy('clients.id', 'clients.passport_name', 'clients.passport_number', 'clients.package_cost', 'clients.status') // Group by all selected columns
+                ->orderby('id','DESC')
                 ->get();
 
 //  ############################ start visa & service sales calculation  ######################################
@@ -106,8 +107,8 @@ class AgentController extends Controller
 
         $dueForvisa = (($totalPackageAmount + $totaServiceamt)  - ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt + $totalServiceReceivedAmnt));
 
-        $totalReceivedAmnt = Transaction::where('user_id', $id)
-                            ->whereIn('tran_type', ['package_received', 'service_received', 'okala_received'])
+        $ttlVisanSrvcRcv = Transaction::where('user_id', $id)
+                            ->whereIn('tran_type', ['package_received', 'service_received'])
                             ->sum('bdt_amount');
 
         $agents = User::where('id',$id)->get();
@@ -128,7 +129,7 @@ class AgentController extends Controller
         ->orderby('date','DESC')->get();
 
 
-        return view('admin.agent.client', compact('datas','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','totalReceivedAmnt','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
+        return view('admin.agent.client', compact('datas','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','ttlVisanSrvcRcv','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
     }   
     
 
