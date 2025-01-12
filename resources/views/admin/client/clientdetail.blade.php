@@ -704,8 +704,6 @@
           }else if(tran_type == "package_received"){
             var ref = "Package Received";
           }
-          // alert(ref);
-          // exit;
 
           var form_data = new FormData();
           form_data.append("account_id", $("#account_id").val());
@@ -743,7 +741,6 @@
                       });
                     });
                   window.setTimeout(function(){location.reload()},2000);
-                  // $("#rcptBtn").prop('disabled', false);
 
                 }
             },

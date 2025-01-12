@@ -47,7 +47,9 @@ class TransactionController extends Controller
         $data->account_id = $request->account_id;
         $data->user_id = $request->user_id;
         $data->bdt_amount = $request->amount;
+        if(!empty($request->riyal_amount)){
         $data->foreign_amount = $request->riyal_amount;
+        }
         $data->note = $request->note;
         $data->client_id = $request->client_id;
         $data->tran_type = $request->tran_type;
