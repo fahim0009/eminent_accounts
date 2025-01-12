@@ -97,7 +97,7 @@ class ClientController extends Controller
     // ksa processing client
     public function ksaProcessingClient()
     {
-        $data = Client::where('is_job','0')->where('status','1')->orderby('id','ASC')->get();
+        $data = Client::where('status','1')->orderby('id','ASC')->get();
         $count = $data->count();
         return view('admin.client.ksaprocessing', compact('data','count'));
     }
