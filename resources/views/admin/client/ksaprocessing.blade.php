@@ -45,7 +45,7 @@
                     <td style="text-align: center">{{$data->passport_name}}
                       <br> ({{$data->passport_number}})
                     </td>
-                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a> <br> ({{$data->package_cost}}) </td>
+                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a></td>
 
                     <td style="text-align: center">
                     {{ \App\Models\CodeMaster::where('id', $data->mofa_trade)->value('type_name') }} <hr>
