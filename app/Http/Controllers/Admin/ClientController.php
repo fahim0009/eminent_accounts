@@ -86,7 +86,6 @@ class ClientController extends Controller
             'users.name as user_name', 
             'users.surname as user_surname'
         )
-        ->where('clients.is_job', '0')
         ->where('clients.status', '0')
         ->orderBy('clients.id', 'ASC')
         ->get();
