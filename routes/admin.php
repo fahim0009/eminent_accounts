@@ -79,7 +79,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     // visa update
     Route::post('/visa-update', [ClientController::class, 'visaUpdate'])->name('admin.visaUpdate');
-    Route::post('/medical-update', [ClientController::class, 'medicalUpdate'])->name('admin.medicalUpdate');
+    Route::post('/manpower-update', [ClientController::class, 'manpowerUpdate'])->name('admin.medicalUpdate');
+    Route::post('/flyDate-update', [ClientController::class, 'flyDateUpdate'])->name('admin.flyDateUpdate');
     Route::post('/training-finger-update', [ClientController::class, 'trainingfingerUpdate'])->name('admin.trainingfingerUpdate');
 
     Route::post('/client', [ClientController::class, 'store']);

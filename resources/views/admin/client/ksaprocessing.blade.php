@@ -28,8 +28,8 @@
                   <th>Mofa/RL</th>
                   <th>Visa Exp Date and Image</th>
                   <th>Training | Finger</th>
-                  {{-- <th>Manpower</th> --}}
-                  <th>Medical</th>
+                  <th>Manpower</th>
+                  <th>Fly/Delivery Date</th>
                   
                 </tr>
                 </thead>
@@ -55,7 +55,13 @@
                     <td style="text-align: center"> 
                         <form id="visaForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
                           @csrf
-                          <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="{{ $data->visa_exp_date }}" class="form-control mb-2 mr-2">
+
+                          @if($data->visa_exp_date)
+                          <p>{{$data->visa_exp_date}} &nbsp &nbsp</p>
+                          @else
+                          <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
+                          @endif
+
                           <input type="hidden" name="id" value="{{ $data->id }}">
                             @if($data->visa)
                               <a class="btn btn-secondary" href="{{ asset('images/client/visa/' . $data->visa) }}" target="_blank">
@@ -67,9 +73,11 @@
                               </label>
                               <input type="file" id="visa_image{{$data->id}}" name="visa_image" class="form-control mb-2 mr-2" style="display: none;">
                             @endif
+                            @if(empty($data->visa) || empty($data->visa_exp_date))
                             <button type="button" class="btn btn-secondary submitVisa" data-id="{{$data->id}}">
                             <i class="fas fa-save"></i>
                             </button>
+                            @endif
                         </form>
                         <p><small class="visa_msg" id="visa_msg{{$data->id}}"></small></p>
                       
@@ -101,29 +109,40 @@
                       @endif
                     </td> --}}
                     <td style="text-align: center"> 
-                      <form id="medicalForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
+                      <form id="manpoerForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
                         @csrf
-                        <input type="date" name="medical_exp_date" id="medical_exp_date{{$data->id}}" value="{{ $data->medical_exp_date }}" class="form-control mb-2 mr-2">
                         <input type="hidden" name="id" value="{{ $data->id }}">
-                        @if($data->medical_report)
-                          <a href="{{ asset('images/client/medical/' . $data->medical_report) }}" target="_blank">
-                            <img src="{{ asset('images/client/medical/' . $data->medical_report) }}" alt="Medical Report" class="img-thumbnail mb-2 mr-2" style="max-width: 100px;">
-                          </a>
+                        @if($data->manpower_image)
+                          <a class="btn btn-secondary" href="{{ asset('images/client/manpower/' . $data->manpower_image) }}" target="_blank">
+                          <i class="fas fa-download"></i>
+                          </a>                    
                         @else
-                          <label for="medical_report{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
+                          <label for="manpower_image{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
                             <i class="fas fa-upload"></i>
                           </label>
-                          <input type="file" id="medical_report{{$data->id}}" name="medical_report" class="form-control mb-2 mr-2" style="display: none;">
+                          <input type="file" id="manpower_image{{$data->id}}" name="manpower_image" class="form-control mb-2 mr-2" style="display: none;">
+                          <button type="button" class="btn btn-secondary submitManpower" data-id="{{$data->id}}">
+                          <i class="fas fa-save"></i>
+                        </button>
                         @endif
-                        <button type="button" class="btn btn-secondary submitMedical" data-id="{{$data->id}}">
+                      </form>
+                      <p><small class="manpower_msg" id="manpower_msg{{$data->id}}"></small></p>
+
+                    </td>
+              
+                    <td style="text-align: center"> 
+                      <form id="flydateform{{$data->id}}" enctype="multipart/form-data" class="form-inline">
+                        @csrf
+                        <input type="date" name="flight_date" id="flight_date{{$data->id}}" value="{{ $data->flight_date }}" class="form-control mb-2 mr-2">                       
+                        <input type="hidden" name="id" value="{{ $data->id }}">
+                        <button type="button" class="btn btn-secondary submitFlydate" data-id="{{$data->id}}">
                           <i class="fas fa-save"></i>
                         </button>
                       </form>
-                      <p><small class="medical_msg" id="medical_msg{{$data->id}}"></small></p>
+                      <p><small class="fly_msg" id="fly_msg{{$data->id}}"></small></p>
 
-                    </td>
-                    
-                    
+                    </td>              
+                                      
                     
                   </tr>
                   
@@ -237,6 +256,13 @@
               return false;
           }
 
+          var visa = $('#visa_image'+id).val();
+          if (visa == '') {
+              $('#visa_msg'+id).html('<span class="text-danger">Please upload Visa Copy</span>');
+              return false;
+          }
+
+
           var form = $('#visaForm'+id)[0];
           var formData = new FormData(form);
           var url = "{{URL::to('/admin/visa-update')}}";
@@ -284,20 +310,72 @@
           });
       });
 
-
-      $('.submitMedical').click(function (e) {
+// fly or delivery date update 
+      $('.submitFlydate').click(function (e) {
           e.preventDefault();
           var id = $(this).data('id');
 
-          var medical_exp_date = $('#medical_exp_date'+id).val();
-          if (medical_exp_date == '') {
-              $('#medical_msg'+id).html('<span class="text-danger">Please select a Medical Date</span>');
+          var flight_date = $('#flight_date'+id).val();
+          if (flight_date == '') {
+              $('#fly_msg'+id).html('<span class="text-danger">Please select a Fly Date</span>');
               return false;
           }
 
-          var form = $('#medicalForm'+id)[0];
+          var form = $('#flydateform'+id)[0];
           var formData = new FormData(form);
-          var url = "{{URL::to('/admin/medical-update')}}";
+          var url = "{{URL::to('/admin/flyDate-update')}}";
+          $.ajax({
+              type: "POST",
+              dataType: "json",
+              url: url,
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (data) {
+                  if (data.status == 300) {
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: data.message
+                          });
+                        });
+                  } else {
+                      // $('#medical_msg'+id).html(data.message);
+                        $(function() {
+                          var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                          });
+                          Toast.fire({
+                          icon: 'error',
+                          title: data.message
+                          });
+                        });
+                        $('#fly_msg'+id).html(data.errors.medical_exp_date[0]);
+                  }
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+      });
+
+
+  // manpower file uload................. 
+      $('.submitManpower').click(function (e) {
+          e.preventDefault();
+          var id = $(this).data('id');
+         var form = $('#manpoerForm'+id)[0];
+          var formData = new FormData(form);
+          var url = "{{URL::to('/admin/manpower-update')}}";
           $.ajax({
               type: "POST",
               dataType: "json",
@@ -342,6 +420,7 @@
           });
       });
 
+      // submit training & finger 
       $('.submitTrainingFinger').click(function (e) {
           e.preventDefault();
           var id = $(this).data('id');

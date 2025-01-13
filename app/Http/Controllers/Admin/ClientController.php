@@ -149,11 +149,12 @@ class ClientController extends Controller
     public function visaUpdate(Request $request)
     {
 
-        $request->validate([
-            'visa_date' => 'required',
-        ]);
 
-
+        if(empty($request->visa_date) || empty($request->visa_image)){
+            $message ="VISA Date & VISA PDF both are required.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
 
         $data = Client::find($request->id);
         $data->visa_exp_date = $request->visa_date;
@@ -184,34 +185,52 @@ class ClientController extends Controller
     }
 
     // medicalUpdate
-    public function medicalUpdate(Request $request)
+    public function manpowerUpdate(Request $request)
     {
-        $request->validate([
-            'medical_exp_date' => 'required',
-        ]);
-
+   
         $data = Client::find($request->id);
-        $data->medical_exp_date = $request->medical_exp_date;
 
-        if ($request->medical_report) {
-            if ($data->medical_report) {
-                $oldMedicalPath = public_path('images/client/medical/') . $data->medical_report;
-                if (file_exists($oldMedicalPath)) {
-                    unlink($oldMedicalPath);
+        if ($request->manpower_image) {
+            if ($data->manpower_image) {
+                $oldmanpowerPath = public_path('images/client/manpower/') . $data->manpower_image;
+                if (file_exists($oldmanpowerPath)) {
+                    unlink($oldmanpowerPath);
                 }
             }
             $request->validate([
-                'medical_report' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                'manpower_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             ]);
             $rand = mt_rand(100000, 999999);
-            $medical_imageName = time() . $rand . '.' . $request->medical_report->extension();
-            $request->medical_report->move(public_path('images/client/medical'), $medical_imageName);
-            $data->medical_report = $medical_imageName;
+            $manpower_imageName = time() . $rand . '.' . $request->manpower_image->extension();
+            $request->manpower_image->move(public_path('images/client/manpower'), $manpower_imageName);
+            $data->manpower_image = $manpower_imageName;
         }
 
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
-            $message = "Medical Updated Successfully.";
+            $message = "Manpower file uploaded Successfully.";
+            return response()->json(['status' => 300, 'message' => $message]);
+        } else {
+            return response()->json(['status' => 303, 'message' => 'Server Error!!']);
+        }
+    }
+ 
+
+    // fly date update
+    public function flyDateUpdate(Request $request)
+    {
+        $request->validate([
+            'flight_date' => 'required',
+        ]);
+
+        $data = Client::find($request->id);
+        $data->flight_date = $request->flight_date;
+
+
+        $data->status = 2;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message = "Fligit or Delivery Date Successfully.";
             return response()->json(['status' => 300, 'message' => $message]);
         } else {
             return response()->json(['status' => 303, 'message' => 'Server Error!!']);
