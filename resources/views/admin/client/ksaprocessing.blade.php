@@ -1,11 +1,6 @@
 @extends('admin.layouts.admin')
 
 @section('content')
-
-
-
-
-
 <!-- Main content -->
 <section class="content pt-3" id="contentContainer">
     <div class="container-fluid">
