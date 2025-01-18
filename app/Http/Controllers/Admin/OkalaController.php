@@ -39,7 +39,18 @@ class OkalaController extends Controller
 
     public function assignedOkala()
     {
-        $data = OkalaPurchaseDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
+        // $data = OkalaPurchaseDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
+
+        $data = DB::table('okala_purchase_details')
+            ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
+            ->whereNotNull('okala_purchase_details.assign_to')
+            ->orderBy('okala_purchase_details.id', 'DESC')
+            ->select(
+                'okala_purchase_details.*', 
+                'clients.passport_name', 
+                'clients.passport_number'
+            )
+            ->get();
         
         return view('admin.okala.index', compact('data'));
     }
