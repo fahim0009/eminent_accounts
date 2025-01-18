@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
+use App\Http\Controllers\Admin\ExpenseController;
 
 
 /*------------------------------------------
@@ -104,6 +105,13 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
+
+        //Expense
+        Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
+        Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
+        Route::post('expense', [ExpenseController::class, 'store']);
+        Route::get('expense/{id}', [ExpenseController::class, 'edit']);
+        Route::put('expense/{id}', [ExpenseController::class, 'update']); 
 
     
     Route::get('/loan', [LoanController::class, 'index'])->name('admin.loan');

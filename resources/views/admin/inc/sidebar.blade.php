@@ -52,6 +52,14 @@
           </p>
         </a>
       </li>
+      
+      <li class="nav-item">
+        <a href="{{ route('admin.expense') }}" class="nav-link {{ (request()->is('admin/expense*')) ? 'active' : '' }}">
+            <i class="fa fa-users"></i>
+            <p>Expense</p>
+        </a>
+    </li>
+    
       <li class="nav-item">
         <a href="{{route('admin.ksaNewClient')}}" class="nav-link {{ (request()->is('admin/ksa-new-client*')) ? 'active' : '' }}">
           <i class="nav-icon fas fa-th"></i>
