@@ -61,6 +61,17 @@
                         <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter phone">
                       </div>
                     </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                          <label>Role <span class="text-danger">*</span></label>
+                          <select name="role_id" id="role_id" class="form-control">
+                              <option value="">Select Role</option>
+                              @foreach($roles as $role)
+                                  <option value="{{ $role->id }}">{{ $role->name }}</option>
+                              @endforeach
+                          </select>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="row">
@@ -119,6 +130,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Role</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -130,6 +142,7 @@
                     <td style="text-align: center">{{$data->name}} {{$data->surname}}</td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
+                    <td style="text-align: center">{{$data->role->name ?? ""}}</td>
                     
                     <td>
                       <div class="custom-control custom-switch">
@@ -213,6 +226,7 @@
               form_data.append("phone", $("#phone").val());
               form_data.append("surname", $("#surname").val());
               form_data.append("password", $("#password").val());
+              form_data.append("role_id", $("#role_id").val());
               form_data.append("confirm_password", $("#confirm_password").val());
               $.ajax({
                 url: url,
@@ -254,6 +268,7 @@
               form_data.append("phone", $("#phone").val());
               form_data.append("surname", $("#surname").val());
               form_data.append("password", $("#password").val());
+              form_data.append("role_id", $("#role_id").val());
               form_data.append("confirm_password", $("#confirm_password").val());
               form_data.append("codeid", $("#codeid").val());
               
@@ -332,6 +347,7 @@
           $("#name").val(data.name);
           $("#surname").val(data.surname);
           $("#phone").val(data.phone);
+          $("#role_id").val(data.role_id);
           $("#email").val(data.email);
           $("#codeid").val(data.id);
           $("#addBtn").val('Update');

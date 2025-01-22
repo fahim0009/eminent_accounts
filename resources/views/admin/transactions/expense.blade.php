@@ -93,6 +93,23 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="transaction_type" class="control-label">Type</label>
+                                <select class="form-control" id="transaction_type" name="transaction_type">
+                                    <option value="">Select type</option>
+                                    <option value="Fahim">Fahim</option>
+                                    <option value="Mehdi">Mehdi</option>
+                                    <option value="KSA">KSA</option>
+                                    <option value="Dhaka-office">Dhaka-office</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control" id="chart_of_account_id" name="chart_of_account_id">
                                     <option value="">Select chart of account</option>
@@ -107,11 +124,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group" id="payment_type_container">
                                 <label for="payment_type" class="control-label">Payment Type</label>
                                 <select class="form-control" id="payment_type" name="payment_type">
@@ -125,18 +138,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="transaction_type" class="control-label">Type</label>
-                                <select class="form-control" id="transaction_type" name="transaction_type">
-                                    <option value="">Select type</option>
-                                    <option value="Fahim">Fahim</option>
-                                    <option value="Mehdi">Mehdi</option>
-                                    <option value="KSA">KSA</option>
-                                    <option value="Dhaka-office">Dhaka-office</option>
-                                </select>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div class="row">
@@ -337,6 +339,17 @@
         $('#chartModal .submit-btn').removeClass('update-btn').addClass('save-btn').text('Save').val("");
 
     });
+
+    $("#transaction_type").change(function(){
+        $(this).find("option:selected").each(function(){
+            var val = $(this).val();
+            if( val == "Fahim" || val == "Mehdi" ){
+                $("#chart_of_account_container").hide();
+            } else{
+                $("#chart_of_account_container").show();
+            }
+        });
+    }).change();
 
 
     // save button event

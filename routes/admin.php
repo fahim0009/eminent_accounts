@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\RoleController;
 
 
 /*------------------------------------------
@@ -196,6 +197,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/okala-sales-receive', [TransactionController::class,'okalaSalesReceive'])->name('okalaSalesReceive');
     Route::post('/vendor-transaction', [TransactionController::class,'vendorTran'])->name('vendorTran');
     Route::post('/purchase-transaction', [TransactionController::class,'purchaseTran'])->name('purchaseTran');
+
+    // role and permission
+    Route::get('role', [RoleController::class, 'index'])->name('admin.role');
+    Route::post('role', [RoleController::class, 'store'])->name('admin.rolestore');
+    Route::get('role/{id}', [RoleController::class, 'edit'])->name('admin.roleedit');
+    Route::post('role-update', [RoleController::class, 'update'])->name('admin.roleupdate');
 
 });
   
