@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\OkalaPurchase;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -132,5 +133,21 @@ class VendorController extends Controller
         $user->save();
 
         return response()->json(['status' => 200, 'message' => 'Status updated successfully.']);
+    }
+
+    public function vendorHistory($id)
+    {
+        $vendor = User::with('okalaPurchase')->where('is_type', 3)->where('id', $id)->first();
+        
+        $okalaPurchase = OkalaPurchase::with('okalaPurchaseDetail')->where('user_id', $id)->orderby('id','DESC')->get();
+
+        $trans = Transaction::where('user_id',$id)->orderby('id', 'ASC')->get();
+        $drAmount = Transaction::where('user_id',$id)->where('tran_type', 'okala_received')->sum('bdt_amount');
+        $crAmount = Transaction::where('user_id',$id)->where('tran_type', 'okala_purchase')->sum('bdt_amount');
+        $balance =  $crAmount - $drAmount;
+
+
+        return view('admin.vendor.history', compact('okalaPurchase','vendor','id', 'trans','balance'));
+
     }
 }

@@ -59,8 +59,10 @@
                             <th>Date</th>
                             <th>Account</th>
                             <th>Type</th>
+                            <th>Document</th>
                             <th>Payment Type</th>
                             <th>Amount</th>
+                            <th>Riyal Amount</th>
                             <th><i class=""></i> Action</th>
                         @endslot
                         @endcomponent
@@ -79,7 +81,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
             </div>
-            <form class="form-horizontal" id="customer-form">
+            <form class="form-horizontal" id="customer-form" enctype="multipart/form-data">
                 <div id="alert-container1"></div>
                 <div class="modal-body">
                     {{ csrf_field() }}
@@ -98,7 +100,7 @@
                                     <option value="">Select type</option>
                                     <option value="Fahim">Fahim</option>
                                     <option value="Mehdi">Mehdi</option>
-                                    <option value="KSA">KSA</option>
+                                    <option value="KSA-Deposit">KSA</option>
                                     <option value="Dhaka-office">Dhaka-office</option>
                                 </select>
                             </div>
@@ -111,12 +113,12 @@
                         <div class="col-md-12">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
-                                <select class="form-control" id="chart_of_account_id" name="chart_of_account_id">
+                                <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
                                     <option value="">Select chart of account</option>
                                     @php
                                     use App\Models\ChartOfAccount;
                                     $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-                                    $expenses = ChartOfAccount::where('account_head', 'Expenses')->get();
+                                    $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
                                     @endphp
                                     @foreach($expenses as $expense)
                                     <option value="{{ $expense->id }}">{{ $expense->account_name }}</option>
@@ -124,7 +126,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group" id="payment_type_container">
                                 <label for="payment_type" class="control-label">Payment Type</label>
                                 <select class="form-control" id="payment_type" name="payment_type">
@@ -138,14 +140,27 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="document" class="control-label">Document</label>
+                                <input type="file" name="document" class="form-control" id="document">
+                            </div>
+                        </div>
+
                         
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amount" class="control-label">Amount</label>
                                 <input type="text" name="amount" class="form-control" id="amount">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="riyal_amount" class="control-label">Riyal Amount</label>
+                                <input type="text" name="riyal_amount" class="form-control" id="riyal_amount">
                             </div>
                         </div>
                     </div>
@@ -263,12 +278,29 @@
                 name: 'tran_type'
             },
             {
+                data: 'document',
+                name: 'document',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row, meta) {
+                    if (row.document) {
+                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
                 data: 'account_name',
                 name: 'account_name'
             },
             {
                 data: 'amount',
                 name: 'amount'
+            },
+            {
+                data: 'riyal_amount',
+                name: 'riyal_amount'
             },
             {
                 data: 'action',
@@ -314,6 +346,7 @@
                     }
                     $('#transaction_type').val(response.transaction_type);
                     $('#amount').val(response.amount);
+                    $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
 
                     $('#chart_of_account_id').val(response.chart_of_account_id);
@@ -353,52 +386,58 @@
 
 
     // save button event
+    $("body").delegate(".save-btn", "click", function(event) {
+            event.preventDefault();
 
-    $(document).on('click', '.save-btn', function() {
-        let formDataSerialized = $('#customer-form').serializeArray();
-        formDataSerialized.push({
-            name: 'table_type',
-            value: 'Expenses'
-        });
-        let formData = $.param(formDataSerialized);
-        // console.log(formData);
+            $(this).find('.fa-spinner').remove();
+            $(this).prepend('<i class="fa fa-spinner fa-spin"></i>');
+            $(this).attr("disabled", 'disabled');
 
+            
+            var formData = new FormData($('#customer-form')[0]);
 
-        $.ajax({
-            url: charturl,
-            type: 'POST',
-            data: formData,
-            beforeSend: function(request) {
-                request.setRequestHeader('X-CSRF-Token', $("meta[name='csrf-token']").attr('content'));
-            },
-            success: function(response) {
-                // console.log(response);
-                if (response.status === 200) {
-                    $('#chartModal').modal('toggle');
-                    $(function() {
-                        var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Data saved successfully.'
-                        });
+            $.ajax({
+                url: charturl,
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(d) {
+                    console.log(d);
+                    $("#loader").removeClass('fa fa-spinner fa-spin');
+                    $(".btn-submit").removeAttr("disabled", true);
+
+                    if (d.status == 400) {
+                        $(".ermsg").html(d.message);
+                    } else {$('#chartModal').modal('toggle');
+                        $(function() {
+                            var Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Data saved successfully.'
+                            });
                         });
                         window.setTimeout(function(){location.reload()},2000)
-                    customerTBL.draw();
-                } else if (response.status === 303) {
-                    let alertMessage = `<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>${response.message}</b></div>`;
-                    $('#alert-container1').html(alertMessage);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $("#loader").removeClass('fa fa-spinner fa-spin');
+                    $(".btn-submit").removeAttr("disabled", true);
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    });
+            });
+
+        })
+
+
+
+
 
     // update button event
 

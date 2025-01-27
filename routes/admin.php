@@ -107,12 +107,18 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
 
-        //Expense
-        Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
-        Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
-        Route::post('expense', [ExpenseController::class, 'store']);
-        Route::get('expense/{id}', [ExpenseController::class, 'edit']);
-        Route::put('expense/{id}', [ExpenseController::class, 'update']); 
+    //Expense
+    Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
+    Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
+    Route::post('expense', [ExpenseController::class, 'store']);
+    Route::get('expense/{id}', [ExpenseController::class, 'edit']);
+    Route::put('expense/{id}', [ExpenseController::class, 'update']); 
+
+    // ksa transation
+    Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');
+    Route::post('ksa-transaction', [ExpenseController::class, 'ksatransactionstore']);
+    Route::get('ksa-transaction/{id}/edit', [ExpenseController::class, 'ksatransactionedit']);
+    Route::post('/ksa-transaction-update', [ExpenseController::class, 'ksatransactionupdate']); 
 
     
     Route::get('/loan', [LoanController::class, 'index'])->name('admin.loan');
@@ -168,6 +174,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/vendor-update', [VendorController::class, 'update']);
     Route::get('/vendor/{id}', [VendorController::class, 'delete']);
     Route::post('/vendor/{id}/status', [VendorController::class, 'updateStatus']);
+
+    Route::get('/vendor-history/{id}', [VendorController::class, 'vendorHistory'])->name('admin.vendorHistory');
 
     
     //okala

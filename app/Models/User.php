@@ -85,4 +85,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function okalaPurchase()
+    {
+        return $this->hasMany(OkalaPurchase::class);
+    }
+
+
 }

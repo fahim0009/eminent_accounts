@@ -233,6 +233,14 @@
                                                 </div>
                                             </fieldset>
 
+                                            <fieldset class="border p-2">
+                                                <legend class="w-auto px-2">Ksa Transaction</legend>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p18" name="permission[]" value="18" @foreach (json_decode($data->permission) as $permission) @if ($permission == 18) checked @endif @endforeach>
+                                                    <label class="form-check-label" for="p18">Expense</label>
+                                                </div>
+                                            </fieldset>
+
                                             
 
                                         </div>
