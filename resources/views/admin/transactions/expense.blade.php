@@ -7,65 +7,273 @@
         <div class="row">
             <div class="col-md-12">
                 <div id="alert-container"></div>
-                <div class="card card-secondary">
+                <div class="card card-secondary card-tabs">
 
-                    <div class="card-header">
-                        <h1 class="card-title">Expense
-                            <a href="{{route('admin.coa')}}" target="blank">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                        <div class="card-tools">
-                            <button class="btn btn-lg btn-success" data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Expense</button>
-                        </div>
+                    <div class="card-header p-0 pt-1">
+
+                        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Dhaka Office</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">KSA Office</a>
+                            </li>
+
+                            <li class="nav-item">
+                              <a class="nav-link " id="fahim-personal" data-toggle="pill" href="#custom-tabs-one-fahim" role="tab" aria-controls="custom-tabs-one-fahim" aria-selected="true">Fahim</a>
+                            </li> 
+
+                            <li class="nav-item">
+                              <a class="nav-link " id="mehdi-personal" data-toggle="pill" href="#custom-tabs-one-mehdi" role="tab" aria-controls="custom-tabs-one-mehdi" aria-selected="true">Mehdi</a>
+                            </li> 
+                            
+                            <li class="nav-item ml-auto px-2">
+                                <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Expense</button>
+                                <a href="{{route('admin.coa')}}" class="btn btn-xs btn-success " target="blank">
+                                    <i class="fas fa-plus"></i>COA
+                                </a>
+                            </li>
+                        </ul>
+                        
                     </div>
 
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <form class="form-inline" role="form" method="POST" action="{{ route('admin.expense.filter') }}">
-                                {{ csrf_field() }}
 
-                                <div class="form-group mx-sm-3">
-                                    <label class="sr-only">Start Date</label>
-                                    <input type="date" class="form-control" name="start_date" value="{{ request()->input('start_date') }}">
+
+                        <div class="tab-content" id="custom-tabs-one-tabContent">
+                            <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                                
+                                {{-- exp start  --}}
+                                <div class="row mb-3">
+                                    <form class="form-inline" role="form" method="POST" action="{{ route('admin.expense.filter') }}">
+                                        {{ csrf_field() }}
+
+                                        <div class="form-group mx-sm-3">
+                                            <label class="sr-only">Start Date</label>
+                                            <input type="date" class="form-control" name="start_date" value="{{ request()->input('start_date') }}">
+                                        </div>
+
+                                        <div class="form-group mx-sm-3">
+                                            <label class="sr-only">End Date</label>
+                                            <input type="date" class="form-control" name="end_date" value="{{ request()->input('end_date') }}">
+                                        </div>
+
+                                        <div class="form-group mx-sm-3">
+                                            <label class="sr-only">Account</label>
+                                            <select class="form-control select2" name="account_name">
+                                                <option value="">Select Account..</option>
+                                                @foreach ($accounts as $account)
+                                                <option value="{{ $account->account_name }}" {{ request()->input('account_name') == $account->account_name ? 'selected' : '' }}>
+                                                    {{ $account->account_name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </form>
                                 </div>
+                                @component('components.table')
+                                @slot('tableID')
+                                expenseTBL
+                                @endslot
+                                @slot('head')
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Account</th>
+                                    <th>Type</th>
+                                    <th>Document</th>
+                                    <th>Payment Type</th>
+                                    <th>Amount</th>
+                                    <th>Riyal Amount</th>
+                                    <th><i class=""></i> Action</th>
+                                @endslot
+                                @endcomponent
+                                {{-- exp end  --}}
 
-                                <div class="form-group mx-sm-3">
-                                    <label class="sr-only">End Date</label>
-                                    <input type="date" class="form-control" name="end_date" value="{{ request()->input('end_date') }}">
-                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+              
+                            
+                              
+                              <!--get total balance -->
+              
+                                <!-- /.card-header -->
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>Dhaka office Transaction</h2>
+                                    </div>
+                                  </div>
 
-                                <div class="form-group mx-sm-3">
-                                    <label class="sr-only">Account</label>
-                                    <select class="form-control select2" name="account_name">
-                                        <option value="">Select Account..</option>
-                                        @foreach ($accounts as $account)
-                                        <option value="{{ $account->account_name }}" {{ request()->input('account_name') == $account->account_name ? 'selected' : '' }}>
-                                            {{ $account->account_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
 
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </form>
-                        </div>
-                        @component('components.table')
-                        @slot('tableID')
-                        expenseTBL
-                        @endslot
-                        @slot('head')
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Account</th>
-                            <th>Type</th>
-                            <th>Document</th>
-                            <th>Payment Type</th>
-                            <th>Amount</th>
-                            <th>Riyal Amount</th>
-                            <th><i class=""></i> Action</th>
-                        @endslot
-                        @endcomponent
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
+                                          ->whereIn('tran_type', ['Dhaka-office'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+              
+                              
+                               <!-- End visa and others transaction End  -->
+                            </div>
+              
+              
+                            <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                                
+                              <!-- Start visa and others transaction Start  -->
+              
+                              <!--get total okala balance -->
+                              
+              
+                                  <!-- /.card-header -->
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>KSA office Transaction</h2>
+                                    </div>
+                                  </div>
+
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(riyal_amount) as total'))
+                                          ->whereIn('tran_type', ['KSA-Expense'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+              
+                              
+              
+                              <!-- End visa and others transaction End  -->
+                            </div>
+              
+                             
+                            <div class="tab-pane fade" id="custom-tabs-one-fahim" role="tabpanel" aria-labelledby="fahim-personal">
+                                     <!-- /.card-header -->
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>Fahim Transaction</h2>
+                                    </div>
+                                  </div>
+
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
+                                          ->whereIn('tran_type', ['Fahim'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+                            </div> 
+
+                            <div class="tab-pane fade" id="custom-tabs-one-mehdi" role="tabpanel" aria-labelledby="mehdi-personal">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>Mehdi Transaction</h2>
+                                    </div>
+                                  </div>
+
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
+                                          ->whereIn('tran_type', ['Mehdi'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+                            </div> 
+              
+              
+                          </div>
+
+
+
+
+                                
+
+
+
+
                     </div>
                 </div>
             </div>

@@ -162,72 +162,112 @@
 
 
     <!-- Main content -->
-<section class="content" id="contentContainer">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <!-- /.card -->
-
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">All Data</h3>
+    <section class="content" id="contentContainer">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 col-sm-12">
+            <div class="card card-secondary card-tabs">
+              <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Processing</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Completed</a>
+                  </li>
+                  <!-- <li class="nav-item">
+                    <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
+                  </li> -->
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                    
+    
+                  <div class="tab-pane fade active show" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+    
+                    <!-- visa and others transaction start  -->
+    
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Data</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <input type="hidden" id="okalaCount" value="{{$data->count()}}">
+                        <table id="example1" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                            <th style="text-align: center">Sl</th>
+                            <th style="text-align: center">Date</th>
+                            <th style="text-align: center">Number</th>
+                            <th style="text-align: center">VISA Id</th>
+                            <th style="text-align: center">Sponsor Id</th>
+                            <th style="text-align: center">Agent</th>
+                            <th style="text-align: center">Vendor</th>
+                            <th style="text-align: center">Transaction</th>
+                            <!-- <th style="text-align: center">Action</th> -->
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @foreach ($okala_sales as $key => $okala)
+                            @php
+                            $user = \App\Models\User::where('id', $okala->user_id)->first();
+                            @endphp
+                            <tr>
+                              <td style="text-align: center">{{ $key + 1 }}</td>
+                              <td style="text-align: center">{{$okala->date}}</td>
+                              <td style="text-align: center">{{$okala->number}}</td>
+                              <td style="text-align: center">{{$okala->visaid}}</td>
+                              <td style="text-align: center">{{$okala->sponsor_id}}</td>
+                              <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
+                              <td style="text-align: center">{{$okala->vendor_name}}</td>
+                              <td style="text-align: center">
+                                <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
+                                <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
+                              </td>               
+                              <!-- <td style="text-align: center">
+                                <a href="{{route('okalasalesDetails', $okala->id)}}"><i class="fa fa-eye" style="color: #24ae2f;font-size:16px;"></i></a>
+                                <a id="EditBtn" rid="{{$okala->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
+                                <a id="deleteBtn" rid="{{$okala->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
+                              </td> -->
+                            </tr>
+                            @endforeach
+                          
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                        
+                     <!-- End visa and others transaction End  -->
+                  </div>
+    
+    
+                  <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                    <!-- Start visa and others transaction Start  -->
+    
+                    complete
+                    <!-- End visa and others transaction End  -->
+                  </div>
+    
+                    <!-- 
+                  <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
+                    coming soon
+                  </div> -->
+    
+    
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
           </div>
-          <!-- /.card-header -->
-          <div class="card-body">
-            <input type="hidden" id="okalaCount" value="{{$data->count()}}">
-            <table id="example1" class="table table-bordered table-striped">
-              <thead>
-              <tr>
-                <th style="text-align: center">Sl</th>
-                <th style="text-align: center">Date</th>
-                <th style="text-align: center">Number</th>
-                <th style="text-align: center">VISA Id</th>
-                <th style="text-align: center">Sponsor Id</th>
-                <th style="text-align: center">Agent</th>
-                <th style="text-align: center">Vendor</th>
-                <th style="text-align: center">Transaction</th>
-                <!-- <th style="text-align: center">Action</th> -->
-              </tr>
-              </thead>
-              <tbody>
-                @foreach ($okala_sales as $key => $okala)
-                @php
-                $user = \App\Models\User::where('id', $okala->user_id)->first();
-                @endphp
-                <tr>
-                  <td style="text-align: center">{{ $key + 1 }}</td>
-                  <td style="text-align: center">{{$okala->date}}</td>
-                  <td style="text-align: center">{{$okala->number}}</td>
-                  <td style="text-align: center">{{$okala->visaid}}</td>
-                  <td style="text-align: center">{{$okala->sponsor_id}}</td>
-                  <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
-                  <td style="text-align: center">{{$okala->vendor_name}}</td>
-                  <td style="text-align: center">
-                    <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
-                    <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
-                  </td>               
-                  <!-- <td style="text-align: center">
-                    <a href="{{route('okalasalesDetails', $okala->id)}}"><i class="fa fa-eye" style="color: #24ae2f;font-size:16px;"></i></a>
-                    <a id="EditBtn" rid="{{$okala->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                    <a id="deleteBtn" rid="{{$okala->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
-                  </td> -->
-                </tr>
-                @endforeach
-              
-              </tbody>
-            </table>
-          </div>
-          <!-- /.card-body -->
+          
         </div>
-        <!-- /.card -->
       </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-  </div>
-  <!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+    </section>
+    <!-- /.content -->
+
 
 
 

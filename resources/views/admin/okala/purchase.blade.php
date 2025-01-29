@@ -152,65 +152,108 @@
     </section>
     <!-- /.content -->
 
-
 <!-- Main content -->
 <section class="content" id="contentContainer">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <!-- /.card -->
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">All Data</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Date</th>
-                  <th>Number</th>
-                  <th>Visa Number</th>
-                  <th>Sponsor ID</th>
-                  <th>Vendor</th>
-                  <th>Payment</th>
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
-                  <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->number}}</td>
-                    <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
-                    <td style="text-align: center">{{$data->sponsorid}}</td>
-                    <td style="text-align: center">{{$data->user->name}}</td>
-                    <td style="text-align: center">
-                      <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
-
-                      <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-program-id="">Transaction</span>
-
-                    </td>
-                   
-                  </tr>
-                  @endforeach
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 col-sm-12">
+        <div class="card card-secondary card-tabs">
+          <div class="card-header p-0 pt-1">
+            <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Processing</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Completed</a>
+              </li>
+              <!-- <li class="nav-item">
+                <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
+              </li> -->
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="custom-tabs-one-tabContent">
                 
-                </tbody>
-              </table>
+
+              <div class="tab-pane fade active show" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+
+                <!-- visa and others transaction start  -->
+
+                
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">All Data</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                      <thead>
+                      <tr>
+                        <th>Sl</th>
+                        <th>Date</th>
+                        <th>Number</th>
+                        <th>Visa Number</th>
+                        <th>Sponsor ID</th>
+                        <th>Vendor</th>
+                        <th>Payment</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($data as $key => $data)
+                        <tr>
+                          <td style="text-align: center">{{ $key + 1 }}</td>
+                          <td style="text-align: center">{{$data->date}}</td>
+                          <td style="text-align: center">{{$data->number}}</td>
+                          <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
+                          <td style="text-align: center">{{$data->sponsorid}}</td>
+                          <td style="text-align: center">{{$data->user->name}}</td>
+                          <td style="text-align: center">
+                            <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
+
+                            <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-program-id="">Transaction</span>
+
+                          </td>
+                        
+                        </tr>
+                        @endforeach
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                  <!-- End visa and others transaction End  -->
+              </div>
+
+
+              <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                <!-- Start visa and others transaction Start  -->
+
+                complete
+                <!-- End visa and others transaction End  -->
+              </div>
+
+                <!-- 
+              <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
+                coming soon
+              </div> -->
+
+
             </div>
-            <!-- /.card-body -->
           </div>
           <!-- /.card -->
         </div>
-        <!-- /.col -->
       </div>
-      <!-- /.row -->
+      
     </div>
-    <!-- /.container-fluid -->
+  </div>
 </section>
 <!-- /.content -->
+
+
+
+
 
 
 <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">

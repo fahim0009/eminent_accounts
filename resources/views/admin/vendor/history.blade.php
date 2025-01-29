@@ -85,7 +85,7 @@
 
                     <div id="contentContainer">
 
-                        <table id="example2" class="table table-bordered table-striped">
+                        <table id="example1" class="table table-bordered table-striped">
                             <thead>
                             <tr>
                               <th>Sl</th>
@@ -150,7 +150,7 @@
                         </div>
                     </div>
 
-                <table id="example2" class="table table-bordered table-striped">
+                <table id="example2" class="table table-bordered table-striped example1">
                   <thead>
                   
                     <tr>
@@ -311,15 +311,14 @@
         "responsive": true, "lengthChange": false, "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print"]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
+
+      
+      $("#example2").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+      
     });
 
 
