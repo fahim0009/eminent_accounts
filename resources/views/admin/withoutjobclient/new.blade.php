@@ -177,9 +177,9 @@
                   {{-- <th>Client ID</th> --}}
                   <th>Passport Name</th>
                   <th>Passport Number</th>
-                  <th>Package Cost</th>
+                  <!-- <th>Package Cost</th> -->
                   <th>Agent Name</th>
-                  <th>Received Amount</th>
+                  <!-- <th>Received Amount</th> -->
                   <th>Assign</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -197,9 +197,9 @@
                     {{-- <td style="text-align: center">{{$data->clientid}}</td> --}}
                     <td style="text-align: center">{{$data->passport_name}}</td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
-                    <td style="text-align: center">{{$data->package_cost}}</td>
+                    <!-- <td style="text-align: center">{{$data->package_cost}}</td> -->
                     <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a> </td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
+                    <!-- <td style="text-align: center">{{$data->total_rcv}}</td> -->
                     <td style="text-align: center">
                       @if ($data->assign == 1)
                           Assigned

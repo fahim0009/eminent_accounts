@@ -166,8 +166,8 @@
                   <th>Sl</th>
                   <th>Date</th>
                   <th>Visa Id</th>
-                  <th>Trade</th>
                   <th>Sponsor Id</th>
+                  <th>Trade</th>
                   <th>Assign To</th>
                   <th>RL Id</th>
                   {{-- <th>Purchase Type</th> --}}
