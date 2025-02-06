@@ -26,8 +26,9 @@ class OkalaController extends Controller
     public function okalaPurchase()
     {
         $data = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->get();
-        
-        return view('admin.okala.purchase', compact('data'));
+        $complete = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->where('status', 2)->get();
+        // dd($data);
+        return view('admin.okala.purchase', compact('data','complete'));
     }
 
     public function okalapurchaseDetails($id)
@@ -378,5 +379,57 @@ class OkalaController extends Controller
             return response()->json(['success'=>false,'message'=>'Delete Failed']);
         }
         
+    }
+
+    public function changeOkalaSalesStatus(Request $request)
+    {
+        $user = OkalaSale::find($request->id);
+        $user->status = $request->status;
+        if($user->save()){
+
+            if ($user->status == 0) {
+                $stsval = "New";
+            }elseif($user->status == 1){
+                $stsval = "Processing";
+            }elseif($user->status == 2){
+                $stsval = "Complete";
+            }else{
+                $stsval = "Something is wrong";
+            }
+    
+            
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }else{
+            $message ="There was an error to change status!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
+    }
+
+    public function changeOkalapurchaseStatus(Request $request)
+    {
+        $user = OkalaPurchase::find($request->id);
+        $user->status = $request->status;
+        if($user->save()){
+
+            if ($user->status == 0) {
+                $stsval = "New";
+            }elseif($user->status == 1){
+                $stsval = "Processing";
+            }elseif($user->status == 2){
+                $stsval = "Complete";
+            }else{
+                $stsval = "Something is wrong";
+            }
+    
+            
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }else{
+            $message ="There was an error to change status!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
     }
 }

@@ -195,11 +195,16 @@
                         <th>Visa Number</th>
                         <th>Sponsor ID</th>
                         <th>Vendor</th>
+                        <th>Status</th>
                         <th>Payment</th>
                       </tr>
                       </thead>
                       <tbody>
                         @foreach ($data as $key => $data)
+
+                        
+                        @if ($data->status == 1)
+
                         <tr>
                           <td style="text-align: center">{{ $key + 1 }}</td>
                           <td style="text-align: center">{{$data->date}}</td>
@@ -207,6 +212,21 @@
                           <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
                           <td style="text-align: center">{{$data->sponsorid}}</td>
                           <td style="text-align: center">{{$data->user->name}}</td>
+
+                          <td style="text-align: center">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if($data->status == 1) Processing @elseif($data->status == 2) Complete @else New @endif</span></button>
+                              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                                <span class="sr-only">Toggle Dropdown</span>
+                              </button>
+                              <div class="dropdown-menu" role="menu">
+                                <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Processing</button>
+                                <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Complete</button>
+                              </div>
+                            </div>
+                          </td>
+
+
                           <td style="text-align: center">
                             <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $data->id }}" data-vendor-id="{{ $data->user_id }}" data-rl-id="">Pay</span>
 
@@ -215,6 +235,13 @@
                           </td>
                         
                         </tr>
+                            
+                        @endif
+                        
+
+                        
+
+
                         @endforeach
                       
                       </tbody>
@@ -230,7 +257,51 @@
               <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
                 <!-- Start visa and others transaction Start  -->
 
-                complete
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">All Data</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                      <thead>
+                      <tr>
+                        <th>Sl</th>
+                        <th>Date</th>
+                        <th>Number</th>
+                        <th>Visa Number</th>
+                        <th>Sponsor ID</th>
+                        <th>Vendor</th>
+                        <th>Payment</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+
+                        @foreach ($complete as $key2 => $cdata)
+                        <tr>
+                          <td style="text-align: center">{{ $key2 + 1 }}</td>
+                          <td style="text-align: center">{{$cdata->date}}</td>
+                          <td style="text-align: center">{{$cdata->number}}</td>
+                          <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $cdata->id)}}">{{$cdata->visaid}}</a></td>
+                          <td style="text-align: center">{{$cdata->sponsorid}}</td>
+                          <td style="text-align: center">{{$cdata->user->name}}</td>
+
+                          <td style="text-align: center">
+                            <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $cdata->id }}" data-vendor-id="{{ $cdata->user_id }}" data-rl-id="">Pay</span>
+
+                            <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $cdata->id }}" data-vendor-id="{{ $cdata->user_id }}" data-program-id="">Transaction</span>
+
+                          </td>
+                        
+                        </tr>
+                        @endforeach
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
                 <!-- End visa and others transaction End  -->
               </div>
 
@@ -387,6 +458,56 @@
         "responsive": true,
       });
     });
+
+    $(function() {
+      $('.stsBtn').click(function() {
+        var url = "{{URL::to('/admin/change-okala-purchase-status')}}";
+          var id = $(this).data('id');
+          var status = $(this).attr('value');
+          // console.log(value);
+          $.ajax({
+              type: "GET",
+              dataType: "json",
+              url: url,
+              data: {'status': status, 'id': id},
+              success: function(d){
+                // console.log(data.success)
+                if (d.status == 303) {
+                        $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'warning',
+                            title: d.message
+                          });
+                        });
+                    }else if(d.status == 300){
+                      
+                      $("#stsval"+d.id).html(d.stsval);
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: d.message
+                          });
+                        });
+                    }
+                },
+                error: function (d) {
+                    console.log(d);
+                }
+          });
+      })
+    })
 
 
     $(document).ready(function () {
