@@ -214,7 +214,7 @@
                             @foreach ($okala_sales as $key => $okala)
 
 
-                            @if ($okala->status == 1)
+                            @if ($okala->status == 0)
                             @php
                             $user = \App\Models\User::where('id', $okala->user_id)->first();
                             @endphp
@@ -230,13 +230,13 @@
                               
                               <td style="text-align: center">
                                 <div class="btn-group">
-                                  <button type="button" class="btn btn-secondary"><span id="stsval{{$okala->id}}"> @if($okala->status == 1) Processing @elseif($okala->status == 2) Complete @else New @endif</span></button>
+                                  <button type="button" class="btn btn-secondary"><span id="stsval{{$okala->id}}"> @if($okala->status ==0) Processing @elseif($okala->status == 1) Complete @else New @endif</span></button>
                                   <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                                     <span class="sr-only">Toggle Dropdown</span>
                                   </button>
                                   <div class="dropdown-menu" role="menu">
-                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="1">Processing</button>
-                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="2">Complete</button>
+                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="0">Processing</button>
+                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="1">Complete</button>
                                   </div>
                                 </div>
                               </td>
@@ -296,7 +296,7 @@
                             @foreach ($okala_sales as $key => $okala)
 
 
-                            @if ($okala->status == 2)
+                            @if ($okala->status == 1)
                             @php
                             $user = \App\Models\User::where('id', $okala->user_id)->first();
                             @endphp
