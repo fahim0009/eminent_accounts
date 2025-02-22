@@ -20,18 +20,24 @@
 </div>
 <!-- /.content-header -->
 
+
+@if(Auth::user()->is_type == '1' && (in_array('1', json_decode(Auth::user()->role->permission))))
+
+
   <!-- content area -->
   <section class="content">
     <div class="container-fluid">
+
+    <!-- first  row ################################# -->
       <!-- Small boxes (Stat box) -->
       <div class="row">
         <div class="col-lg-3 col-6">
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>150</h3>
+              <h3>{{$new}}</h3>
 
-              <p>New Orders</p>
+              <p>New File</p>
             </div>
             <div class="icon">
               <i class="ion ion-bag"></i>
@@ -44,9 +50,9 @@
           <!-- small box -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <h3>{{$processing}}<sup style="font-size: 20px"></sup></h3>
 
-              <p>Bounce Rate</p>
+              <p>Processing File</p>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
@@ -59,9 +65,9 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>44</h3>
+              <h3>{{$completed}}</h3>
 
-              <p>User Registrations</p>
+              <p>Completed File</p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
@@ -74,9 +80,9 @@
           <!-- small box -->
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>65</h3>
+              <h3>{{$decline}}</h3>
 
-              <p>Unique Visitors</p>
+              <p>Decline File</p>
             </div>
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
@@ -87,7 +93,151 @@
         <!-- ./col -->
       </div>
       <!-- /.row -->
-      <!-- Main row -->
+<!-- end firt row ################  -->
+
+<!-- 2nd row ################################################## -->
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <!-- <h3>{{($datas->total_package - $datas->total_visareceived)}}</h3> -->
+              <h3>৳{{ isset($datas->total_package) ? number_format(($datas->total_package - $datas->total_visareceived), 2) : '0.00' }}</h3>
+              <p>Total Visa Due</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <!-- <h3>{{$datas->total_visareceived}}</h3> -->
+              <h3>৳{{ isset($datas->total_visareceived) ? number_format($datas->total_visareceived, 2) : '0.00' }}</h3>
+              <p>Total VISA Received</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <!-- <h3>{{($datas->total_okalapackage - $datas->total_okalareceived)}}</h3> -->
+              <h3>৳{{ isset($datas->total_okalapackage) ? number_format(($datas->total_okalapackage - $datas->total_okalareceived), 2) : '0.00' }}</h3>
+              <p>Total Okala Due</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <!-- <h3>{{$datas->total_okalareceived}}</h3> -->
+              <h3>৳{{ isset($datas->total_okalareceived) ? number_format($datas->total_okalareceived, 2) : '0.00' }}</h3>
+              <p>Total Okala Received</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+<!-- end 2nd row  ############################################### -->
+
+
+ <!-- 3rd row #################################      -->
+   <!-- Small boxes (Stat box) -->
+   <div class="row">
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3>৳{{ isset($datas->total_service) ? number_format(($datas->total_service - $datas->total_serviceReceived), 2) : '0.00' }}</h3>
+
+              <p>Total Service Due</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>৳{{ isset($datas->total_serviceReceived) ? number_format($datas->total_serviceReceived, 2) : '0.00' }}</h3>
+
+              <p>Total Service Received</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{($tickets)}}</h3>
+
+              <p>Tickets Needed</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <!-- <h3>{{($datas->total_okalareceived + $datas->total_serviceReceived + $datas->total_visareceived)}}</h3> -->
+              <h3>৳{{ isset($datas->total_visareceived) ? number_format(($datas->total_okalareceived + $datas->total_serviceReceived + $datas->total_visareceived), 2) : '0.00' }}</h3>
+              <p>All Received</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+<!-- end 3rd row  ############################################# -->
+     
+
+@endif
+
+
+
+<!-- end 3rd row  ############################################################################################################ -->
+     
+<!-- Main row -->
       <div class="row">
         <!-- Left col -->
         <section class="col-lg-7 connectedSortable">

@@ -187,17 +187,27 @@
           $("#newBtn").show(100);
           clearform();
       });
-      $("#account_head").change(function(){
+      function clearfield() {
+        $("#sub_account_head").html("<option value=''>Please Select</option>");
+    }
+
+    $("#account_head").change(function(){
           $(this).find("option:selected").each(function(){
               var val = $(this).val();
               if( val == "Assets"){
                   clearfield();
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Asset'>Current Asset</option><option value='Fixed Asset'>Fixed Asset</option>");
+                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Asset'>Current Asset</option><option value='Fixed Asset'>Fixed Asset</option><option value='Account Receivable'>Account Receivable</option>");
 
               } else if(val == "Expenses"){
 
                   clearfield();
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Cost Of Good Sold'>Cost Of Good Sold</option><option value='Overhead Expense'>Overhead Expense</option>");
+                  $("#sub_account_head").html(
+                    "<option value=''>Please Select</option>" +
+                    "<option value='Cost Of Good Sold'>Cost Of Good Sold</option>" +
+                    "<option value='Overhead Expense'>Overhead Expense</option>" +
+                    "<option value='Operating Expense'>Operating Expense</option>" +
+                    "<option value='Administrative Expense'>Administrative Expense</option>"
+                );
 
               }else if(val == "Income"){
 
@@ -207,7 +217,14 @@
               }else if(val == "Liabilities"){
 
                   clearfield();
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Liabilities'>Current Liabilities</option><option value='Long Term Liabilities'>Long Term Liabilities</option>");
+                  $("#sub_account_head").html(`
+                    <option value=''>Please Select</option>
+                    <option value='Current Liabilities'>Current Liabilities</option>
+                    <option value='Long Term Liabilities'>Long Term Liabilities</option>
+                    <option value='Account Payable'>Account Payable</option>
+                    <option value='Short Term Liabilities'>Short Term Liabilities</option>
+                `);
+
 
               }else if(val == "Equity"){
 
@@ -218,13 +235,10 @@
                 
               }
           });
-      }).change();
+    }).change();
 
 
-            function clearfield(){
-                $('#income_description').val('');
-                $('#account_name').val('');
-            }
+            
 
 
 
@@ -366,11 +380,11 @@
           if( data.account_head == "Assets"){
                   $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Asset'>Current Asset</option><option value='Fixed Asset'>Fixed Asset</option>");
               } else if(data.account_head == "Expenses"){
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Cost Of Good Sold'>Cost Of Good Sold</option><option value='Overhead Expense'>Overhead Expense</option>");
+                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Cost Of Good Sold'>Cost Of Good Sold</option><option value='Overhead Expense'>Overhead Expense</option><option value='Operating Expense'>Operating Expense</option><option value='Administrative Expense'>Administrative Expense</option>");
               }else if(data.account_head == "Income"){
                   $("#sub_account_head").html("<option value=''>Please Select</option><option value='Direct Income'>Direct Income</option><option value='Indirect Income'>Indirect Income</option>");
               }else if(data.account_head == "Liabilities"){
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Liabilities'>Current Liabilities</option><option value='Long Term Liabilities'>Long Term Liabilities</option>");
+                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Current Liabilities'>Current Liabilities</option><option value='Long Term Liabilities'>Long Term Liabilities</option><option value='Account Payable'>Account Payable</option><option value='Short Term Liabilities'>Short Term Liabilities</option>");
               }else if(data.account_head == "Equity"){
                   $("#sub_account_head").html("<option value=''>Please Select</option><option value='Equity Capital'>Equity Capital</option><option value='Retained Earnings'>Retained Earnings</option>");
               }else{

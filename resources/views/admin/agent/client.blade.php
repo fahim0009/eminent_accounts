@@ -14,9 +14,7 @@
     </div>
 </section>
   <!-- /.content -->
-
-
-
+   
     <!-- Main content -->
     <section class="content" id="addThisFormContainer">
       <div class="container-fluid">
@@ -173,19 +171,18 @@
                   <table class="table table-bordered table-striped mt-4 mb-5">
                     <thead>
                     <tr>
-                      <th>Visa On Processing</th>
-                      <th>Completed Visa</th>
-                      <th>Decline Visa</th>
-                      <th>Receive For Visa Processing</th>
-                      <th>Discount For Visa Amount</th>
+                      <th>Processing</th>
+                      <th>Complete</th>
+                      <th>Decline</th>
+                      <th>Receive Amount</th>
+                      <th>Discount Amount</th>
                       <th>Others Bill</th>
-                      <th>Due For Visa Amount</th>
+                      <th>Due Amount</th>
                       <th>Total Received</th>
                       <th></th>
                     </tr>
                     </thead>
                     <tbody>
-
                       <tr>
                         <td style="text-align: center">{{ $processing }}</td>
                         <td style="text-align: center">{{$completed}}</td>
@@ -194,7 +191,7 @@
                         <td style="text-align: center">{{$totalPkgDiscountAmnt}}</td>
                         <td style="text-align: center">{{$totaServiceamt}}</td>
                         <td style="text-align: center">{{$dueForvisa}}</td>
-                        <td style="text-align: center">{{$totalReceivedAmnt}}</td>
+                        <td style="text-align: center">{{$ttlVisanSrvcRcv}}</td>
                         <td style="text-align: center">
                           <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
                             Receive Amount
@@ -237,17 +234,17 @@
           <div class="card-header p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">Client</a>
+                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All Client</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Transaction</a>
+                <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">VISA Transaction</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Tab 1</a>
+                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Okala Transaction</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
-              </li>
+              </li> -->
             </ul>
           </div>
           <div class="card-body">
@@ -267,21 +264,20 @@
                   </tr>
                   </thead>
                   <tbody>
-                    @foreach ($data as $key => $data)
+                    @foreach ($datas as $key => $data)
                     <tr>
                       <td style="text-align: center">{{ $key + 1 }}</td>
                       <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
                       <td style="text-align: center">{{$data->passport_number}}</td>
-                      <td style="text-align: center">{{$data->package_cost}}</td>
-                      <td style="text-align: center">{{$data->total_rcv}}</td>
+                      <td style="text-align: center">{{$data->total_package}}</td>
+                      <td style="text-align: center">{{$data->total_received}}</td>
                       <td style="text-align: center">
                         @if ($data->status == 0) New
                         @elseif($data->status == 1)Processing
                         @elseif($data->status == 2) Complete @else Decline @endif
-                      </td>
-                      
+                      </td>                    
                     </tr>
-                    @endforeach
+                    @endforeach 
                   
                   </tbody>
                 </table>
@@ -289,6 +285,8 @@
 
               </div>
               <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+
+              <!-- visa and others transaction start  -->
 
                 <form method="GET" action="{{ route('admin.agentClient', $id) }}">
                   <div class="row">
@@ -314,9 +312,9 @@
                   ?> 
                   @forelse ($clientTransactions as $sdata)
                           
-                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'okala_sales') || ($sdata->tran_type == 'package_adon') || ($sdata->tran_type == 'service_adon') || ($sdata->tran_type == 'okalasales_adon'))
+                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'package_adon') || ($sdata->tran_type == 'service_adon'))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
-                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'okala_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'okalasales_discount') || ($sdata->tran_type == 'service_discount'))
+                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'service_discount'))
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
                     @endif
   
@@ -324,12 +322,9 @@
                   @endforelse
 
                   <!-- /.card-header -->
-
                     <div class="row">
                     <div class="col-sm-12 text-center">
                       <h2>Transaction</h2>
-                      {{-- <h4>Sub Title</h4> --}}
-                      {{-- <p>Client Name: </p> --}}
                     </div>
                     </div>
 
@@ -347,19 +342,21 @@
                   <tbody>
                     @foreach ($clientTransactions as $key => $tran)
                     <tr>
+               
+  
+                      @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'service_discount'))
                       <td style="text-align: center">{{ $key + 1 }}</td>
                       <td style="text-align: center">{{$tran->date}}</td>
                       <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
-  
-                      @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'okala_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'okalasales_discount') || ($tran->tran_type == 'service_discount'))
-  
                       <td style="text-align: center">{{$tran->bdt_amount}}</td>
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$tbalance}}</td>
                       <?php $tbalance = $tbalance + $tran->bdt_amount;?>
   
-                      @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'okala_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon') || ($tran->tran_type == 'okalasales_adon'))
-  
+                      @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon'))
+                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center">{{$tran->date}}</td>
+                      <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$tran->bdt_amount}}</td>
                       <td style="text-align: center">{{$tbalance}}</td>
@@ -372,16 +369,89 @@
                   
                   </tbody>
                 </table>
-
-
-
+                 <!-- End visa and others transaction End  -->
               </div>
+
+
               <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
-                coming soon
+                Okala transactions  
+                <!-- Start visa and others transaction Start  -->
+
+                <!--get total okala balance -->
+                <?php
+                    $tokala_bal = 0;
+                ?> 
+                  @forelse ($clientTransactions as $okala_data)
+                          
+                    @if(($okala_data->tran_type == 'okala_sales') || ($okala_data->tran_type == 'okalasales_adon'))
+                    <?php $tokala_bal = $tokala_bal + $okala_data->bdt_amount;?>
+                    @elseif(($okala_data->tran_type == 'okala_received') || ($okala_data->tran_type == 'okalasales_discount'))
+                    <?php $tokala_bal = $tokala_bal - $okala_data->bdt_amount;?>
+                    @endif
+  
+                  @empty
+                  @endforelse
+
+                    <!-- /.card-header -->
+                    <div class="row">
+                    <div class="col-sm-12 text-center">
+                      <h2>Transaction</h2>
+                    </div>
+                    </div>
+
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Sl</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Dr.</th>
+                    <th>Cr.</th>
+                    <th>Balance</th>                  
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($clientTransactions as $okala_key => $okala_tran)
+                    <tr>
+
+  
+                      @if(($okala_tran->tran_type == 'okala_received') || ($okala_tran->tran_type == 'okalasales_discount'))
+                      <td style="text-align: center">{{ $okala_key + 1 }}</td>
+                      <td style="text-align: center">{{$okala_tran->date}}</td>
+                      <td style="text-align: center">{{$okala_tran->ref}}  @if(isset($okala_tran->note)){{$okala_tran->note}}@endif</td>
+  
+                      <td style="text-align: center">{{$okala_tran->bdt_amount}}</td>
+                      <td style="text-align: center"></td>
+                      <td style="text-align: center">{{$tokala_bal}}</td>
+                      <?php $tokala_bal = $tokala_bal + $okala_tran->bdt_amount;?>
+  
+                      @elseif(($okala_tran->tran_type == 'okala_sales') || ($okala_tran->tran_type == 'okalasales_adon'))
+                      <td style="text-align: center">{{ $okala_key + 1 }}</td>
+                      <td style="text-align: center">{{$okala_tran->date}}</td>
+                      <td style="text-align: center">{{$okala_tran->ref}}  @if(isset($okala_tran->note)){{$okala_tran->note}}@endif</td>
+  
+                      <td style="text-align: center"></td>
+                      <td style="text-align: center">{{$okala_tran->bdt_amount}}</td>
+                      <td style="text-align: center">{{$tokala_bal}}</td>
+                      <?php $tokala_bal = $tokala_bal - $okala_tran->bdt_amount;?>
+  
+                      @endif
+  
+                    </tr>
+                    @endforeach
+                  
+                  </tbody>
+                </table>
+
+                <!-- End visa and others transaction End  -->
               </div>
+
+<!-- 
               <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
                 coming soon
-              </div>
+              </div> -->
+
+
             </div>
           </div>
           <!-- /.card -->
@@ -440,7 +510,11 @@
           </div>
 
           <div class="row">
-            <div class="col-sm-12">
+          <div class="col-sm-6">
+                <label>Riyal Amount</label>
+                <input type="number" class="form-control" id="riyal_amount" name="riyal_amount">
+            </div>
+            <div class="col-sm-6">
                 <label>Note</label>
                 <input type="text" class="form-control" id="note" name="note">
                 <input type="hidden" id="agent_id" name="agent_id" value="{{$id}}">
@@ -780,12 +854,13 @@
       var tranurl = "{{URL::to('/admin/money-receipt')}}";
       // console.log(url);
       $("#rcptBtn").click(function(){
-
+        $("#rcptBtn").prop('disabled', true);
           var form_data = new FormData();
           form_data.append("account_id", $("#account_id").val());
           form_data.append("user_id", $("#agent_id").val());
           form_data.append("date", $("#date").val());
           form_data.append("amount", $("#amount").val());
+          form_data.append("riyal_amount", $("#riyal_amount").val());
           form_data.append("note", $("#note").val());
           form_data.append("tran_type", $("#tran_type").val());
           form_data.append("ref", "Received");
@@ -799,6 +874,7 @@
             success: function (d) {
                 if (d.status == 303) {
                     $(".tranermsg").html(d.message);
+                    $("#rcptBtn").prop('disabled', false);
                 }else if(d.status == 300){
 
                   $(function() {

@@ -119,6 +119,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Balance</th>
                   <th>Status</th>
                   <!-- <th>View</th> -->
                   <th>Action</th>
@@ -131,6 +132,7 @@
                     <td style="text-align: center"> <a href="{{route('admin.agentClient', $data->id)}}">{{$data->name}} {{$data->surname}}</a></td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
+                    <td style="text-align: center">{{($data->total_receiable)-($data->total_received)}}</td>
                     
                     <td>
                       <div class="custom-control custom-switch">

@@ -139,7 +139,24 @@
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">All Data</h3>
+              <!-- <h3 class="card-title">All Data</h3> -->
+              <form method="GET" action="#">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <label>From Date</label>
+                      <input type="date" class="form-control" name="from_date" value="{{ request()->get('from_date') }}">
+                    </div>
+                    <div class="col-sm-3">
+                      <label>To Date</label>
+                      <input type="date" class="form-control" name="to_date" value="{{ request()->get('to_date') }}">
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-sm-12">
+                      <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                  </div>
+                </form>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -149,8 +166,8 @@
                   <th>Sl</th>
                   <th>Date</th>
                   <th>Visa Id</th>
-                  <th>Trade</th>
                   <th>Sponsor Id</th>
+                  <th>Trade</th>
                   <th>Assign To</th>
                   <th>RL Id</th>
                   {{-- <th>Purchase Type</th> --}}
@@ -179,7 +196,7 @@
                     </td>
                     <td style="text-align: center">
                       @if (isset($data->assign_to))
-                      {{$data->client->passport_name}} ({{$data->client->passport_number}})
+                      {{$data->passport_name}} ({{$data->passport_number}})
                       @else
                       <select name="assignto" id="assignto" class="form-control assignto"  data-okala-id="{{ $data->id }}">
                         <option value="">Select</option>

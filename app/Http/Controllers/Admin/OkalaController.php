@@ -11,6 +11,7 @@ use App\Models\OkalaSaleDetail;
 use App\Models\CodeMaster;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,8 +26,8 @@ class OkalaController extends Controller
     public function okalaPurchase()
     {
         $data = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->get();
-        
-        return view('admin.okala.purchase', compact('data'));
+        $complete = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->where('status', 1)->get();
+        return view('admin.okala.purchase', compact('data','complete'));
     }
 
     public function okalapurchaseDetails($id)
@@ -38,7 +39,18 @@ class OkalaController extends Controller
 
     public function assignedOkala()
     {
-        $data = OkalaPurchaseDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
+        // $data = OkalaPurchaseDetail::whereNotNull('assign_to')->orderby('id','DESC')->get();
+
+        $data = DB::table('okala_purchase_details')
+            ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
+            ->whereNotNull('okala_purchase_details.assign_to')
+            ->orderBy('okala_purchase_details.id', 'DESC')
+            ->select(
+                'okala_purchase_details.*', 
+                'clients.passport_name', 
+                'clients.passport_number'
+            )
+            ->get();
         
         return view('admin.okala.index', compact('data'));
     }
@@ -209,6 +221,7 @@ class OkalaController extends Controller
     {
         $data = OkalaPurchaseDetail::find($request->okalaId);
         $data->assign_to = $request->clientId;
+        $data->assign_date = now();
         $data->save();
 
         $client = Client::find($request->clientId);
@@ -225,7 +238,13 @@ class OkalaController extends Controller
     public function salesindex()
     {
         $data = OkalaSaleDetail::orderby('id','DESC')->get();
-        return view('admin.okala.sales', compact('data'));
+        $okala_sales = DB::table('okala_sales')
+                ->join('okala_purchases', 'okala_sales.okala_purchase_id', '=', 'okala_purchases.id')
+                ->join('users', 'okala_purchases.user_id', '=', 'users.id')
+                ->select('okala_sales.*', 'users.name as vendor_name')
+                ->get();
+        // $okala_sales= OkalaSale::orderby('id', 'DESC')->get();
+        return view('admin.okala.sales', compact('data','okala_sales'));
     }
 
     public function salesDetails($id)
@@ -265,12 +284,12 @@ class OkalaController extends Controller
             $data->date = $request->date;
             $data->okala_sale_id  = $okala->id;
             $data->user_id = $request->agentId;
-            $data->r_l_detail_id = NULL;
-            $okala->visaid = $purchaseData->visaid;
+            $data->r_l_detail_id = $purchaseData->r_l_detail_id;
+            $data->visaid = $purchaseData->visaid;
             $data->sponsorid = $purchaseData->sponsorid;
-            $okala->trade = $purchaseData->trade;
-            $okala->bdt_amount = $purchaseData->sales_bdt_amount;
-            $okala->riyal_amount = $purchaseData->sales_riyal_amount;
+            $data->trade = $purchaseData->trade;
+            $data->bdt_amount = $request->sales_bdt_amount;
+            $data->riyal_amount = $request->sales_riyal_amount;
 
             $data->created_by = Auth::user()->id;
             $data->save();
@@ -359,5 +378,57 @@ class OkalaController extends Controller
             return response()->json(['success'=>false,'message'=>'Delete Failed']);
         }
         
+    }
+
+    public function changeOkalaSalesStatus(Request $request)
+    {
+        $user = OkalaSale::find($request->id);
+        $user->status = $request->status;
+        if($user->save()){
+
+            if ($user->status == 0) {
+                $stsval = "New";
+            }elseif($user->status == 1){
+                $stsval = "Processing";
+            }elseif($user->status == 2){
+                $stsval = "Complete";
+            }else{
+                $stsval = "Something is wrong";
+            }
+    
+            
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }else{
+            $message ="There was an error to change status!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
+    }
+
+    public function changeOkalapurchaseStatus(Request $request)
+    {
+        $user = OkalaPurchase::find($request->id);
+        $user->status = $request->status;
+        if($user->save()){
+
+            if ($user->status == 0) {
+                $stsval = "New";
+            }elseif($user->status == 1){
+                $stsval = "Processing";
+            }elseif($user->status == 2){
+                $stsval = "Complete";
+            }else{
+                $stsval = "Something is wrong";
+            }
+    
+            
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
+        }else{
+            $message ="There was an error to change status!!.";
+            return response()->json(['status'=> 303,'message'=>$message]);
+        }
+
     }
 }

@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
+use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\RoleController;
 
 
 /*------------------------------------------
@@ -79,7 +81,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     // visa update
     Route::post('/visa-update', [ClientController::class, 'visaUpdate'])->name('admin.visaUpdate');
-    Route::post('/medical-update', [ClientController::class, 'medicalUpdate'])->name('admin.medicalUpdate');
+    Route::post('/manpower-update', [ClientController::class, 'manpowerUpdate'])->name('admin.medicalUpdate');
+    Route::post('/flyDate-update', [ClientController::class, 'flyDateUpdate'])->name('admin.flyDateUpdate');
     Route::post('/training-finger-update', [ClientController::class, 'trainingfingerUpdate'])->name('admin.trainingfingerUpdate');
 
     Route::post('/client', [ClientController::class, 'store']);
@@ -103,6 +106,19 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
+
+    //Expense
+    Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
+    Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
+    Route::post('expense', [ExpenseController::class, 'store']);
+    Route::get('expense/{id}', [ExpenseController::class, 'edit']);
+    Route::put('expense/{id}', [ExpenseController::class, 'update']); 
+
+    // ksa transation
+    Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');
+    Route::post('ksa-transaction', [ExpenseController::class, 'ksatransactionstore']);
+    Route::get('ksa-transaction/{id}/edit', [ExpenseController::class, 'ksatransactionedit']);
+    Route::post('/ksa-transaction-update', [ExpenseController::class, 'ksatransactionupdate']); 
 
     
     Route::get('/loan', [LoanController::class, 'index'])->name('admin.loan');
@@ -159,6 +175,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/vendor/{id}', [VendorController::class, 'delete']);
     Route::post('/vendor/{id}/status', [VendorController::class, 'updateStatus']);
 
+    Route::get('/vendor-history/{id}', [VendorController::class, 'vendorHistory'])->name('admin.vendorHistory');
+
     
     //okala
     Route::get('/okala', [OkalaController::class, 'index'])->name('admin.okala');
@@ -169,6 +187,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/okala/{id}/edit', [OkalaController::class, 'edit']);
     Route::post('/okala-update', [OkalaController::class, 'update']);
     Route::get('/okala/{id}', [OkalaController::class, 'delete']);
+    Route::get('/change-okala-sales-status', [OkalaController::class, 'changeOkalaSalesStatus']);
+    Route::get('/change-okala-purchase-status', [OkalaController::class, 'changeOkalapurchaseStatus']);
 
     Route::post('/client-add-okala', [OkalaController::class, 'addClientToOkala']);
 
@@ -187,6 +207,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/okala-sales-receive', [TransactionController::class,'okalaSalesReceive'])->name('okalaSalesReceive');
     Route::post('/vendor-transaction', [TransactionController::class,'vendorTran'])->name('vendorTran');
     Route::post('/purchase-transaction', [TransactionController::class,'purchaseTran'])->name('purchaseTran');
+
+    // role and permission
+    Route::get('role', [RoleController::class, 'index'])->name('admin.role');
+    Route::post('role', [RoleController::class, 'store'])->name('admin.rolestore');
+    Route::get('role/{id}', [RoleController::class, 'edit'])->name('admin.roleedit');
+    Route::post('role-update', [RoleController::class, 'update'])->name('admin.roleupdate');
 
 });
   

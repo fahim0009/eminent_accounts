@@ -37,13 +37,18 @@
                       $count1 = $count;                     
                   @endphp
 
-                  @foreach ($data as $key => $data)
+                  @foreach ($clients as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ ($count1) }} </td>
-                    <td style="text-align: center">{{$data->passport_name}} <br> ( {{$data->passport_number}} )</td>
+                    <td style="text-align: center">{{$data->passport_name}} ( {{$data->passport_number}} )</td>
                     <td style="text-align: center">
 
-                        <div class="input-group">
+                      @if ($data->medical_exp_date) 
+
+                     <p>{{$data->medical_exp_date}}</p>
+ 
+                      @else            
+                    <div class="input-group">
                         <input type="date" class="form-control medical_exp_date" name="medical_exp_date" id="medical_exp_date{{$data->id}}" value="{{$data->medical_exp_date}}">
                         <div class="input-group-append">
                           <button class="btn btn-secondary medical_exp_date_btn" data-id="{{$data->id}}">
@@ -53,12 +58,18 @@
                         </div>
                         <p><small class="smsg" id="smsg{{$data->id}}"></small></p>
                     </td>
+                    @endif
                     <td style="text-align: center">
-                        <div class="input-group">
+                     @if ($data->mofa_trade) 
+
+                     <p>{{$data->mofa_trade}}</p>
+ 
+                      @else
+                      <div class="input-group">
                         <select name="mofa_trade" id="mofa_trade{{$data->id}}" class="form-control mofa_trade">
                           <option value="">Please Select</option>
                           @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->select('id','type','type_name')->get() as $mofa)
-                          <option value="{{$mofa->id}}" @if ($data->mofa_trade == $mofa->id) selected @endif>{{$mofa->type_name}}</option>
+                          <option value="{{$mofa->id}}">{{$mofa->type_name}}</option>
                           @endforeach
                         </select>
                         <div class="input-group-append">
@@ -68,15 +79,21 @@
                         </div>
                         </div>
                         <p><small class="mofa_trade_msg" id="mofa_trade_msg{{$data->id}}"></small></p>
+                      @endif
+
                     </td>
                     
                     <td style="text-align: center">
+                    @if ($data->rlname) 
 
+                      <p>{{$data->rlname}}</p>
+
+                      @else
                         <div class="input-group">
                         <select name="rldetail" id="rldetail{{$data->id}}" class="form-control rldetail">
                           <option value="">Please Select</option>
                           @foreach (\App\Models\CodeMaster::where('type', 'RL')->select('id','type','type_name')->get() as $rl)
-                          <option value="{{$rl->id}}" @if ($data->rlid == $rl->id) selected @endif>{{$rl->type_name}}</option>
+                          <option value="{{$rl->id}}">{{$rl->type_name}}</option>
                           @endforeach
                         </select>
                         <div class="input-group-append">
@@ -86,9 +103,9 @@
                         </div>
                         </div>
                         <p><small class="rldetail_msg" id="rldetail_msg{{$data->id}}"></small></p>
-                      
+                      @endif
                     </td>
-                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a> </td>
+                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user_name}} {{$data->user_surname}}</b> </u></a> </td>
                     
                     
                   </tr>

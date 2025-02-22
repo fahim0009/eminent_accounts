@@ -80,4 +80,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Loan::class);
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function okalaPurchase()
+    {
+        return $this->hasMany(OkalaPurchase::class);
+    }
+
+
 }
