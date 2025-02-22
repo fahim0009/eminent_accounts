@@ -25,8 +25,8 @@ class OkalaController extends Controller
 
     public function okalaPurchase()
     {
-        $data = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->get();
-        $complete = OkalaPurchase::with('okalaPurchaseDetail')->orderby('id','DESC')->where('status', 1)->get();
+        $data = OkalaPurchase::orderby('id','DESC')->get();
+        $complete = OkalaPurchase::orderby('id','DESC')->where('status', 1)->get();
         return view('admin.okala.purchase', compact('data','complete'));
     }
 
