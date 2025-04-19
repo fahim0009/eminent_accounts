@@ -15,7 +15,7 @@
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">All Data</h3>
+              <h3 class="card-title">All mofa request</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -24,10 +24,10 @@
                 <tr>
                   <th>Sl</th>
                   <th>Passport Name</th>
-                  <th>Medical Exp Date</th>
                   <th>Mofa</th>
                   <th>RL</th>
                   <th>Agent Name</th>
+                  <th>Mofa Count</th>
                   
                 </tr>
                 </thead>
@@ -41,24 +41,6 @@
                   <tr>
                     <td style="text-align: center">{{ ($count1) }} </td>
                     <td style="text-align: center">{{$data->passport_name}} ( {{$data->passport_number}} )</td>
-                    <td style="text-align: center">
-
-                      @if ($data->medical_exp_date) 
-
-                     <p>{{$data->medical_exp_date}}</p>
- 
-                      @else            
-                      <div class="input-group">
-                        <input type="date" class="form-control medical_exp_date" name="medical_exp_date" id="medical_exp_date{{$data->id}}" value="{{$data->medical_exp_date}}">
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary medical_exp_date_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
-                        </div>
-                        </div>
-                        <p><small class="smsg" id="smsg{{$data->id}}"></small></p>
-                    </td>
-                    @endif
                     <td style="text-align: center">
                      @if ($data->mofa_trade) 
 
@@ -106,6 +88,13 @@
                       @endif
                     </td>
                     <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user_name}} {{$data->user_surname}}</b> </u></a> </td>
+                    <td style="text-align: center">
+
+                     <p>{{$data->mofa}}</p>
+ 
+
+                    </td>
+                    
                     
                     
                   </tr>

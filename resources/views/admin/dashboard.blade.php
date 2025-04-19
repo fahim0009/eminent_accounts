@@ -97,7 +97,7 @@
 
 <!-- 2nd row ################################################## -->
         <!-- Small boxes (Stat box) -->
-        <div class="row">
+      <div class="row">
         <div class="col-lg-3 col-6">
           <!-- small box -->
           <div class="small-box bg-info">
@@ -158,6 +158,8 @@
           </div>
         </div>
         <!-- ./col -->
+
+
       </div>
       <!-- /.row -->
 <!-- end 2nd row  ############################################### -->
@@ -226,6 +228,27 @@
           </div>
         </div>
         <!-- ./col -->
+
+        @php
+            $mofa_request = \App\Models\Client::where('mofa_request', '=', 1)->count();
+        @endphp
+        
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              
+              <h3>{{ $mofa_request }}</h3>
+              <p>Mofa Request</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{route('admin.mofaRequest')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+
+
       </div>
       <!-- /.row -->
 <!-- end 3rd row  ############################################# -->

@@ -59,18 +59,18 @@ class AgentController extends Controller
                 ->orderby('id','DESC')
                 ->get();
 
-//  ############################ start visa & service sales calculation  ######################################
+        //  ############################ start visa & service sales calculation  ######################################
 
         $processing = Client::where('status','1')->where('user_id', $id)->count();
         $decline = Client::where('status','3')->where('user_id', $id)->count();
         $completed = Client::where('status','2')->where('user_id', $id)->count();
 
-// total package amout with extara charge if added 
+        // total package amout with extara charge if added 
         $totalPackageAmount = Transaction::where('user_id', $id)
                             ->whereIn('tran_type', ['package_sales', 'package_adon'])
                             ->sum('bdt_amount');
 
-// processing package amout with extara charge if added 
+        // processing package amout with extara charge if added 
         $processingPackageAmount = DB::table('transactions')
             ->join('clients', 'transactions.client_id', '=', 'clients.id')  // Join the tables
             ->where('clients.status', 1)
@@ -78,7 +78,7 @@ class AgentController extends Controller
             ->whereIn('transactions.tran_type', ['package_sales', 'package_adon'])
             ->sum('transactions.bdt_amount');
 
-// completed package amout with extara charge if added 
+        // completed package amout with extara charge if added 
         $completedPackageAmount = DB::table('transactions')
             ->join('clients', 'transactions.client_id', '=', 'clients.id')  // Join the tables
             ->where('clients.status', 2)
@@ -86,21 +86,21 @@ class AgentController extends Controller
             ->whereIn('transactions.tran_type', ['package_sales', 'package_adon'])
             ->sum('transactions.bdt_amount');   
 
-// package discount on total package cost 
+        // package discount on total package cost 
         $totalPkgDiscountAmnt = Transaction::where('user_id',$id)->where('tran_type','package_discount')->sum('bdt_amount');
 
-//   total package receive amount 
+        //   total package receive amount 
         $totalPackageReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','package_received')->sum('bdt_amount');
 
-//  others bill amount like medical contact , embassay extra fees, manpower speed money 
+        //  others bill amount like medical contact , embassay extra fees, manpower speed money 
         $totaServiceamt = Transaction::where('user_id',$id)
                         ->whereIn('tran_type', ['service_sales', 'service_adon'])    
                         ->sum('bdt_amount');
 
-//   total service receive amount 
+        //   total service receive amount 
         $totalServiceReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','service_received')->sum('bdt_amount');                        
  
-//   receive amount for running work that is not delivered yet including others bill amount      
+        //   receive amount for running work that is not delivered yet including others bill amount      
         $rcvamntForProcessing = ($totalPackageReceivedAmnt +  $totalPkgDiscountAmnt) - ($completedPackageAmount + $totaServiceamt);
 
         // $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','Received')->sum('bdt_amount');

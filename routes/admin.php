@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\MofaController;
 use App\Http\Controllers\Admin\RoleController;
 
 
@@ -213,6 +214,11 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('role', [RoleController::class, 'store'])->name('admin.rolestore');
     Route::get('role/{id}', [RoleController::class, 'edit'])->name('admin.roleedit');
     Route::post('role-update', [RoleController::class, 'update'])->name('admin.roleupdate');
+
+    // mofa
+    Route::get('mofa-request', [MofaController::class, 'index'])->name('admin.mofaRequest');
+
+
 
 });
   
