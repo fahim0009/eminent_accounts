@@ -97,25 +97,19 @@
                     </td>
 
                     <td style="text-align: center">
-                        @if ($data->rlname) 
-    
-                          <p>{{$data->rlname}}</p>
-    
-                        @else
-                            <div class="input-group">
-                            <select name="sts" id="sts{{$data->id}}" class="form-control sts">
-                              <option value="">Please Select</option>
-                              <option value="1">Approved</option>
-                              <option value="2">Decline</option>
-                            </select>
-                            <div class="input-group-append">
-                              <button class="btn btn-secondary sts_btn" data-id="{{$data->id}}">
-                              <i class="fas fa-save"></i>
-                              </button>
-                            </div>
-                            </div>
-                            <p><small class="sts_msg" id="sts_msg{{$data->id}}"></small></p>
-                        @endif
+                        <div class="input-group">
+                        <select name="sts" id="sts{{$data->id}}" class="form-control sts">
+                            <option value="">Please Select</option>
+                            <option value="1">Approved</option>
+                            <option value="2">Decline</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary sts_btn" data-id="{{$data->id}}">
+                            <i class="fas fa-save"></i>
+                            </button>
+                        </div>
+                        </div>
+                        <p><small class="sts_msg" id="sts_msg{{$data->id}}"></small></p>
                     </td>
                     
                     
