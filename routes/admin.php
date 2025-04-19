@@ -79,6 +79,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/change-client-medical-exp-date', [ClientController::class, 'ksaMedicalExpireDate'])->name('admin.ksaMedicalExpireDate');
     Route::get('/change-client-mofa-trade', [ClientController::class, 'ksaMofaTrade'])->name('admin.ksaMofaTrade');
     Route::get('/change-client-rl-detail', [ClientController::class, 'ksaRL'])->name('admin.ksaRL');
+    Route::get('/change-mofa_request_status', [ClientController::class, 'changeMofaRequestStatus']);
 
     // visa update
     Route::post('/visa-update', [ClientController::class, 'visaUpdate'])->name('admin.visaUpdate');

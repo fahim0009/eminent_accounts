@@ -28,6 +28,7 @@
                   <th>RL</th>
                   <th>Agent Name</th>
                   <th>Mofa Count</th>
+                  <th>Mofa Status</th>
                   
                 </tr>
                 </thead>
@@ -94,6 +95,28 @@
  
 
                     </td>
+
+                    <td style="text-align: center">
+                        @if ($data->rlname) 
+    
+                          <p>{{$data->rlname}}</p>
+    
+                        @else
+                            <div class="input-group">
+                            <select name="sts" id="sts{{$data->id}}" class="form-control sts">
+                              <option value="">Please Select</option>
+                              <option value="1">Approved</option>
+                              <option value="2">Decline</option>
+                            </select>
+                            <div class="input-group-append">
+                              <button class="btn btn-secondary sts_btn" data-id="{{$data->id}}">
+                              <i class="fas fa-save"></i>
+                              </button>
+                            </div>
+                            </div>
+                            <p><small class="sts_msg" id="sts_msg{{$data->id}}"></small></p>
+                        @endif
+                    </td>
                     
                     
                     
@@ -139,55 +162,6 @@
       });
     });
 
-    $(function() {
-      $('.stsBtn').click(function() {
-        var url = "{{URL::to('/admin/change-client-status')}}";
-          var id = $(this).data('id');
-          var status = $(this).attr('value');
-          // console.log(id);
-          $.ajax({
-              type: "GET",
-              dataType: "json",
-              url: url,
-              data: {'status': status, 'id': id},
-              success: function(d){
-                // console.log(data.success)
-                if (d.status == 303) {
-                        $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: d.message
-                          });
-                        });
-                    }else if(d.status == 300){
-                      
-                      $("#stsval"+d.id).html(d.stsval);
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: d.message
-                          });
-                        });
-                    }
-                },
-                error: function (d) {
-                    console.log(d);
-                }
-          });
-      })
-    })
 
   </script>
 
@@ -198,56 +172,6 @@
       $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
       //
 
-      $('.medical_exp_date_btn').click(function () {
-          var id = $(this).data('id');
-          var medical_exp_date = $('#medical_exp_date'+id).val();
-          if (medical_exp_date == '') {
-              $('#smsg'+id).html('<span class="text-danger">Please select a date</span>');
-              return false;
-          }
-          var url = "{{URL::to('/admin/change-client-medical-exp-date')}}";
-          $.ajax({
-              type: "GET",
-              dataType: "json",
-              url: url,
-              data: {'medical_exp_date': medical_exp_date, 'id': id},
-              success: function (data) {
-                  if (data.status == 303) {
-
-                    $('#smsg'+id).html(data.message);
-
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: data.message
-                          });
-                        });
-                  } else if (data.status == 300) {
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: data.message
-                          });
-                        });
-                  }
-              },
-              error: function (data) {
-                  console.log(data);
-              }
-          });
-      });
 
 
       $('.mofa_trade_btn').click(function () {
@@ -353,6 +277,60 @@
               }
           });
       });
+
+
+      $('.sts_btn').click(function () {
+        
+        var id = $(this).data('id');
+        var status = $('#sts'+id).val();
+        if (status == '') {
+            $('#sts_msg'+id).html('<span class="text-danger">Please select a status</span>');
+            return false;
+        }
+        var url = "{{URL::to('/admin/change-mofa_request_status')}}";
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: url,
+            data: {'status': status, 'id': id},
+            success: function (data) {
+                console.log(data);
+                if (data.status == 303) {
+
+                  $('#sts_msg'+id).html(data.message);
+
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'warning',
+                          title: data.message
+                        });
+                      });
+                } else if (data.status == 300) {
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'success',
+                          title: data.message
+                        });
+                      });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
 
 
 

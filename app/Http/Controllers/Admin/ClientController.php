@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\CodeMaster;
 use App\Models\Country;
+use App\Models\MofaHistory;
 use App\Models\Transaction;
 // use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -142,6 +143,59 @@ class ClientController extends Controller
         else{
             return response()->json(['status'=> 303,'message'=>'Server Error!!']);
         }
+    }
+
+
+    public function changeMofaRequestStatus(Request $request)
+    {
+
+        if ($request->status == 1) {
+            
+            $data = Client::find($request->id);
+            if (empty($data->rlid) || empty($data->mofa_trade)) {
+                return response()->json(['status' => 303, 'message' => 'RLID and MOFA Trade must be set before changing the status.']);
+            }
+            $data->mofa_request = 0;
+            $data->mofa = $data->mofa + 1;
+            $data->updated_by = Auth::user()->id;
+            if ($data->save()) {
+
+                // update mofa history
+                $history = MofaHistory::where('client_id', $request->id)->orderby('id', 'desc')->first();
+                $history->mofa_trade = $data->mofa_trade;
+                $history->rlid = $data->rlid;
+                $history->status = $request->status;
+                $history->save();
+                // update mofa history
+
+                $message ="Status Change Successfully.";
+                return response()->json(['status'=> 300,'message'=>$message]);
+            } else {
+                return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+            }
+
+        } else {
+
+            $data = Client::find($request->id);
+            $data->mofa_request = 0;
+            $data->updated_by = Auth::user()->id;
+            if ($data->save()) {
+
+                // update mofa history
+                $history = MofaHistory::where('client_id', $request->id)->orderby('id', 'desc')->first();
+                $history->status = $request->status;
+                $history->save();
+                // update mofa history
+
+                $message ="Status Change Successfully.";
+                return response()->json(['status'=> 300,'message'=>$message]);
+            } else {
+                return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+            }
+        }
+        
+        
+        
     }
 
     // visaUpdate
