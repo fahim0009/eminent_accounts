@@ -13,4 +13,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    public function chartOfAccount()
+    {
+        return $this->belongsTo(ChartOfAccount::class);
+    }
 }

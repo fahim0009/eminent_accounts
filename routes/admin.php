@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\IncomeController;
 use App\Http\Controllers\Admin\MofaController;
 use App\Http\Controllers\Admin\RoleController;
 
@@ -119,6 +120,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     // ksa expense
     Route::get('ksa-expense', [ExpenseController::class, 'ksaExpense'])->name('admin.ksaexpense');
     Route::post('ksa-expenses', [ExpenseController::class, 'ksaExpense'])->name('admin.ksaexpense.filter');
+
+    
+    // ksa expense
+    Route::get('ksa-income', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome');
+    Route::post('ksa-incomes', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome.filter');
+    Route::post('ksa-income', [IncomeController::class, 'store'])->name('admin.ksaincome.store');
 
     // ksa transation
     Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');
