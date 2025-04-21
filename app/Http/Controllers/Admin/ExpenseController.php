@@ -18,6 +18,43 @@ class ExpenseController extends Controller
     {
         if($request->ajax()){
             $transactions = Expense::with('chartOfAccount')->where('status', 2);
+            $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
+
+        if ($request->filled('start_date')) {
+                $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
+                $transactions->whereBetween('date', [
+                    $request->input('start_date'),
+                    $endDate
+                ]);
+            }
+
+            if ($request->filled('account_name')) {
+                $transactions->whereHas('chartOfAccount', function ($query) use ($request) {
+                    $query->where('account_name', $request->input('account_name'));
+                });
+            }
+
+            $transactions = $transactions->latest()->get();
+
+            return DataTables::of($transactions)
+                ->addColumn('chart_of_account', function ($transaction) {
+                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
+                })
+                ->addColumn('account_name', function ($transaction) {
+                    return $transaction->account ? $transaction->account->name : "";
+                })
+                ->make(true);
+        }
+        $coa = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
+        
+        $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
+        return view('admin.transactions.expense', compact('coa','accounts'));
+    }
+
+    public function ksaExpense(Request $request)
+    {
+        if($request->ajax()){
+            $transactions = Expense::with('chartOfAccount')->where('status', 2);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -46,7 +83,7 @@ class ExpenseController extends Controller
                 ->make(true);
         }
         $accounts = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
-        return view('admin.transactions.expense', compact('accounts'));
+        return view('admin.transactions.ksaexpense', compact('accounts'));
     }
 
     public function store(Request $request)

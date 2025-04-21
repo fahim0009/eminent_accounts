@@ -15,7 +15,12 @@
                             <li class="nav-item">
                               <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All</a>
                             </li>
-                            
+                            <li class="nav-item">
+                              <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Dhaka Office</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">KSA Office</a>
+                            </li>
 
                             <li class="nav-item">
                               <a class="nav-link " id="fahim-personal" data-toggle="pill" href="#custom-tabs-one-fahim" role="tab" aria-controls="custom-tabs-one-fahim" aria-selected="true">Fahim</a>
@@ -90,7 +95,99 @@
                                 {{-- exp end  --}}
 
                             </div>
+                            <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+              
                             
+                              
+                              <!--get total balance -->
+              
+                                <!-- /.card-header -->
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>Dhaka office Transaction</h2>
+                                    </div>
+                                  </div>
+
+
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
+                                          ->whereIn('tran_type', ['Dhaka-office'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+              
+                              
+                               <!-- End visa and others transaction End  -->
+                            </div>
+              
+              
+                            <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                                
+                              <!-- Start visa and others transaction Start  -->
+              
+                              <!--get total okala balance -->
+                              
+              
+                                  <!-- /.card-header -->
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>KSA office Transaction</h2>
+                                    </div>
+                                  </div>
+
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>SL</th>
+                                        <th>Month-Year</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    @php
+                                        $mdata = \DB::table('expenses')
+                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(riyal_amount) as total'))
+                                          ->whereIn('tran_type', ['KSA-Expense'])
+                                          ->where('status', 2)
+                                          ->groupBy('month_year')
+                                          ->orderBy('date', 'DESC')
+                                          ->get();
+                                    @endphp
+                                    <tbody>
+                                      @foreach ($mdata as $key => $monthly)
+                                      <tr>
+                                        <td>{{$key + 1}}</td>
+                                        <td>{{$monthly->month_year}}</td>
+                                        <td>{{$monthly->total}}</td>
+                                      </tr>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+              
+                              
+              
+                              <!-- End visa and others transaction End  -->
+                            </div>
               
                              
                             <div class="tab-pane fade" id="custom-tabs-one-fahim" role="tabpanel" aria-labelledby="fahim-personal">
@@ -219,11 +316,6 @@
 
                         
                     </div>
-                    
-                    @php
-                    use App\Models\ChartOfAccount;
-                    
-                    @endphp
 
                     <div class="row">
                         <div class="col-md-12">
@@ -231,7 +323,12 @@
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
                                     <option value="">Select chart of account</option>
-                                    @foreach($coa as $expense)
+                                    @php
+                                    use App\Models\ChartOfAccount;
+                                    $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
+                                    $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
+                                    @endphp
+                                    @foreach($expenses as $expense)
                                     <option value="{{ $expense->id }}">{{ $expense->account_name }}</option>
                                     @endforeach
                                 </select>

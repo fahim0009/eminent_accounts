@@ -116,6 +116,10 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('expense/{id}', [ExpenseController::class, 'edit']);
     Route::put('expense/{id}', [ExpenseController::class, 'update']); 
 
+    // ksa expense
+    Route::get('ksa-expense', [ExpenseController::class, 'ksaExpense'])->name('admin.ksaexpense');
+    Route::post('ksa-expenses', [ExpenseController::class, 'ksaExpense'])->name('admin.ksaexpense.filter');
+
     // ksa transation
     Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');
     Route::post('ksa-transaction', [ExpenseController::class, 'ksatransactionstore']);

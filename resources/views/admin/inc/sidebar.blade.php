@@ -83,7 +83,16 @@
         <li class="nav-item">
           <a href="{{ route('admin.expense') }}" class="nav-link {{ (request()->is('admin/expense*')) ? 'active' : '' }}">
               <i class="fa fa-users"></i>
-              <p>Expense</p>
+              <p>Dhaka Expense</p>
+          </a>
+      </li>
+      @endif
+
+      @if(Auth::user()->is_type == '1' && (in_array('17', json_decode(Auth::user()->role->permission))))
+        <li class="nav-item">
+          <a href="{{ route('admin.ksaexpense') }}" class="nav-link {{ (request()->is('admin/ksa-expense*')) ? 'active' : '' }}">
+              <i class="fa fa-users"></i>
+              <p>KSA Expense</p>
           </a>
       </li>
       @endif
