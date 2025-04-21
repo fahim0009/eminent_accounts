@@ -17,8 +17,8 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $transactions = Expense::with('chartOfAccount')->where('tran_type','Dhaka-office')->where('status', 2);
             $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('office', 'dhaka')->where('status', 1);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -54,7 +54,7 @@ class ExpenseController extends Controller
     public function ksaExpense(Request $request)
     {
         if($request->ajax()){
-            $transactions = Expense::with('chartOfAccount')->where('status', 2);
+            $transactions = Transaction::with('chartOfAccount')->where('status', 2);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -93,11 +93,11 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
         }
 
-        if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        }
+        // if (empty($request->transaction_type)) {
+        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        // }
 
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
+        if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
@@ -109,7 +109,9 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
 
-        $transaction = new Expense();
+        $transaction = new Transaction();
+        $transaction->table_type = 'Expenses';
+        $transaction->office = $request->office;
         $transaction->date = $request->input('date');
         if ($request->document) {
             
@@ -118,13 +120,15 @@ class ExpenseController extends Controller
             $image->move(public_path('images/expense'), $imageName);
             $transaction->document = $imageName;
         }
-        $transaction->amount = $request->input('amount');
-        $transaction->riyal_amount = $request->input('riyal_amount');
+        
+        $transaction->bdt_amount = $request->input('amount');
+        $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
+        $transaction->foreign_amount_type = 'riyal';
         $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->created_by = Auth()->user()->id;
 
+        $transaction->created_by = Auth()->user()->id;
         $transaction->save();
         $transaction->tran_id = 'EX' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
         $transaction->save();
@@ -135,7 +139,7 @@ class ExpenseController extends Controller
 
     public function edit($id)
     {
-        $transaction = Expense::findOrFail($id);
+        $transaction = Transaction::findOrFail($id);
 
         $responseData = [
             'id' => $transaction->id,
@@ -156,7 +160,7 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
         }
 
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
+        if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
@@ -169,7 +173,7 @@ class ExpenseController extends Controller
         }
 
 
-        $transaction = Expense::find($id);
+        $transaction = Transaction::find($id);
 
         if ($request->document) {
             $image_path = public_path('images/expense/' . $transaction->document);
@@ -183,11 +187,14 @@ class ExpenseController extends Controller
         }
 
         $transaction->date = $request->input('date');
-        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->amount = $request->input('amount');
-        $transaction->riyal_amount = $request->input('riyal_amount');
+        $transaction->bdt_amount = $request->input('amount');
+        $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
+        $transaction->foreign_amount_type = 'riyal';
         $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
+        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
+
+
         $transaction->updated_by = Auth()->user()->id;
         $transaction->save();
 

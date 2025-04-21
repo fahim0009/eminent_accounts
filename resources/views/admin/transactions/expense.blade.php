@@ -79,7 +79,7 @@
                                     <th>ID</th>
                                     <th>Date</th>
                                     <th>Account</th>
-                                    <th>Type</th>
+                                    <th>Office</th>
                                     <th>Document</th>
                                     <th>Payment Type</th>
                                     <th>Amount</th>
@@ -204,7 +204,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 d-none">
                             <div class="form-group">
                                 <label for="transaction_type" class="control-label">Type</label>
                                 <select class="form-control" id="transaction_type" name="transaction_type">
@@ -213,6 +213,18 @@
                                     <option value="Mehdi">Mehdi</option>
                                     <option value="KSA-Deposit">KSA</option>
                                     <option value="Dhaka-office">Dhaka-office</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" id="chart_of_account_container">
+                                <label for="chart_of_account_id" class="control-label">Chart of Account</label>
+                                <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
+                                    <option value="">Select chart of account</option>
+                                    @foreach($coa as $expense)
+                                    <option value="{{ $expense->id }}">{{ $expense->account_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -226,17 +238,7 @@
                     @endphp
 
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group" id="chart_of_account_container">
-                                <label for="chart_of_account_id" class="control-label">Chart of Account</label>
-                                <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
-                                    <option value="">Select chart of account</option>
-                                    @foreach($coa as $expense)
-                                    <option value="{{ $expense->id }}">{{ $expense->account_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group" id="payment_type_container">
                                 <label for="payment_type" class="control-label">Payment Type</label>
@@ -385,8 +387,8 @@
                 name: 'chart_of_account'
             },
             {
-                data: 'tran_type',
-                name: 'tran_type'
+                data: 'office',
+                name: 'office'
             },
             {
                 data: 'document',
@@ -406,12 +408,12 @@
                 name: 'account_name'
             },
             {
-                data: 'amount',
-                name: 'amount'
+                data: 'bdt_amount',
+                name: 'bdt_amount'
             },
             {
-                data: 'riyal_amount',
-                name: 'riyal_amount'
+                data: 'foreign_amount',
+                name: 'foreign_amount'
             },
             {
                 data: 'action',
@@ -506,6 +508,7 @@
 
             
             var formData = new FormData($('#customer-form')[0]);
+            formData.append('office', 'dhaka');
 
             $.ajax({
                 url: charturl,
