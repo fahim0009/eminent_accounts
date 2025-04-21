@@ -148,55 +148,61 @@ class ClientController extends Controller
 
     public function changeMofaRequestStatus(Request $request)
     {
+        $client = Client::find($request->id);
 
-        if ($request->status == 1) {
-            
-            $data = Client::find($request->id);
-            if (empty($data->rlid) || empty($data->mofa_trade)) {
-                return response()->json(['status' => 303, 'message' => 'RLID and MOFA Trade must be set before changing the status.']);
-            }
-            $data->mofa_request = 0;
-            $data->mofa = $data->mofa + 1;
-            $data->updated_by = Auth::user()->id;
-            if ($data->save()) {
-
-                // update mofa history
-                $history = MofaHistory::where('client_id', $request->id)->orderby('id', 'desc')->first();
-                $history->mofa_trade = $data->mofa_trade;
-                $history->rlid = $data->rlid;
-                $history->status = $request->status;
-                $history->save();
-                // update mofa history
-
-                $message ="Status Change Successfully.";
-                return response()->json(['status'=> 300,'message'=>$message]);
-            } else {
-                return response()->json(['status'=> 303,'message'=>'Server Error!!']);
-            }
-
-        } else {
-
-            $data = Client::find($request->id);
-            $data->mofa_request = 0;
-            $data->updated_by = Auth::user()->id;
-            if ($data->save()) {
-
-                // update mofa history
-                $history = MofaHistory::where('client_id', $request->id)->orderby('id', 'desc')->first();
-                $history->status = $request->status;
-                $history->save();
-                // update mofa history
-
-                $message ="Status Change Successfully.";
-                return response()->json(['status'=> 300,'message'=>$message]);
-            } else {
-                return response()->json(['status'=> 303,'message'=>'Server Error!!']);
-            }
+        if (!$client) {
+            return response()->json(['status' => 404, 'message' => 'Client not found.']);
         }
-        
-        
-        
+
+        // If status is 1, validate required fields
+        if ($request->status == 1) {
+            if (empty($client->rlid) || empty($client->mofa_trade)) {
+                return response()->json([
+                    'status' => 303,
+                    'message' => 'RLID and MOFA Trade must be set before changing the status.'
+                ]);
+            }
+
+            $client->mofa += 1;
+        }
+
+        $client->mofa_request = 0;
+        $client->updated_by = Auth::id();
+
+        if ($client->save()) {
+            $this->updateMofaHistory($client, $request->status);
+
+            return response()->json([
+                'status' => 300,
+                'message' => 'Status changed successfully.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 303,
+            'message' => 'Server error!'
+        ]);
     }
+
+
+    private function updateMofaHistory(Client $client, int $status): void
+    {
+        $history = MofaHistory::where('client_id', $client->id)
+            ->where('status', 0)
+            ->latest()
+            ->first();
+
+        if ($history) {
+            if ($status == 1) {
+                $history->mofa_trade = $client->mofa_trade;
+                $history->rlid = $client->rlid;
+            }
+
+            $history->status = $status;
+            $history->save();
+        }
+    }
+
 
     // visaUpdate
 
