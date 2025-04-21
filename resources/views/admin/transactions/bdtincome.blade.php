@@ -34,7 +34,7 @@
                                 
                                 {{-- exp start  --}}
                                 <div class="row mb-3">
-                                    <form class="form-inline" role="form" method="POST" action="{{ route('admin.ksaincome.filter') }}">
+                                    <form class="form-inline" role="form" method="POST" action="{{ route('admin.bdtincome.filter') }}">
                                         {{ csrf_field() }}
 
                                         <div class="form-group mx-sm-3">
@@ -94,7 +94,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title">KSA Income</h4>
+            <h4 class="modal-title">BDT Income</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
             </div>
@@ -231,7 +231,7 @@
         $('.select2').select2();
     });
 
-    var charturl = "{{URL::to('/admin/ksa-income')}}";
+    var charturl = "{{URL::to('/admin/bdt-income')}}";
     var customerTBL = $('#incomeTBL').DataTable({
         processing: true,
         serverSide: true,
@@ -356,10 +356,10 @@
 
             
             var formData = new FormData($('#customer-form')[0]);
-            formData.append('office', 'ksa');
+            formData.append('office', 'dhaka');
 
             $.ajax({
-                url: "{{ route('admin.ksaincome.store') }}",
+                url: "{{ route('admin.bdtincome.store') }}",
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -385,7 +385,7 @@
                                 title: 'Data saved successfully.'
                             });
                         });
-                        // window.setTimeout(function(){location.reload()},2000)
+                        window.setTimeout(function(){location.reload()},2000)
                     }
                 },
                 error: function(xhr, status, error) {
