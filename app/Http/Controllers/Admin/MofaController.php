@@ -26,7 +26,7 @@ class MofaController extends Controller
                 'users.name as user_name', 
                 'users.surname as user_surname'
             )
-            ->where('clients.status', '0')
+            // ->where('clients.status', '0')
             ->where('clients.mofa_request', '1')
             ->orderBy('clients.id', 'ASC')
             ->get();
