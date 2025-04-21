@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $transactions = Expense::with('chartOfAccount')->where('status', 2);
+            $transactions = Expense::with('chartOfAccount')->where('tran_type','Dhaka-office')->where('status', 2);
             $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
 
         if ($request->filled('start_date')) {
