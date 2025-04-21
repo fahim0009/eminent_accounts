@@ -309,7 +309,7 @@
                     return request.setRequestHeader('X-CSRF-Token', $("meta[name='csrf-token']").attr('content'));
                 },
                 success: function(response) {
-                    // console.log(response);
+                    console.log(response);
                     $('#date').val(response.date);
                     $('#ref').val(response.ref);
 

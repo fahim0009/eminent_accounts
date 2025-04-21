@@ -126,6 +126,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('ksa-income', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome');
     Route::post('ksa-incomes', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome.filter');
     Route::post('ksa-income', [IncomeController::class, 'store'])->name('admin.ksaincome.store');
+    Route::get('ksa-income/{id}', [IncomeController::class, 'edit']);
+    Route::put('ksa-income/{id}', [IncomeController::class, 'update']); 
 
     // ksa transation
     Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');

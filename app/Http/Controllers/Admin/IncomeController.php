@@ -57,7 +57,7 @@ class IncomeController extends Controller
         //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
         // }
 
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
+        if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
@@ -98,15 +98,15 @@ class IncomeController extends Controller
 
     public function edit($id)
     {
-        $transaction = Expense::findOrFail($id);
+        $transaction = Transaction::findOrFail($id);
 
         $responseData = [
             'id' => $transaction->id,
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
             'transaction_type' => $transaction->tran_type,
-            'amount' => $transaction->amount,
-            'riyal_amount' => $transaction->riyal_amount,
+            'amount' => $transaction->bdt_amount,
+            'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
         ];
         return response()->json($responseData);
@@ -119,7 +119,7 @@ class IncomeController extends Controller
             return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
         }
 
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
+        if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
@@ -127,28 +127,28 @@ class IncomeController extends Controller
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
 
-        if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        }
+        // if (empty($request->transaction_type)) {
+        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        // }
 
 
-        $transaction = Expense::find($id);
+        $transaction = Transaction::find($id);
 
         if ($request->document) {
-            $image_path = public_path('images/expense/' . $transaction->document);
+            $image_path = public_path('images/income/' . $transaction->document);
             if (file_exists($image_path)) {
                 unlink($image_path);
             }
             $image = $request->document;
             $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/expense'), $imageName);
+            $image->move(public_path('images/income'), $imageName);
             $transaction->document = $imageName;
         }
 
         $transaction->date = $request->input('date');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->amount = $request->input('amount');
-        $transaction->riyal_amount = $request->input('riyal_amount');
+        $transaction->bdt_amount = $request->input('amount');
+        $transaction->foreign_amount = $request->input('riyal_amount');
         $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->updated_by = Auth()->user()->id;
