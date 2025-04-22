@@ -10,15 +10,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\ChartOfAccount;
-use App\Models\Expense;
 
-class ExpenseController extends Controller
+class AssetController extends Controller
 {
     public function index(Request $request)
     {
         if($request->ajax()){
-            $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
-            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('status', 1);
+            $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Assets')->where('status', 1);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -45,17 +44,17 @@ class ExpenseController extends Controller
                 })
                 ->make(true);
         }
-        $coa = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
+        $coa = ChartOfAccount::whereIn('account_head',[ 'Assets'])->get();
         
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.expense', compact('coa','accounts'));
+        return view('admin.transactions.asset', compact('coa','accounts'));
     }
 
-    public function dkExpense(Request $request)
+    public function dkAsset(Request $request)
     {
         if($request->ajax()){
-            $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
-            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('office', 'dhaka')->where('status', 1);
+            $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Assets')->where('office', 'dhaka')->where('status', 1);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -82,16 +81,16 @@ class ExpenseController extends Controller
                 })
                 ->make(true);
         }
-        $coa = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
+        $coa = ChartOfAccount::whereIn('account_head',['Assets'])->get();
         
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.expense', compact('coa','accounts'));
+        return view('admin.transactions.asset', compact('coa','accounts'));
     }
 
-    public function ksaExpense(Request $request)
+    public function ksaAsset(Request $request)
     {
         if($request->ajax()){
-            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('office', 'ksa')->where('status', 1);
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Assets')->where('office', 'ksa')->where('status', 1);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -119,8 +118,8 @@ class ExpenseController extends Controller
                 })
                 ->make(true);
         }
-        $accounts = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
-        return view('admin.transactions.ksaexpense', compact('accounts'));
+        $accounts = ChartOfAccount::whereIn('account_head',['Assets'])->get();
+        return view('admin.transactions.asset', compact('accounts'));
     }
 
     public function store(Request $request)
@@ -147,14 +146,14 @@ class ExpenseController extends Controller
         }
 
         $transaction = new Transaction();
-        $transaction->table_type = 'Expenses';
+        $transaction->table_type = 'Assets';
         $transaction->office = $request->office;
         $transaction->date = $request->input('date');
         if ($request->document) {
             
             $image = $request->document;
             $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/expense'), $imageName);
+            $image->move(public_path('images/asset'), $imageName);
             $transaction->document = $imageName;
         }
         
@@ -213,13 +212,13 @@ class ExpenseController extends Controller
         $transaction = Transaction::find($id);
 
         if ($request->document) {
-            $image_path = public_path('images/expense/' . $transaction->document);
+            $image_path = public_path('images/asset/' . $transaction->document);
             if (file_exists($image_path)) {
                 unlink($image_path);
             }
             $image = $request->document;
             $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/expense'), $imageName);
+            $image->move(public_path('images/asset'), $imageName);
             $transaction->document = $imageName;
         }
 
@@ -238,124 +237,4 @@ class ExpenseController extends Controller
         return response()->json(['status' => 200, 'message' => 'Updated Successfully']);
 
     }
-
-
-
-    public function ksatransaction(Request $request)
-    {
-        $data = Expense::with('chartOfAccount')->whereIn('tran_type', ['KSA-Expense','KSA-Deposit'])->where('status', 2)->orderby('id', 'DESC')->get();
-        $accounts = ChartOfAccount::where('account_head', 'Expenses')->get();
-        $ksaTotal = Expense::where('tran_type', 'KSA-Deposit')->sum('riyal_amount');
-        $ksaExp = Expense::where('tran_type', 'KSA-Expense')->sum('riyal_amount');
-        return view('admin.transactions.ksa_transaction', compact('accounts','data','ksaTotal','ksaExp'));
-    }
-
-    public function ksatransactionstore(Request $request)
-    {
-
-        if (empty($request->date)) {
-            return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
-        }
-
-        if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        }
-
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
-            return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
-        }
-
-        if (empty($request->payment_type)) {
-            return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
-        }
-
-        if (empty($request->amount)) {
-            return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
-        }
-
-        $transaction = new Expense();
-        if ($request->document) {
-            $image = $request->document;
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/expense'), $imageName);
-            $transaction->document = $imageName;
-        }
-        $transaction->date = $request->input('date');
-        $transaction->amount = $request->input('amount');
-        $transaction->riyal_amount = $request->input('riyal_amount');
-        $transaction->tran_type = $request->input('transaction_type');
-        $transaction->account_id = $request->input('payment_type');
-        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->created_by = Auth()->user()->id;
-
-        $transaction->save();
-        $transaction->tran_id = 'EX' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
-        $transaction->save();
-
-        return response()->json(['status' => 200, 'message' => 'Created Successfully']);
-
-    }
-
-    public function ksatransactionedit($id)
-    {
-        $transaction = Expense::findOrFail($id);
-
-        $responseData = [
-            'id' => $transaction->id,
-            'date' => $transaction->date,
-            'chart_of_account_id' => $transaction->chart_of_account_id,
-            'transaction_type' => $transaction->tran_type,
-            'amount' => $transaction->amount,
-            'riyal_amount' => $transaction->riyal_amount,
-            'payment_type' => $transaction->account_id,
-        ];
-        return response()->json($responseData);
-    }
-
-    public function ksatransactionupdate(Request $request)
-    {
-
-        if (empty($request->date)) {
-            return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
-        }
-
-        if (!in_array($request->transaction_type, ["Fahim", "Mehdi"]) && empty($request->chart_of_account_id)) {
-            return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
-        }
-
-        if (empty($request->amount)) {
-            return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
-        }
-
-        if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        }
-
-
-        $transaction = Expense::find($request->codeid);
-
-        if ($request->document) {
-            $image_path = public_path('images/expense/' . $transaction->document);
-            if (file_exists($image_path)) {
-                unlink($image_path);
-            }
-            $image = $request->document;
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/expense'), $imageName);
-            $transaction->document = $imageName;
-        }
-        
-        $transaction->date = $request->input('date');
-        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->amount = $request->input('amount');
-        $transaction->riyal_amount = $request->input('riyal_amount');
-        $transaction->tran_type = $request->input('transaction_type');
-        $transaction->account_id = $request->input('payment_type');
-        $transaction->updated_by = Auth()->user()->id;
-        $transaction->save();
-
-        return response()->json(['status' => 200, 'message' => 'Updated Successfully']);
-
-    }
-    
 }

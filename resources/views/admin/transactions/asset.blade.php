@@ -24,16 +24,9 @@
                             </li>
                             
 
-                            <li class="nav-item d-none">
-                              <a class="nav-link " id="fahim-personal" data-toggle="pill" href="#custom-tabs-one-fahim" role="tab" aria-controls="custom-tabs-one-fahim" aria-selected="true">Fahim</a>
-                            </li> 
-
-                            <li class="nav-item d-none">
-                              <a class="nav-link " id="mehdi-personal" data-toggle="pill" href="#custom-tabs-one-mehdi" role="tab" aria-controls="custom-tabs-one-mehdi" aria-selected="true">Mehdi</a>
-                            </li> 
                             
                             <li class="nav-item ml-auto px-2">
-                                <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Expense</button>
+                                <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Asset</button>
                                 <a href="{{route('admin.coa')}}" class="btn btn-xs btn-success " target="blank">
                                     <i class="fas fa-plus"></i>COA
                                 </a>
@@ -80,7 +73,7 @@
                                 </div>
                                 @component('components.table')
                                 @slot('tableID')
-                                expenseTBL
+                                assetTBL
                                 @endslot
                                 @slot('head')
                                     <th>ID</th>
@@ -107,7 +100,7 @@
 
                                 @component('components.table')
                                 @slot('tableID')
-                                dkexpenseTBL
+                                dkassetTBL
                                 @endslot
                                 @slot('head')
                                     <th>ID</th>
@@ -131,7 +124,7 @@
 
                                 @component('components.table')
                                 @slot('tableID')
-                                ksaexpenseTBL
+                                ksaassetTBL
                                 @endslot
                                 @slot('head')
                                     <th>ID</th>
@@ -147,79 +140,6 @@
                             </div>
                             
               
-                             
-                            <div class="tab-pane fade" id="custom-tabs-one-fahim" role="tabpanel" aria-labelledby="fahim-personal">
-                                     <!-- /.card-header -->
-                                  <div class="row">
-                                    <div class="col-sm-12 text-center">
-                                        <h2>Fahim Transaction</h2>
-                                    </div>
-                                  </div>
-
-                                  <table class="table">
-                                    <thead>
-                                      <tr>
-                                        <th>SL</th>
-                                        <th>Month-Year</th>
-                                        <th>Total</th>
-                                      </tr>
-                                    </thead>
-                                    @php
-                                        $mdata = \DB::table('expenses')
-                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
-                                          ->whereIn('tran_type', ['Fahim'])
-                                          ->where('status', 2)
-                                          ->groupBy('month_year')
-                                          ->orderBy('date', 'DESC')
-                                          ->get();
-                                    @endphp
-                                    <tbody>
-                                      @foreach ($mdata as $key => $monthly)
-                                      <tr>
-                                        <td>{{$key + 1}}</td>
-                                        <td>{{$monthly->month_year}}</td>
-                                        <td>{{$monthly->total}}</td>
-                                      </tr>
-                                      @endforeach
-                                    </tbody>
-                                  </table>
-                            </div> 
-
-                            <div class="tab-pane fade" id="custom-tabs-one-mehdi" role="tabpanel" aria-labelledby="mehdi-personal">
-                                <div class="row">
-                                    <div class="col-sm-12 text-center">
-                                        <h2>Mehdi Transaction</h2>
-                                    </div>
-                                  </div>
-
-                                  <table class="table">
-                                    <thead>
-                                      <tr>
-                                        <th>SL</th>
-                                        <th>Month-Year</th>
-                                        <th>Total</th>
-                                      </tr>
-                                    </thead>
-                                    @php
-                                        $mdata = \DB::table('expenses')
-                                          ->select(\DB::raw('DATE_FORMAT(date, "%M-%Y") as month_year'), \DB::raw('SUM(amount) as total'))
-                                          ->whereIn('tran_type', ['Mehdi'])
-                                          ->where('status', 2)
-                                          ->groupBy('month_year')
-                                          ->orderBy('date', 'DESC')
-                                          ->get();
-                                    @endphp
-                                    <tbody>
-                                      @foreach ($mdata as $key => $monthly)
-                                      <tr>
-                                        <td>{{$key + 1}}</td>
-                                        <td>{{$monthly->month_year}}</td>
-                                        <td>{{$monthly->total}}</td>
-                                      </tr>
-                                      @endforeach
-                                    </tbody>
-                                  </table>
-                            </div> 
               
               
                           </div>
@@ -424,8 +344,8 @@
         $('.select2').select2();
     });
 
-    var charturl = "{{URL::to('/admin/expense')}}";
-    var customerTBL = $('#expenseTBL').DataTable({
+    var charturl = "{{URL::to('/admin/asset')}}";
+    var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
@@ -496,8 +416,8 @@
         ]
     });
 
-    var dkurl = "{{URL::to('/admin/dk-expense')}}";
-    var customerTBL = $('#dkexpenseTBL').DataTable({
+    var dkurl = "{{URL::to('/admin/dk-asset')}}";
+    var customerTBL = $('#dkassetTBL').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
@@ -557,8 +477,8 @@
         ]
     });
 
-    var ksaurl = "{{URL::to('/admin/ksa-expense')}}";
-    var customerTBL = $('#ksaexpenseTBL').DataTable({
+    var ksaurl = "{{URL::to('/admin/ksa-asset')}}";
+    var customerTBL = $('#ksaassetTBL').DataTable({
         processing: true,
         serverSide: true,
         ajax: {

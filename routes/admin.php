@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\CodeMasterController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
 use App\Http\Controllers\Admin\TransactionController;
@@ -110,11 +111,20 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
 
+    // Asset
+    Route::get('asset', [AssetController::class, 'index'])->name('admin.asset');
+    Route::post('assets', [AssetController::class, 'index'])->name('admin.asset.filter');
+    Route::get('dk-asset', [AssetController::class, 'dkAsset'])->name('admin.dkasset');
+    Route::post('dk-assets', [AssetController::class, 'dkAsset'])->name('admin.dkasset.filter');
+    Route::get('ksa-asset', [AssetController::class, 'ksaAsset'])->name('admin.ksaasset');
+    Route::post('ksa-assets', [AssetController::class, 'ksaAsset'])->name('admin.ksaasset.filter');
+    Route::post('asset', [AssetController::class, 'store']);
+    Route::get('asset/{id}', [AssetController::class, 'edit']);
+    Route::put('asset/{id}', [AssetController::class, 'update']); 
+
     //Expense
-    
     Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
     Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
-
     Route::get('dk-expense', [ExpenseController::class, 'dkExpense'])->name('admin.dkexpense');
     Route::post('dk-expenses', [ExpenseController::class, 'dkExpense'])->name('admin.dkexpense.filter');
     Route::post('expense', [ExpenseController::class, 'store']);
