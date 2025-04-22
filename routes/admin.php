@@ -125,16 +125,16 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     // ksa income
     Route::get('ksa-income', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome');
     Route::post('ksa-incomes', [IncomeController::class, 'ksaIncome'])->name('admin.ksaincome.filter');
-    Route::post('ksa-income', [IncomeController::class, 'store'])->name('admin.ksaincome.store');
-    Route::get('ksa-income/{id}', [IncomeController::class, 'edit']);
-    Route::put('ksa-income/{id}', [IncomeController::class, 'update']); 
 
     // bdt income
     Route::get('bdt-income', [IncomeController::class, 'bdtIncome'])->name('admin.bdtincome');
     Route::post('bdt-incomes', [IncomeController::class, 'bdtIncome'])->name('admin.bdtincome.filter');
-    Route::post('bdt-income', [IncomeController::class, 'bdtstore'])->name('admin.bdtincome.store');
-    Route::get('bdt-income/{id}', [IncomeController::class, 'bdtedit']);
-    Route::put('bdt-income/{id}', [IncomeController::class, 'bdtupdate']); 
+
+    Route::get('income', [IncomeController::class, 'allIncome'])->name('admin.allincome');
+    Route::post('incomes', [IncomeController::class, 'allIncome'])->name('admin.allincome.filter'); 
+    Route::post('income', [IncomeController::class, 'store'])->name('admin.income.store');
+    Route::get('income/{id}', [IncomeController::class, 'edit']);
+    Route::put('income/{id}', [IncomeController::class, 'update']); 
 
     // ksa transation
     Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');

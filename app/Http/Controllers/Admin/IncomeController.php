@@ -53,9 +53,9 @@ class IncomeController extends Controller
             return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
         }
 
-        // if (empty($request->transaction_type)) {
-        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        // }
+        if (empty($request->office)) {
+            return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
+        }
 
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
@@ -104,7 +104,7 @@ class IncomeController extends Controller
             'id' => $transaction->id,
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
-            'transaction_type' => $transaction->tran_type,
+            'office' => $transaction->office,
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
@@ -196,115 +196,43 @@ class IncomeController extends Controller
         return view('admin.transactions.bdtincome', compact('accounts'));
     }
 
-    public function bdtstore(Request $request)
+    
+
+
+    public function allIncome(Request $request)
     {
+        if($request->ajax()){
+            $alltransactions = Transaction::with('chartOfAccount')->where('table_type', 'Income')->where('status', 1);
+            $dhakatransactions = Transaction::with('chartOfAccount')->where('table_type', 'Income')->where('office', 'dhaka')->where('status', 1);
+            $ksatransactions = Transaction::with('chartOfAccount')->where('table_type', 'Income')->where('office', 'ksa')->where('status', 1);
 
-        if (empty($request->date)) {
-            return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
-        }
-
-        // if (empty($request->transaction_type)) {
-        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        // }
-
-        if (empty($request->chart_of_account_id)) {
-            return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
-        }
-
-        if (empty($request->payment_type)) {
-            return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
-        }
-
-        if (empty($request->amount)) {
-            return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
-        }
-
-        $transaction = new Transaction();
-        $transaction->table_type = 'Income';
-        $transaction->office = $request->office;
-        $transaction->date = $request->input('date');
-        if ($request->document) {
-            
-            $image = $request->document;
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/income'), $imageName);
-            $transaction->document = $imageName;
-        }
-        $transaction->bdt_amount = $request->input('amount');
-        $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
-        $transaction->foreign_amount_type = 'riyal';
-        $transaction->tran_type = $request->input('transaction_type');
-        $transaction->account_id = $request->input('payment_type');
-        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->created_by = Auth()->user()->id;
-
-        $transaction->save();
-        $transaction->tran_id = 'IN' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
-        $transaction->save();
-
-        return response()->json(['status' => 200, 'message' => 'Created Successfully','document' => $request->document]);
-
-    }
-
-    public function bdtedit($id)
-    {
-        $transaction = Transaction::findOrFail($id);
-
-        $responseData = [
-            'id' => $transaction->id,
-            'date' => $transaction->date,
-            'chart_of_account_id' => $transaction->chart_of_account_id,
-            'transaction_type' => $transaction->tran_type,
-            'amount' => $transaction->bdt_amount,
-            'riyal_amount' => $transaction->foreign_amount,
-            'payment_type' => $transaction->account_id,
-        ];
-        return response()->json($responseData);
-    }
-
-    public function bdtupdate(Request $request, $id)
-    {
-
-        if (empty($request->date)) {
-            return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
-        }
-
-        if (empty($request->chart_of_account_id)) {
-            return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
-        }
-
-        if (empty($request->amount)) {
-            return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
-        }
-
-        // if (empty($request->transaction_type)) {
-        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        // }
-
-
-        $transaction = Transaction::find($id);
-
-        if ($request->document) {
-            $image_path = public_path('images/income/' . $transaction->document);
-            if (file_exists($image_path)) {
-                unlink($image_path);
+        if ($request->filled('start_date')) {
+                $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
+                $alltransactions->whereBetween('date', [
+                    $request->input('start_date'),
+                    $endDate
+                ]);
             }
-            $image = $request->document;
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/income'), $imageName);
-            $transaction->document = $imageName;
+
+            if ($request->filled('account_name')) {
+                $alltransactions->whereHas('chartOfAccount', function ($query) use ($request) {
+                    $query->where('account_name', $request->input('account_name'));
+                });
+            }
+
+            $transactions = $alltransactions->latest()->get();
+               
+                
+            return DataTables::of($transactions)
+                ->addColumn('chart_of_account', function ($transaction) {
+                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
+                })
+                ->addColumn('account_name', function ($transaction) {
+                    return $transaction->account ? $transaction->account->name : "";
+                })
+                ->make(true);
         }
-
-        $transaction->date = $request->input('date');
-        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
-        $transaction->bdt_amount = $request->input('amount');
-        $transaction->foreign_amount = $request->input('riyal_amount');
-        $transaction->tran_type = $request->input('transaction_type');
-        $transaction->account_id = $request->input('payment_type');
-        $transaction->updated_by = Auth()->user()->id;
-        $transaction->save();
-
-        return response()->json(['status' => 200, 'message' => 'Updated Successfully']);
-
+        $accounts = ChartOfAccount::whereIn('account_head',[ 'Income'])->get();
+        return view('admin.transactions.allincome', compact('accounts'));
     }
 }
