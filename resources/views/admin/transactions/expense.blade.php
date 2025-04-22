@@ -15,13 +15,20 @@
                             <li class="nav-item">
                               <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All</a>
                             </li>
-                            
 
                             <li class="nav-item">
+                                <a class="nav-link" id="dhaka-office" data-toggle="pill" href="#custom-tabs-one-dhaka" role="tab" aria-controls="custom-tabs-one-dhaka" aria-selected="false">Dhaka Office</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="ksa-office" data-toggle="pill" href="#custom-tabs-one-ksa" role="tab" aria-controls="custom-tabs-one-ksa" aria-selected="false">KSA Office</a>
+                            </li>
+                            
+
+                            <li class="nav-item d-none">
                               <a class="nav-link " id="fahim-personal" data-toggle="pill" href="#custom-tabs-one-fahim" role="tab" aria-controls="custom-tabs-one-fahim" aria-selected="true">Fahim</a>
                             </li> 
 
-                            <li class="nav-item">
+                            <li class="nav-item d-none">
                               <a class="nav-link " id="mehdi-personal" data-toggle="pill" href="#custom-tabs-one-mehdi" role="tab" aria-controls="custom-tabs-one-mehdi" aria-selected="true">Mehdi</a>
                             </li> 
                             
@@ -89,6 +96,54 @@
                                 @endcomponent
                                 {{-- exp end  --}}
 
+                            </div>
+
+                            <div class="tab-pane fade" id="custom-tabs-one-dhaka" role="tabpanel" aria-labelledby="dhaka-office">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>Dhaka Office Transaction</h2>
+                                    </div>
+                                </div>
+
+                                @component('components.table')
+                                @slot('tableID')
+                                dkexpenseTBL
+                                @endslot
+                                @slot('head')
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Account</th>
+                                    <th>Office</th>
+                                    <th>Document</th>
+                                    <th>Payment Type</th>
+                                    <th>Amount</th>
+                                    <th>Riyal Amount</th>
+                                @endslot
+                                @endcomponent
+                            </div>
+
+                            <div class="tab-pane fade" id="custom-tabs-one-ksa" role="tabpanel" aria-labelledby="ksa-office">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <h2>KSA Office Transaction</h2>
+                                    </div>
+                                </div>
+
+                                @component('components.table')
+                                @slot('tableID')
+                                ksaexpenseTBL
+                                @endslot
+                                @slot('head')
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Account</th>
+                                    <th>Office</th>
+                                    <th>Document</th>
+                                    <th>Payment Type</th>
+                                    <th>Amount</th>
+                                    <th>Riyal Amount</th>
+                                @endslot
+                                @endcomponent
                             </div>
                             
               
@@ -216,8 +271,20 @@
                                 </select>
                             </div>
                         </div>
+                        
 
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="office" class="control-label">Office</label>
+                                <select class="form-control" id="office" name="office">
+                                    <option value="">Select</option>
+                                    <option value="dhaka">Dhaka</option>
+                                    <option value="ksa">KSA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
@@ -429,6 +496,128 @@
         ]
     });
 
+    var dkurl = "{{URL::to('/admin/dk-expense')}}";
+    var customerTBL = $('#dkexpenseTBL').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: dkurl,
+            type: 'GET',
+            data: function(d) {
+                d.start_date = $('input[name="start_date"]').val();
+                d.end_date = $('input[name="end_date"]').val();
+                d.account_name = $('select[name="account_name"]').val();
+            },
+            error: function(xhr, error, thrown) {
+                console.log(xhr.responseText);
+            }
+        },
+        deferRender: true,
+        columns: [{
+                data: 'tran_id',
+                name: 'tran_id'
+            },
+            {
+                data: 'date',
+                name: 'date'
+            },
+            {
+                data: 'chart_of_account',
+                name: 'chart_of_account'
+            },
+            {
+                data: 'office',
+                name: 'office'
+            },
+            {
+                data: 'document',
+                name: 'document',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row, meta) {
+                    if (row.document) {
+                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'account_name',
+                name: 'account_name'
+            },
+            {
+                data: 'bdt_amount',
+                name: 'bdt_amount'
+            },
+            {
+                data: 'foreign_amount',
+                name: 'foreign_amount'
+            },
+        ]
+    });
+
+    var ksaurl = "{{URL::to('/admin/ksa-expense')}}";
+    var customerTBL = $('#ksaexpenseTBL').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ksaurl,
+            type: 'GET',
+            data: function(d) {
+                d.start_date = $('input[name="start_date"]').val();
+                d.end_date = $('input[name="end_date"]').val();
+                d.account_name = $('select[name="account_name"]').val();
+            },
+            error: function(xhr, error, thrown) {
+                console.log(xhr.responseText);
+            }
+        },
+        deferRender: true,
+        columns: [{
+                data: 'tran_id',
+                name: 'tran_id'
+            },
+            {
+                data: 'date',
+                name: 'date'
+            },
+            {
+                data: 'chart_of_account',
+                name: 'chart_of_account'
+            },
+            {
+                data: 'office',
+                name: 'office'
+            },
+            {
+                data: 'document',
+                name: 'document',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row, meta) {
+                    if (row.document) {
+                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'account_name',
+                name: 'account_name'
+            },
+            {
+                data: 'bdt_amount',
+                name: 'bdt_amount'
+            },
+            {
+                data: 'foreign_amount',
+                name: 'foreign_amount'
+            },
+        ]
+    });
+
     $('form').on('submit', function(e) {
         e.preventDefault();
         customerTBL.ajax.reload();
@@ -508,7 +697,6 @@
 
             
             var formData = new FormData($('#customer-form')[0]);
-            formData.append('office', 'dhaka');
 
             $.ajax({
                 url: charturl,

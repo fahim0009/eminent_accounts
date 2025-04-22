@@ -18,6 +18,43 @@ class ExpenseController extends Controller
     {
         if($request->ajax()){
             $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('status', 1);
+
+        if ($request->filled('start_date')) {
+                $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
+                $transactions->whereBetween('date', [
+                    $request->input('start_date'),
+                    $endDate
+                ]);
+            }
+
+            if ($request->filled('account_name')) {
+                $transactions->whereHas('chartOfAccount', function ($query) use ($request) {
+                    $query->where('account_name', $request->input('account_name'));
+                });
+            }
+
+            $transactions = $transactions->latest()->get();
+
+            return DataTables::of($transactions)
+                ->addColumn('chart_of_account', function ($transaction) {
+                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
+                })
+                ->addColumn('account_name', function ($transaction) {
+                    return $transaction->account ? $transaction->account->name : "";
+                })
+                ->make(true);
+        }
+        $coa = ChartOfAccount::whereIn('account_head',[ 'Expenses','Asset'])->get();
+        
+        $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
+        return view('admin.transactions.expense', compact('coa','accounts'));
+    }
+
+    public function dkExpense(Request $request)
+    {
+        if($request->ajax()){
+            $expenses = ChartOfAccount::whereIn('account_head',[ 'Expenses','Assets'])->get();
             $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('office', 'dhaka')->where('status', 1);
 
         if ($request->filled('start_date')) {
@@ -54,7 +91,7 @@ class ExpenseController extends Controller
     public function ksaExpense(Request $request)
     {
         if($request->ajax()){
-            $transactions = Transaction::with('chartOfAccount')->where('status', 2);
+            $transactions = Transaction::with('chartOfAccount')->where('table_type', 'Expenses')->where('office', 'ksa')->where('status', 1);
 
         if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
@@ -93,9 +130,9 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
         }
 
-        // if (empty($request->transaction_type)) {
-        //     return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
-        // }
+        if (empty($request->office)) {
+            return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
+        }
 
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
@@ -124,7 +161,7 @@ class ExpenseController extends Controller
         $transaction->bdt_amount = $request->input('amount');
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
-        $transaction->tran_type = $request->input('transaction_type');
+        $transaction->office = $request->input('office');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
@@ -145,7 +182,7 @@ class ExpenseController extends Controller
             'id' => $transaction->id,
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
-            'transaction_type' => $transaction->tran_type,
+            'office' => $transaction->office,
             'amount' => $transaction->amount,
             'riyal_amount' => $transaction->riyal_amount,
             'payment_type' => $transaction->account_id,
@@ -168,8 +205,8 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
 
-        if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        if (empty($request->office)) {
+            return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
         }
 
 
@@ -190,7 +227,7 @@ class ExpenseController extends Controller
         $transaction->bdt_amount = $request->input('amount');
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
-        $transaction->tran_type = $request->input('transaction_type');
+        $transaction->office = $request->input('office');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 

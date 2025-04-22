@@ -111,8 +111,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
 
     //Expense
+    
     Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');
     Route::post('expenses', [ExpenseController::class, 'index'])->name('admin.expense.filter');
+
+    Route::get('dk-expense', [ExpenseController::class, 'dkExpense'])->name('admin.dkexpense');
+    Route::post('dk-expenses', [ExpenseController::class, 'dkExpense'])->name('admin.dkexpense.filter');
     Route::post('expense', [ExpenseController::class, 'store']);
     Route::get('expense/{id}', [ExpenseController::class, 'edit']);
     Route::put('expense/{id}', [ExpenseController::class, 'update']); 

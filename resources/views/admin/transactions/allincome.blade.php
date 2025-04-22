@@ -189,9 +189,9 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="office" class="control-label">Type</label>
+                                <label for="office" class="control-label">Office</label>
                                 <select class="form-control" id="office" name="office">
-                                    <option value="">Select type</option>
+                                    <option value="">Select</option>
                                     <option value="dhaka">Dhaka</option>
                                     <option value="ksa">KSA</option>
                                 </select>
