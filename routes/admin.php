@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\OkalaController;
 use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\IncomeController;
+use App\Http\Controllers\Admin\LiabilityController;
 use App\Http\Controllers\Admin\MofaController;
 use App\Http\Controllers\Admin\RoleController;
 
@@ -121,6 +122,17 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('asset', [AssetController::class, 'store']);
     Route::get('asset/{id}', [AssetController::class, 'edit']);
     Route::put('asset/{id}', [AssetController::class, 'update']); 
+
+    // Liabilities
+    Route::get('liabilies', [LiabilityController::class, 'index'])->name('admin.liabilies');
+    Route::post('liabiliess', [LiabilityController::class, 'index'])->name('admin.liabilies.filter');
+    Route::get('dk-liabilies', [LiabilityController::class, 'dkLiability'])->name('admin.dkliabilies');
+    Route::post('dk-liabiliess', [LiabilityController::class, 'dkLiability'])->name('admin.dkliabilies.filter');
+    Route::get('ksa-liabilies', [LiabilityController::class, 'ksaLiability'])->name('admin.ksaliabilies');
+    Route::post('ksa-liabiliess', [LiabilityController::class, 'ksaLiability'])->name('admin.ksaliabilies.filter');
+    Route::post('liabilies', [LiabilityController::class, 'store']);
+    Route::get('liabilies/{id}', [LiabilityController::class, 'edit']);
+    Route::put('liabilies/{id}', [LiabilityController::class, 'update']); 
 
     //Expense
     Route::get('expense', [ExpenseController::class, 'index'])->name('admin.expense');

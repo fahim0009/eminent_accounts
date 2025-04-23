@@ -88,6 +88,13 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a href="{{ route('admin.liabilies') }}" class="nav-link {{ (request()->is('admin/liabilies*')) ? 'active' : '' }}">
+            <i class="fa fa-users"></i>
+            <p>Liability</p>
+        </a>
+      </li>
+
 
         <li class="nav-item">
           <a href="{{ route('admin.expense') }}" class="nav-link {{ (request()->is('admin/expense*')) ? 'active' : '' }}">
