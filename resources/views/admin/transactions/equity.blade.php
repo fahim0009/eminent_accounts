@@ -561,12 +561,8 @@
                     $('#date').val(response.date);
                     $('#ref').val(response.ref);
 
-                    if (response.transaction_type == 'Prepaid Adjust') {
-                        $("#pre_adjust").hide();
-                    } else {
-                        $("#pre_adjust").show();
-                    }
                     $('#office').val(response.office);
+                    $('#transaction_type').val(response.transaction_type);
                     $('#amount').val(response.amount);
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);

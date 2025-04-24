@@ -181,15 +181,13 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 d-none">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="transaction_type" class="control-label">Type</label>
                                 <select class="form-control" id="transaction_type" name="transaction_type">
                                     <option value="">Select type</option>
-                                    <option value="Fahim">Fahim</option>
-                                    <option value="Mehdi">Mehdi</option>
-                                    <option value="KSA-Deposit">KSA</option>
-                                    <option value="Dhaka-office">Dhaka-office</option>
+                                    <option value="received">Received</option>
+                                    <option value="payment">Payment</option>
                                 </select>
                             </div>
                         </div>
@@ -206,7 +204,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
@@ -569,6 +567,7 @@
                         $("#pre_adjust").show();
                     }
                     $('#office').val(response.office);
+                    $('#transaction_type').val(response.transaction_type);
                     $('#amount').val(response.amount);
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
