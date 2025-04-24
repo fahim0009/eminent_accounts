@@ -138,6 +138,10 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        }
+
         if (empty($request->payment_type)) {
             return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
         }
@@ -161,7 +165,7 @@ class ExpenseController extends Controller
         $transaction->bdt_amount = $request->input('amount');
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
-        $transaction->office = $request->input('office');
+        $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
@@ -183,6 +187,7 @@ class ExpenseController extends Controller
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
             'office' => $transaction->office,
+            'transaction_type' => $transaction->tran_type,
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
@@ -201,6 +206,10 @@ class ExpenseController extends Controller
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
 
+
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        }
         if (empty($request->amount)) {
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
@@ -228,6 +237,7 @@ class ExpenseController extends Controller
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
+        $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
