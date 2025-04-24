@@ -165,7 +165,7 @@ class LiabilityController extends Controller
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
-        $transaction->transaction_type = $request->transaction_type;
+        $transaction->tran_type = $request->transaction_type;
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
@@ -187,7 +187,7 @@ class LiabilityController extends Controller
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
             'office' => $transaction->office,
-            'transaction_type' => $transaction->transaction_type,
+            'transaction_type' => $transaction->tran_type,
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
@@ -235,7 +235,7 @@ class LiabilityController extends Controller
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
-        $transaction->transaction_type = $request->transaction_type;
+        $transaction->tran_type = $request->transaction_type;
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 

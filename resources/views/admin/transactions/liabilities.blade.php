@@ -182,6 +182,18 @@
                         </div>
 
                         <div class="col-md-6">
+                            <div class="form-group" id="chart_of_account_container">
+                                <label for="chart_of_account_id" class="control-label">Chart of Account</label>
+                                <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
+                                    <option value="">Select chart of account</option>
+                                    @foreach($coa as $liabilies)
+                                    <option value="{{ $liabilies->id }}">{{ $liabilies->account_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="transaction_type" class="control-label">Type</label>
                                 <select class="form-control" id="transaction_type" name="transaction_type">
@@ -204,17 +216,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group" id="chart_of_account_container">
-                                <label for="chart_of_account_id" class="control-label">Chart of Account</label>
-                                <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
-                                    <option value="">Select chart of account</option>
-                                    @foreach($coa as $liabilies)
-                                    <option value="{{ $liabilies->id }}">{{ $liabilies->account_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                        
 
                         
                     </div>
@@ -284,7 +286,7 @@
 <!-- Payable holder id -->
 <script>
     $(document).ready(function() {
-        $("#transaction_type").change(function() {
+        $("#transaction_typexx").change(function() {
             var transaction_type = $(this).val();
             if (transaction_type == "Due") {
                 $("#pre_adjust").show();
@@ -596,7 +598,7 @@
 
     });
 
-    $("#transaction_type").change(function(){
+    $("#transaction_typex").change(function(){
         $(this).find("option:selected").each(function(){
             var val = $(this).val();
             if( val == "Fahim" || val == "Mehdi" ){
