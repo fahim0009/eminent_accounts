@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\CodeMasterController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
+use App\Http\Controllers\Admin\EquityController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
 use App\Http\Controllers\Admin\VendorController;
@@ -161,6 +162,14 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('income', [IncomeController::class, 'store'])->name('admin.income.store');
     Route::get('income/{id}', [IncomeController::class, 'edit']);
     Route::put('income/{id}', [IncomeController::class, 'update']); 
+
+
+    // Equity
+    Route::get('equity', [EquityController::class, 'index'])->name('admin.equity');
+    Route::post('equitys', [EquityController::class, 'index'])->name('admin.equity.filter');
+    Route::post('equity', [EquityController::class, 'store']);
+    Route::get('equity/{id}', [EquityController::class, 'edit']);
+    Route::put('equity/{id}', [EquityController::class, 'update']); 
 
     // ksa transation
     Route::get('ksa-transaction', [ExpenseController::class, 'ksatransaction'])->name('admin.ksaTran');
