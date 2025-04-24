@@ -133,6 +133,10 @@ class AssetController extends Controller
             return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
         }
 
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        }
+
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
@@ -160,13 +164,13 @@ class AssetController extends Controller
         $transaction->bdt_amount = $request->input('amount');
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
-        $transaction->office = $request->input('office');
+        $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
         $transaction->created_by = Auth()->user()->id;
         $transaction->save();
-        $transaction->tran_id = 'EX' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+        $transaction->tran_id = 'AT' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
         $transaction->save();
 
         return response()->json(['status' => 200, 'message' => 'Created Successfully','document' => $request->document]);
@@ -182,7 +186,7 @@ class AssetController extends Controller
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
             'office' => $transaction->office,
-            'transaction_type' => $transaction->transaction_type,
+            'transaction_type' => $transaction->tran_type,
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
@@ -199,6 +203,10 @@ class AssetController extends Controller
 
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
+        }
+        
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
         }
 
         if (empty($request->amount)) {
@@ -228,6 +236,7 @@ class AssetController extends Controller
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
+        $transaction->tran_type = $request->input('transaction_type');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
