@@ -171,7 +171,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title">BDT Income</h4>
+            <h4 class="modal-title">Income</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
             </div>
@@ -186,19 +186,8 @@
                                 <input type="date" name="date" class="form-control" id="date" value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-
+                        
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="office" class="control-label">Office</label>
-                                <select class="form-control" id="office" name="office">
-                                    <option value="">Select</option>
-                                    <option value="dhaka">Dhaka</option>
-                                    <option value="ksa">KSA</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
@@ -214,6 +203,29 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="transaction_type" class="control-label">Type</label>
+                                <select class="form-control" id="transaction_type" name="transaction_type">
+                                    <option value="">Select type</option>
+                                    <option value="received">Received</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="office" class="control-label">Office</label>
+                                <select class="form-control" id="office" name="office">
+                                    <option value="">Select</option>
+                                    <option value="dhaka">Dhaka</option>
+                                    <option value="ksa">KSA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        
 
                         
                     </div>
@@ -488,6 +500,7 @@
 
                     
                     $('#office').val(response.office);
+                    $('#transaction_type').val(response.transaction_type);
                     $('#amount').val(response.amount);
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
