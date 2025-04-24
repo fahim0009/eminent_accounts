@@ -61,6 +61,11 @@ class EquityController extends Controller
             return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
         }
 
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        }
+
+
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
@@ -76,6 +81,7 @@ class EquityController extends Controller
         $transaction = new Transaction();
         $transaction->table_type = 'Equity';
         $transaction->office = $request->office;
+        $transaction->transaction_type = $request->transaction_type;
         $transaction->date = $request->input('date');
         if ($request->document) {
             
@@ -88,7 +94,6 @@ class EquityController extends Controller
         $transaction->bdt_amount = $request->input('amount');
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
-        $transaction->office = $request->input('office');
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
@@ -127,6 +132,9 @@ class EquityController extends Controller
         if (empty($request->chart_of_account_id)) {
             return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
         }
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+        }
 
         if (empty($request->amount)) {
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
@@ -155,6 +163,7 @@ class EquityController extends Controller
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
+        $transaction->transaction_type = $request->transaction_type;
         $transaction->account_id = $request->input('payment_type');
         $transaction->chart_of_account_id = $request->input('chart_of_account_id');
 
