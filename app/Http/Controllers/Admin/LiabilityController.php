@@ -187,6 +187,7 @@ class LiabilityController extends Controller
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
             'office' => $transaction->office,
+            'transaction_type' => $transaction->transaction_type,
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
