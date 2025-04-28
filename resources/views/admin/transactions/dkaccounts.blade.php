@@ -179,14 +179,27 @@
                             </div>
                         </div>
 
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                            <label class="form-label" for="account_head">Account Head</label>
+                            <select name="account_head" id="account_head" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Assets">Assets</option>
+                                <option value="Expenses">Expenses</option>
+                                <option value="Income">Income</option>
+                                <option value="Liabilities">Liabilities</option>
+                                <option value="Equity">Equity</option>
+                            </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
                                     <option value="">Select chart of account</option>
-                                    @foreach($coa as $expense)
-                                    <option value="{{ $expense->id }}">{{ $expense->account_name }}</option>
-                                    @endforeach
+                                    
                                 </select>
                             </div>
                         </div>
@@ -196,22 +209,16 @@
                                 <label for="transaction_type" class="control-label">Type</label>
                                 <select class="form-control" id="transaction_type" name="transaction_type">
                                     <option value="">Select type</option>
-                                    <option value="purchase">Purchase</option>
-                                    <option value="sales">Sales</option>
-                                    <option value="received">Received</option>
-                                    <option value="payment">Payment</option>
                                 </select>
                             </div>
                         </div>
                         
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 d-none">
                             <div class="form-group">
                                 <label for="office" class="control-label">Office</label>
                                 <select class="form-control" id="office" name="office">
-                                    <option value="">Select</option>
-                                    <option value="dhaka">Dhaka</option>
-                                    <option value="ksa">KSA</option>
+                                    <option value="dhaka" selected>Dhaka</option>
                                 </select>
                             </div>
                         </div>
@@ -253,13 +260,13 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="amount" class="control-label">Amount</label>
+                                <label for="amount" class="control-label">BDT Amount</label>
                                 <input type="text" name="amount" class="form-control" id="amount">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 d-none">
                             <div class="form-group">
                                 <label for="riyal_amount" class="control-label">Riyal Amount</label>
                                 <input type="text" name="riyal_amount" class="form-control" id="riyal_amount">
@@ -286,39 +293,59 @@
 <!-- Payable holder id -->
 <script>
     $(document).ready(function() {
-        $("#transaction_type").change(function() {
-            var transaction_type = $(this).val();
-            if (transaction_type == "Due") {
-                $("#pre_adjust").show();
-                $("#payment_type").html("<option value=''>Please Select</option><option value='Account Payable'>Account Payable</option>");
-            } else if (transaction_type == "Current") {
-                $("#pre_adjust").show();
-                $("#showpayable").hide();
-                $("#payment_type").html("<option value=''>Please Select</option><option value='Cash'>Cash</option><option value='Bank'>Bank</option>");
-                clearPayableHolder();
-            } else if (transaction_type == "Payment") {
-                $("#pre_adjust").show();
-                $("#showpayable").hide();
-                $("#payment_type").html("<option value=''>Please Select</option><option value='Cash'>Cash</option><option value='Bank'>Bank</option>");
-                clearPayableHolder();
-            } else if (transaction_type == "Prepaid") {
-                $("#pre_adjust").show();
-                $("#showpayable").hide();
-                $("#payment_type").html("<option value=''>Please Select</option><option value='Cash'>Cash</option><option value='Bank'>Bank</option>");
-                clearPayableHolder();
-            } else if (transaction_type == "Due Adjust") {
-                $("#pre_adjust").show();
-                $("#showpayable").hide();
-                $("#payment_type").html("<option value=''>Please Select</option><option value='Cash'>Cash</option><option value='Bank'>Bank</option>");
-                clearPayableHolder();
-            } else if (transaction_type == "Prepaid Adjust") {
-                $("#pre_adjust").hide();
-                // clearTaxPaymentTypefield();
-                $("#showpayable").hide();
-                $("#payment_type").html("<option value=''>Please Select</option>");
-                clearPayableHolder();
+
+        $("#account_head").change(function() {
+            var accountHead = $(this).val();
+            if (accountHead) {
+                $.ajax({
+                    url: "{{ route('admin.get.chart.of.accounts') }}", // Replace with your route
+                    type: "GET",
+                    data: { account_head: accountHead },
+                    success: function(response) {
+                        $("#chart_of_account_id").empty().append('<option value="">Select chart of account</option>');
+                        $.each(response.data, function(key, value) {
+                            $("#chart_of_account_id").append('<option value="' + value.id + '">' + value.account_name + '</option>');
+                        });
+                        fetchTranType(accountHead);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            } else {
+                $("#chart_of_account_id").empty().append('<option value="">Select chart of account</option>');
             }
         });
+
+        function fetchTranType(accountHead) {
+            if (accountHead) {
+            
+                if (accountHead == "Assets") {
+
+                    $("#transaction_type").html('<option value="">Select type</option><option value="purchase">Purchase</option><option value="sales">Sales</option><option value="received">Received</option><option value="payment">Payment</option>');
+
+                } else if (accountHead == "Expenses") {
+
+                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+
+                } else if (accountHead == "Income") {
+
+                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+
+                } else if (accountHead == "Liabilities") {
+
+                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+
+                } else if (accountHead == "Equity") {
+
+                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="withdraw">Withdraw</option>');
+
+                } else {
+                    $("#transaction_type").html("<option value=''>Please Select</option>");
+                }
+
+            }
+        }
 
         $("#payment_type").change(function() {
             $(this).find("option:selected").each(function() {
@@ -347,9 +374,12 @@
     });
 
     var charturl = "{{URL::to('/admin/dk-account')}}";
+    var storeurl = "{{URL::to('/admin/account-store')}}";
     var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
+        pageLength: 50, // Show 50 entries per page
+        order: [[0, 'desc']], // Order by the first column (ID) in descending order
         ajax: {
             url: charturl,
             type: 'GET',
@@ -598,17 +628,6 @@
 
     });
 
-    $("#transaction_type").change(function(){
-        $(this).find("option:selected").each(function(){
-            var val = $(this).val();
-            if( val == "Fahim" || val == "Mehdi" ){
-                $("#chart_of_account_container").hide();
-            } else{
-                $("#chart_of_account_container").show();
-            }
-        });
-    }).change();
-
 
     // save button event
     $("body").delegate(".save-btn", "click", function(event) {
@@ -622,7 +641,7 @@
             var formData = new FormData($('#customer-form')[0]);
 
             $.ajax({
-                url: charturl,
+                url: storeurl,
                 method: "POST",
                 data: formData,
                 contentType: false,

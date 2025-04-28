@@ -109,6 +109,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);
     Route::get('/chart-of-account', [ChartOfAccountController::class, 'index'])->name('admin.coa');
+    Route::get('/get-chart-of-account', [ChartOfAccountController::class, 'getByAccountHead'])->name('admin.get.chart.of.accounts');
     Route::post('/chart-of-account', [ChartOfAccountController::class, 'store']);
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
@@ -119,9 +120,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('dk-accounts', [AccountsController::class, 'dkAccount'])->name('admin.dkaccount.filter');
     Route::get('ksa-account', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount');
     Route::post('ksa-accounts', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount.filter');
-    Route::post('account', [AccountsController::class, 'store']);
-    Route::get('account/{id}', [AccountsController::class, 'edit']);
-    Route::put('account/{id}', [AccountsController::class, 'update']); 
+    Route::post('account-store', [AccountsController::class, 'store'])->name('admin.transaction.store');
+    Route::get('account-edit/{id}', [AccountsController::class, 'edit'])->name('admin.transaction.edit');
+    Route::put('account-update/{id}', [AccountsController::class, 'update'])->name('admin.transaction.update'); 
 
     // Asset
     Route::get('asset', [AssetController::class, 'index'])->name('admin.asset');

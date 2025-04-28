@@ -24,6 +24,16 @@ class ChartOfAccountController extends Controller
         return view('admin.coa.index', compact('data'));
     }
 
+    public function getByAccountHead(Request $request)
+    {
+        $data = ChartOfAccount::where('account_head', $request->account_head)->get();
+        if ($data->isEmpty()) {
+            return response()->json(['status' => 303, 'message' => "No data found"]);
+        } else {
+            return response()->json(['status' => 300, 'data' => $data]);
+        }
+    }
+
     public function store(Request $request)
     {
         if(empty($request->account_head)){

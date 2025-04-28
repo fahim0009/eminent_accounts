@@ -30,7 +30,7 @@ class AccountsController extends Controller
                 });
             }
 
-            $transactions = $transactions->latest()->get();
+            $transactions = $transactions->orderby('id', 'DESC')->get();
 
             return DataTables::of($transactions)
                 ->addColumn('chart_of_account', function ($transaction) {
@@ -41,7 +41,7 @@ class AccountsController extends Controller
                 })
                 ->make(true);
         }
-        $coa = ChartOfAccount::whereIn('account_head',[ 'Assets'])->get();
+        $coa = ChartOfAccount::where('status', 1)->get();
         
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
         return view('admin.transactions.dkaccounts', compact('coa','accounts'));
@@ -142,12 +142,12 @@ class AccountsController extends Controller
             return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
         }
 
-        if (empty($request->amount)) {
+        if (empty($request->amount) && empty($request->riyal_amount)) {
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
 
         $transaction = new Transaction();
-        $transaction->table_type = 'Assets';
+        $transaction->table_type = $request->account_head;
         $transaction->office = $request->office;
         $transaction->date = $request->input('date');
         if ($request->document) {
@@ -158,7 +158,7 @@ class AccountsController extends Controller
             $transaction->document = $imageName;
         }
         
-        $transaction->bdt_amount = $request->input('amount');
+        $transaction->bdt_amount = $request->input('amount') ?? "0.00";
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->tran_type = $request->input('transaction_type');
@@ -167,7 +167,7 @@ class AccountsController extends Controller
 
         $transaction->created_by = Auth()->user()->id;
         $transaction->save();
-        $transaction->tran_id = 'AT' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+        $transaction->tran_id = 'TRN' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
         $transaction->save();
 
         return response()->json(['status' => 200, 'message' => 'Created Successfully','document' => $request->document]);
@@ -182,6 +182,7 @@ class AccountsController extends Controller
             'id' => $transaction->id,
             'date' => $transaction->date,
             'chart_of_account_id' => $transaction->chart_of_account_id,
+            'account_head' => $transaction->chartOfAccount->account_head,
             'office' => $transaction->office,
             'transaction_type' => $transaction->tran_type,
             'amount' => $transaction->bdt_amount,
@@ -206,14 +207,16 @@ class AccountsController extends Controller
             return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
         }
 
-        if (empty($request->amount)) {
+        if (empty($request->amount) && empty($request->riyal_amount)) {
             return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
         }
 
         if (empty($request->office)) {
             return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
         }
-
+        if (empty($request->payment_type)) {
+            return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
+        }
 
         $transaction = Transaction::find($id);
 
@@ -229,7 +232,8 @@ class AccountsController extends Controller
         }
 
         $transaction->date = $request->input('date');
-        $transaction->bdt_amount = $request->input('amount');
+        $transaction->table_type = $request->account_head;
+        $transaction->bdt_amount = $request->input('amount') ?? "0.00";
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->office = $request->input('office');
