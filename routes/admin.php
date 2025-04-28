@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\AgentController;
@@ -112,6 +113,15 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);
     Route::post('/chart-of-account-update', [ChartOfAccountController::class, 'update']);
     Route::get('/chart-of-account/{id}', [ChartOfAccountController::class, 'delete']);
+
+    
+    Route::get('dk-account', [AccountsController::class, 'dkAccount'])->name('admin.dkaccount');
+    Route::post('dk-accounts', [AccountsController::class, 'dkAccount'])->name('admin.dkaccount.filter');
+    Route::get('ksa-account', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount');
+    Route::post('ksa-accounts', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount.filter');
+    Route::post('account', [AccountsController::class, 'store']);
+    Route::get('account/{id}', [AccountsController::class, 'edit']);
+    Route::put('account/{id}', [AccountsController::class, 'update']); 
 
     // Asset
     Route::get('asset', [AssetController::class, 'index'])->name('admin.asset');

@@ -82,13 +82,21 @@
       @if(Auth::user()->is_type == '1' && (in_array('17', json_decode(Auth::user()->role->permission))))
 
       <li class="nav-item">
+        <a href="{{ route('admin.dkaccount') }}" class="nav-link {{ (request()->is('admin/dk-account*')) ? 'active' : '' }}">
+            <i class="fa fa-users"></i>
+            <p>Dhaka Accounts</p>
+        </a>
+      </li>
+
+
+      {{-- <li class="nav-item">
         <a href="{{ route('admin.asset') }}" class="nav-link {{ (request()->is('admin/asset*')) ? 'active' : '' }}">
             <i class="fa fa-users"></i>
             <p>Asset</p>
         </a>
-      </li>
+      </li> --}}
 
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a href="{{ route('admin.liabilies') }}" class="nav-link {{ (request()->is('admin/liabilies*')) ? 'active' : '' }}">
             <i class="fa fa-users"></i>
             <p>Liability</p>
@@ -101,12 +109,12 @@
               <i class="fa fa-users"></i>
               <p>Expense</p>
           </a>
-      </li>
+      </li> --}}
       @endif
 
       @if(Auth::user()->is_type == '1' && (in_array('17', json_decode(Auth::user()->role->permission))))
 
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a href="{{ route('admin.allincome') }}" class="nav-link {{ (request()->is('admin/income*')) ? 'active' : '' }}">
             <i class="fa fa-users"></i>
             <p>Income</p>
@@ -118,7 +126,7 @@
             <i class="fa fa-users"></i>
             <p>Equity</p>
         </a>
-      </li>
+      </li> --}}
 
       @endif
 
