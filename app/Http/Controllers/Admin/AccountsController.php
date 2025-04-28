@@ -16,7 +16,11 @@ class AccountsController extends Controller
             $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
             $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
 
-        if ($request->filled('start_date')) {
+            if ($request->type) {
+                $transactions->where('table_type', $request->input('type'));
+            }
+
+            if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
                 $transactions->whereBetween('date', [
                     $request->input('start_date'),
