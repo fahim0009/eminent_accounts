@@ -77,7 +77,7 @@
                           <i class="fas fa-save"></i>
                           </button>
                         </div>
-                        </div>
+                      </div>
                         <p><small class="mofa_trade_msg" id="mofa_trade_msg{{$data->id}}"></small></p>
                       @endif
 

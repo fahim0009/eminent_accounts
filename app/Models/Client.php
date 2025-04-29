@@ -32,7 +32,7 @@ class Client extends Model
 
     public function rldetail()
     {
-        return $this->belongsTo(CodeMaster::class, 'id', 'rlid');
+        return $this->belongsTo(CodeMaster::class, 'rlid', 'id');
     }
 
     public function trade()

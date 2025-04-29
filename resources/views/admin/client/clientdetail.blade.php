@@ -529,6 +529,82 @@
               </div><!-- /.card-body -->
             </div>
             <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Status</h3>
+              </div>
+              <div class="card-body">
+                
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Mofa</label>
+
+                    @if ($data->mofa_trade) 
+
+                     <p>{{$data->trade->type_name}}</p>
+ 
+                      @else
+                        
+                    
+                      <div class="input-group">
+                        <select name="mofa_trade" id="mofa_trade{{$data->id}}" class="form-control mofa_trade">
+                          <option value="">Please Select</option>
+                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->select('id','type','type_name')->get() as $mofa)
+                          <option value="{{$mofa->id}}">{{$mofa->type_name}}</option>
+                          @endforeach
+                        </select>
+                        <div class="input-group-append">
+                          <button class="btn btn-secondary mofa_trade_btn" data-id="{{$data->id}}">
+                          <i class="fas fa-save"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <p><small class="mofa_trade_msg" id="mofa_trade_msg{{$data->id}}"></small></p>
+                    
+                    @endif
+
+                  </div>
+
+                  <div class="col-sm-4">
+                    <label>RL</label>
+
+                    @if ($data->rlid) 
+
+                      <p>{{$data->rldetail->type_name ?? ''}}</p>
+
+                      @else
+                        
+                    
+                      <div class="input-group">
+                        <select name="rldetail" id="rldetail{{$data->id}}" class="form-control rldetail">
+                          <option value="">Please Select</option>
+                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->select('id','type','type_name')->get() as $rl)
+                          <option value="{{$rl->id}}">{{$rl->type_name}}</option>
+                          @endforeach
+                        </select>
+                        <div class="input-group-append">
+                          <button class="btn btn-secondary rldetail_btn" data-id="{{$data->id}}">
+                          <i class="fas fa-save"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <p><small class="rldetail_msg" id="rldetail_msg{{$data->id}}"></small></p>
+
+                    @endif
+                  </div>
+                </div>
+
+                <div class="form-group row mt-3">
+                  <div class="col-sm-10">
+                    <button type="button" id="partnerUpdate" class="btn btn-secondary">Update</button>
+                  </div>
+              </div>
+            </div>
+
+
+
+
           </div>
           <!-- /.col -->
         </div>
@@ -560,6 +636,113 @@
       });
     });
   </script>
+
+<script>
+
+    $('.mofa_trade_btn').click(function () {
+        
+        var id = $(this).data('id');
+        var mofa_trade = $('#mofa_trade'+id).val();
+        if (mofa_trade == '') {
+            $('#mofa_trade_msg'+id).html('<span class="text-danger">Please select a trade</span>');
+            return false;
+        }
+        var url = "{{URL::to('/admin/change-client-mofa-trade')}}";
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: url,
+            data: {'mofa_trade': mofa_trade, 'id': id},
+            success: function (data) {
+                if (data.status == 303) {
+
+                  $('#mofa_trade_msg'+id).html(data.message);
+
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'warning',
+                          title: data.message
+                        });
+                      });
+                } else if (data.status == 300) {
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'success',
+                          title: data.message
+                        });
+                      });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $('.rldetail_btn').click(function () {
+      
+        var id = $(this).data('id');
+        var rldetail = $('#rldetail'+id).val();
+        if (rldetail == '') {
+            $('#rldetail_msg'+id).html('<span class="text-danger">Please select a RL</span>');
+            return false;
+        }
+        var url = "{{URL::to('/admin/change-client-rl-detail')}}";
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: url,
+            data: {'rldetail': rldetail, 'id': id},
+            success: function (data) {
+                if (data.status == 303) {
+
+                  $('#rldetail_msg'+id).html(data.message);
+
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'warning',
+                          title: data.message
+                        });
+                      });
+                } else if (data.status == 300) {
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'success',
+                          title: data.message
+                        });
+                      });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+</script>
 
 <script>
   $(document).ready(function () {
@@ -918,7 +1101,7 @@
 
 
       $(".updateBtn").hide();
-      $("body").delegate(".editBtn","click",function(event){
+        $("body").delegate(".editBtn","click",function(event){
             event.preventDefault();
             $("#clientid").attr("readonly", false);
             $("#passport_name").attr("readonly", false);
