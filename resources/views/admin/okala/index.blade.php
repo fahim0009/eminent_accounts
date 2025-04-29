@@ -194,7 +194,7 @@
                       {{$tradename->type_name}}
                       @endif
                     </td>
-                    <td style="text-align: center">
+                    <td style="text-align: center; display:none">
                       @if (isset($data->assign_to))
                       {{$data->passport_name}} ({{$data->passport_number}})
                       @else
@@ -206,6 +206,28 @@
                       </select>
                       @endif
                       <p id="message"></p>
+                    </td>
+                    <td style="text-align: center">
+
+                      @if (isset($data->assign_to))
+                      {{$data->passport_name}} ({{$data->passport_number}})
+                      @else
+                        <div class="input-group">
+                        <select name="assignto" id="assignto{{$data->id}}" class="form-control assignto">
+                          <option value="">Please Select</option>
+                          @foreach (\App\Models\Client::select('id', 'passport_name','passport_number', 'status')->where('assign', 0)->where('status', 1)->get() as $client)
+                            <option value="{{$client->id}}">{{$client->passport_name}} ({{$client->passport_number}})</option>
+                          @endforeach
+                        </select>
+                        <div class="input-group-append">
+                          <button class="btn btn-secondary assignto_btn" data-id="{{$data->id}}">
+                          <i class="fas fa-save"></i>
+                          </button>
+                        </div>
+                        </div>
+                        <p><small class="message" id="message{{$data->id}}"></small></p>
+                      @endif
+
                     </td>
                     <td style="text-align: center">@if (isset($rl))
                       {{$rl->type_name}}
@@ -275,40 +297,66 @@
   </script>
 <script>
   $(document).ready(function() {
-    var okalaurl = "{{URL::to('/admin/client-add-okala')}}";
-      $('.assignto').change(function() {
-          let clientId = $(this).val();
-          let okalaId = $(this).data('okala-id'); 
+ 
 
-          console.log(clientId, okalaId);
-          $.ajax({
-              url: okalaurl,
-              type: 'POST',
-              data: {
-                clientId: clientId,
-                okalaId: okalaId,
-                  _token: '{{ csrf_token() }}'
-              },
-              success: function(response) {
-                $(function() {
-                  var Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                  });
-                  Toast.fire({
-                    icon: 'success',
-                    title: 'Data assigned successfully.'
-                  });
-                });
-                window.setTimeout(function(){location.reload()},2000)
-              },
-              error: function(xhr) {
-                  $('#message').text('Error updating status');
-              }
-          });
+      $('.assignto_btn').click(function () {
+        
+        var okalaId = $(this).data('id');
+        var clientId = $('#assignto'+okalaId).val();
+        if (clientId == '') {
+            $('#message'+okalaId).html('<span class="text-danger">Please select first</span>');
+            return false;
+        }
+        console.log(okalaId, clientId);
+        var okalaurl = "{{URL::to('/admin/client-add-okala')}}";
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: okalaurl,
+            data: {
+              clientId: clientId,
+              okalaId: okalaId,
+            },
+            success: function (data) {
+
+                if (data.status == 303) {
+
+                  $('#message'+clientId).html(data.message);
+
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'warning',
+                          title: data.message
+                        });
+                      });
+                } else if (data.status == 300) {
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'success',
+                          title: data.message
+                        });
+                      });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
       });
+
+
   });
 </script>
 

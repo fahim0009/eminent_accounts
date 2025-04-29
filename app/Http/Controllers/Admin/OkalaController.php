@@ -219,16 +219,25 @@ class OkalaController extends Controller
 
     public function addClientToOkala(Request $request)
     {
+
         $data = OkalaPurchaseDetail::find($request->okalaId);
+        if (!$data) {
+            return response()->json(['status' => 303, 'message' => 'Okala record not found.']);
+        }
         $data->assign_to = $request->clientId;
         $data->assign_date = now();
         $data->save();
 
         $client = Client::find($request->clientId);
         $client->assign = 1;
-        $client->save();
 
-        return response()->json(['message' => 'Client added successfully!']);
+        if ($client->save()) {
+            $message ="Status Change Successfully.";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        }
     }
 
 
