@@ -88,11 +88,9 @@
                                     <th>ID</th>
                                     <th>Date</th>
                                     <th>Account</th>
-                                    <th>Office</th>
                                     <th>Document</th>
                                     <th>Payment Type</th>
                                     <th>Amount</th>
-                                    <th>Riyal Amount</th>
                                     <th><i class=""></i> Action</th>
                                 @endslot
                                 @endcomponent
@@ -111,11 +109,9 @@
                                         <th>ID</th>
                                         <th>Date</th>
                                         <th>Account</th>
-                                        <th>Office</th>
                                         <th>Document</th>
                                         <th>Payment Type</th>
                                         <th>Amount</th>
-                                        <th>Riyal Amount</th>
                                     @endslot
                                     @endcomponent
                                 </div>
@@ -389,10 +385,6 @@
                 name: 'chart_of_account'
             },
             {
-                data: 'office',
-                name: 'office'
-            },
-            {
                 data: 'document',
                 name: 'document',
                 orderable: false,
@@ -412,10 +404,6 @@
             {
                 data: 'bdt_amount',
                 name: 'bdt_amount'
-            },
-            {
-                data: 'foreign_amount',
-                name: 'foreign_amount'
             },
             {
                 data: 'action',
@@ -431,127 +419,7 @@
         ]
     });
 
-    var dkurl = "{{URL::to('/admin/dk-account')}}";
-    var customerTBL = $('#dkassetTBL').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: dkurl,
-            type: 'GET',
-            data: function(d) {
-                d.start_date = $('input[name="start_date"]').val();
-                d.end_date = $('input[name="end_date"]').val();
-                d.account_name = $('select[name="account_name"]').val();
-            },
-            error: function(xhr, error, thrown) {
-                console.log(xhr.responseText);
-            }
-        },
-        deferRender: true,
-        columns: [{
-                data: 'tran_id',
-                name: 'tran_id'
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },
-            {
-                data: 'chart_of_account',
-                name: 'chart_of_account'
-            },
-            {
-                data: 'office',
-                name: 'office'
-            },
-            {
-                data: 'document',
-                name: 'document',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    if (row.document) {
-                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'account_name',
-                name: 'account_name'
-            },
-            {
-                data: 'bdt_amount',
-                name: 'bdt_amount'
-            },
-            {
-                data: 'foreign_amount',
-                name: 'foreign_amount'
-            },
-        ]
-    });
 
-    var ksaurl = "{{URL::to('/admin/dk-account')}}";
-    var customerTBL = $('#ksaassetTBL').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: ksaurl,
-            type: 'GET',
-            data: function(d) {
-                d.start_date = $('input[name="start_date"]').val();
-                d.end_date = $('input[name="end_date"]').val();
-                d.account_name = $('select[name="account_name"]').val();
-            },
-            error: function(xhr, error, thrown) {
-                console.log(xhr.responseText);
-            }
-        },
-        deferRender: true,
-        columns: [{
-                data: 'tran_id',
-                name: 'tran_id'
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },
-            {
-                data: 'chart_of_account',
-                name: 'chart_of_account'
-            },
-            {
-                data: 'office',
-                name: 'office'
-            },
-            {
-                data: 'document',
-                name: 'document',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    if (row.document) {
-                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'account_name',
-                name: 'account_name'
-            },
-            {
-                data: 'bdt_amount',
-                name: 'bdt_amount'
-            },
-            {
-                data: 'foreign_amount',
-                name: 'foreign_amount'
-            },
-        ]
-    });
 
     // Initialize DataTables for each tab
     ['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'].forEach(function(type) {
@@ -577,7 +445,6 @@
                 { data: 'tran_id', name: 'tran_id' },
                 { data: 'date', name: 'date' },
                 { data: 'chart_of_account', name: 'chart_of_account' },
-                { data: 'office', name: 'office' },
                 {
                     data: 'document',
                     name: 'document',
@@ -592,8 +459,7 @@
                     }
                 },
                 { data: 'account_name', name: 'account_name' },
-                { data: 'bdt_amount', name: 'bdt_amount' },
-                { data: 'foreign_amount', name: 'foreign_amount' }
+                { data: 'bdt_amount', name: 'bdt_amount' }
             ]
         });
     });
