@@ -51,13 +51,18 @@ class AccountsController extends Controller
         return view('admin.transactions.dkaccounts', compact('coa','accounts'));
     }
 
-    public function dkAsset(Request $request)
+
+    public function ksaAccount(Request $request)
     {
         if($request->ajax()){
             $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
-            $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
+            $transactions = Transaction::with('chartOfAccount')->where('office', 'ksa')->where('status', 1);
 
-        if ($request->filled('start_date')) {
+            if ($request->type) {
+                $transactions->where('table_type', $request->input('type'));
+            }
+
+            if ($request->filled('start_date')) {
                 $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
                 $transactions->whereBetween('date', [
                     $request->input('start_date'),
@@ -71,7 +76,7 @@ class AccountsController extends Controller
                 });
             }
 
-            $transactions = $transactions->latest()->get();
+            $transactions = $transactions->orderby('id', 'DESC')->get();
 
             return DataTables::of($transactions)
                 ->addColumn('chart_of_account', function ($transaction) {
@@ -82,46 +87,12 @@ class AccountsController extends Controller
                 })
                 ->make(true);
         }
-        $coa = ChartOfAccount::whereIn('account_head',['Assets'])->get();
+        $coa = ChartOfAccount::where('status', 1)->get();
         
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.asset', compact('coa','accounts'));
+        return view('admin.transactions.ksaaccounts', compact('coa','accounts'));
     }
-
-    public function ksaAsset(Request $request)
-    {
-        if($request->ajax()){
-            $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
-
-        if ($request->filled('start_date')) {
-                $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
-                $transactions->whereBetween('date', [
-                    $request->input('start_date'),
-                    $endDate
-                ]);
-            }
-
-            if ($request->filled('account_name')) {
-                $transactions->whereHas('chartOfAccount', function ($query) use ($request) {
-                    $query->where('account_name', $request->input('account_name'));
-                });
-            }
-
-            $transactions = $transactions->latest()->get();
-               
-                
-            return DataTables::of($transactions)
-                ->addColumn('chart_of_account', function ($transaction) {
-                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
-                })
-                ->addColumn('account_name', function ($transaction) {
-                    return $transaction->account ? $transaction->account->name : "";
-                })
-                ->make(true);
-        }
-        $accounts = ChartOfAccount::whereIn('account_head',['Assets'])->get();
-        return view('admin.transactions.asset', compact('accounts'));
-    }
+    
 
     public function store(Request $request)
     {
