@@ -593,13 +593,46 @@
 
                     @endif
                   </div>
+
+                  <div class="col-sm-4">
+                    
+                    <label>Status</label>
+
+                    <div  class="input-group">
+                      @if ($data->status == 0)
+
+                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) New
+                          @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu" role="menu">
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Processing</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
+                        </div>
+                          
+                      @else
+
+                        <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) New
+                          @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span></button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu" role="menu">
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Complete</button>
+                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
+                        </div>
+                        
+                        @endif
+                    </div>
+                    
+                  </div>
                 </div>
 
-                <div class="form-group row mt-3">
-                  <div class="col-sm-10">
-                    <button type="button" id="partnerUpdate" class="btn btn-secondary">Update</button>
-                  </div>
-              </div>
+                
+                  
+                  
             </div>
 
 
@@ -635,6 +668,59 @@
         "responsive": true,
       });
     });
+
+
+    $(function() {
+      $('.stsBtn').click(function() {
+        var url = "{{URL::to('/admin/change-client-status')}}";
+          var id = $(this).data('id');
+          var status = $(this).attr('value');
+          // console.log(id);
+          $.ajax({
+              type: "GET",
+              dataType: "json",
+              url: url,
+              data: {'status': status, 'id': id},
+              success: function(d){
+                // console.log(data.success)
+                if (d.status == 303) {
+                        $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'warning',
+                            title: d.message
+                          });
+                        });
+                    }else if(d.status == 300){
+                      
+                      $("#stsval"+d.id).html(d.stsval);
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: d.message
+                          });
+                        });
+                    }
+                },
+                error: function (d) {
+                    console.log(d);
+                }
+          });
+      })
+    })
+
+
   </script>
 
 <script>
