@@ -18,15 +18,18 @@ class ChartOfAccountController extends Controller
         }
     }
 
-    public function index()
+    public function index($office = Null)
     {
-        $data = ChartOfAccount::orderby('id','DESC')->get();
-        return view('admin.coa.index', compact('data'));
+        $data = ChartOfAccount::orderby('id','DESC')
+                ->when($office, function ($query) use ($office) {
+                            $query->where('office', $office);
+                        })->get();
+        return view('admin.coa.index', compact('data','office'));
     }
 
     public function getByAccountHead(Request $request)
     {
-        $data = ChartOfAccount::where('account_head', $request->account_head)->get();
+        $data = ChartOfAccount::where('account_head', $request->account_head)->where('office', $request->office)->get();
         if ($data->isEmpty()) {
             return response()->json(['status' => 303, 'message' => "No data found"]);
         } else {
@@ -60,6 +63,7 @@ class ChartOfAccountController extends Controller
         $data->sub_account_head = $request->sub_account_head;
         $data->account_name = $request->account_name;
         $data->description = $request->description;
+        $data->office = $request->office;
         $data->date = now();
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
@@ -104,6 +108,7 @@ class ChartOfAccountController extends Controller
         $data->sub_account_head = $request->sub_account_head;
         $data->account_name = $request->account_name;
         $data->description = $request->description;
+        $data->office = $request->office;
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Updated Successfully.</b></div>";

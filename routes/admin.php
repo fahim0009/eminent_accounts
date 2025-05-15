@@ -108,7 +108,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     
     Route::post('getchartofaccount', [ChartOfAccountController::class, 'getaccounthead']);
-    Route::get('/chart-of-account', [ChartOfAccountController::class, 'index'])->name('admin.coa');
+    Route::get('/chart-of-account/{office?}', [ChartOfAccountController::class, 'index'])->name('admin.coa');
     Route::get('/get-chart-of-account', [ChartOfAccountController::class, 'getByAccountHead'])->name('admin.get.chart.of.accounts');
     Route::post('/chart-of-account', [ChartOfAccountController::class, 'store']);
     Route::get('/chart-of-account/{id}/edit', [ChartOfAccountController::class, 'edit']);

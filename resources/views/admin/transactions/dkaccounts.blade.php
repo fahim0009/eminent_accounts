@@ -36,7 +36,7 @@
                             
                             <li class="nav-item ml-auto px-2">
                                 <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Transaction</button>
-                                <a href="{{route('admin.coa')}}" class="btn btn-xs btn-success " target="blank">
+                                <a href="{{route('admin.coa', ['office' => 'dhaka'])}}" class="btn btn-xs btn-success " target="blank">
                                     <i class="fas fa-plus"></i>COA
                                 </a>
                             </li>
@@ -274,11 +274,13 @@
 
         $("#account_head").change(function() {
             var accountHead = $(this).val();
+            var office = $('#office').val();
+            console.log(office);
             if (accountHead) {
                 $.ajax({
                     url: "{{ route('admin.get.chart.of.accounts') }}", // Replace with your route
                     type: "GET",
-                    data: { account_head: accountHead },
+                    data: { account_head: accountHead, office: office },
                     success: function(response) {
                         $("#chart_of_account_id").empty().append('<option value="">Select chart of account</option>');
                         $.each(response.data, function(key, value) {
@@ -430,7 +432,7 @@
                 url: charturl,
                 type: 'GET',
                 data: function(d) {
-                    console.log(d);
+                    
                     d.start_date = $('input[name="start_date"]').val();
                     d.end_date = $('input[name="end_date"]').val();
                     d.account_name = $('select[name="account_name"]').val();

@@ -32,6 +32,7 @@
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
+                  <input type="hidden" class="form-control" id="office" name="office" value="{{$office}}">
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
@@ -257,6 +258,7 @@
               form_data.append("sub_account_head", $("#sub_account_head").val());
               form_data.append("account_name", $("#account_name").val());
               form_data.append("description", $("#description").val());
+              form_data.append("office", $("#office").val());
 
               $.ajax({
                 url: url,
@@ -297,6 +299,7 @@
               form_data.append("sub_account_head", $("#sub_account_head").val());
               form_data.append("account_name", $("#account_name").val());
               form_data.append("description", $("#description").val());
+              form_data.append("office", $("#office").val());
               form_data.append("codeid", $("#codeid").val());
 
               $.ajax({
