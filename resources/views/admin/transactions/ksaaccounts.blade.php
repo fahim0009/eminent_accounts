@@ -13,17 +13,17 @@
 
                         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                             <li class="nav-item">
-                              <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All</a>
+                              <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All Transaction</a>
                             </li>
-
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-Assets-tab" data-toggle="pill" href="#custom-tabs-one-Assets" role="tab" aria-controls="custom-tabs-one-Assets" aria-selected="false">Asset</a>
+                                <a class="nav-link" id="custom-tabs-one-Expenses-tab" data-toggle="pill" href="#custom-tabs-one-Expenses" role="tab" aria-controls="custom-tabs-one-Expenses" aria-selected="false">Expense</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-Income-tab" data-toggle="pill" href="#custom-tabs-one-Income" role="tab" aria-controls="custom-tabs-one-Income" aria-selected="false">Income</a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-Expenses-tab" data-toggle="pill" href="#custom-tabs-one-Expenses" role="tab" aria-controls="custom-tabs-one-Expenses" aria-selected="false">Expense</a>
+                                <a class="nav-link" id="custom-tabs-one-Assets-tab" data-toggle="pill" href="#custom-tabs-one-Assets" role="tab" aria-controls="custom-tabs-one-Assets" aria-selected="false">Asset</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-Liabilities-tab" data-toggle="pill" href="#custom-tabs-one-Liabilities" role="tab" aria-controls="custom-tabs-one-Liabilities" aria-selected="false">Liability</a>
@@ -31,8 +31,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-Equity-tab" data-toggle="pill" href="#custom-tabs-one-Equity" role="tab" aria-controls="custom-tabs-one-Equity" aria-selected="false">Equity</a>
                             </li>
-                            
-
                             
                             <li class="nav-item ml-auto px-2">
                                 <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Transaction</button>
@@ -98,7 +96,7 @@
 
                             </div>
 
-                            @foreach (['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'] as $type)
+                            @foreach (['Expenses', 'Income', 'Assets', 'Liabilities', 'Equity'] as $type)
                                 <div class="tab-pane fade" id="custom-tabs-one-{{ $type }}" role="tabpanel" aria-labelledby="custom-tabs-one-{{ $type }}-tab">
                                     
                                     @component('components.table')
