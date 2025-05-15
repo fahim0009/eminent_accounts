@@ -96,9 +96,15 @@ class ClientController extends Controller
     }
 
     // ksa processing client
-    public function ksaProcessingClient()
+    public function ksaProcessingClient($type = Null)
     {
-        $data = Client::where('status','1')->orderby('id','ASC')->get();
+        $data = Client::where('status','1')
+                ->when($type, function ($query) use ($type) {
+                            $query->where('rlid', $type);
+                        })
+                ->orderby('id','ASC')->get();
+
+
         $count = $data->count();
         return view('admin.client.ksaprocessing', compact('data','count'));
     }

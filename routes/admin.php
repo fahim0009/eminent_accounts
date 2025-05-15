@@ -78,7 +78,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/ksa-new-client', [ClientController::class, 'ksaNewClient'])->name('admin.ksaNewClient');
 
     // ksa processing client
-    Route::get('/ksa-processing-client', [ClientController::class, 'ksaProcessingClient'])->name('admin.ksaProcessingClient');
+    Route::get('/ksa-processing-client/{type?}', [ClientController::class, 'ksaProcessingClient'])->name('admin.ksaProcessingClient');
 
     // ksa medical expire date
     Route::get('/change-client-medical-exp-date', [ClientController::class, 'ksaMedicalExpireDate'])->name('admin.ksaMedicalExpireDate');

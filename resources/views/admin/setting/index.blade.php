@@ -112,7 +112,11 @@
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">{{$data->type}}</td>
                     <td style="text-align: center">{{$data->type_code}}</td>
-                    <td style="text-align: center">{{$data->type_name}}</td>
+                    <td style="text-align: center">
+                          <a href="{{route('admin.ksaProcessingClient', $data->id)}}"> <u><b>{{$data->type_name}}</b> </u></a>
+                      
+
+                    </td>
                     <td style="text-align: center">{{$data->type_description}}</td>
                     <td style="text-align: center">
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
