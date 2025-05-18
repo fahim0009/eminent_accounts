@@ -686,7 +686,7 @@ class ClientController extends Controller
 
             if ($request->status == 1) {
                 $tran = new Transaction();
-                $tran->date = $user->passport_rcv_date;
+                $tran->date = date('Y-m-d');
                 $tran->tran_type = "package_sales";
                 $tran->payment_type = "Receivable";
                 $tran->bdt_amount = $user->package_cost;
