@@ -99,9 +99,9 @@ class ClientController extends Controller
     public function ksaProcessingClient($type = Null)
     {
         if ($type) {
-            $processing = Client::where('status','1')->orderby('id','ASC')->get();
-            $new = Client::where('status','0')->orderby('id','ASC')->get();
-            $complete = Client::where('status','2')->orderby('id','ASC')->get();
+            $processing = Client::where('status','1')->where('rlid', $type)->orderby('id','ASC')->get();
+            $new = Client::where('status','0')->where('rlid', $type)->orderby('id','ASC')->get();
+            $complete = Client::where('status','2')->where('rlid', $type)->orderby('id','ASC')->get();
             $count = $processing->count();
             return view('admin.client.ksaclient', compact('processing','count','new','complete'));
         } else {
