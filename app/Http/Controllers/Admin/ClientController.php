@@ -96,23 +96,16 @@ class ClientController extends Controller
     }
 
     // ksa processing client
-    public function ksaProcessingClient($type = Null)
+    public function ksaProcessingClient()
     {
-        if ($type) {
-            $processing = Client::where('status','1')->where('rlid', $type)->orderby('id','ASC')->get();
-            $new = Client::where('status','0')->where('rlid', $type)->orderby('id','ASC')->get();
-            $complete = Client::where('status','2')->where('rlid', $type)->orderby('id','ASC')->get();
-            $count = $processing->count();
-            return view('admin.client.ksaclient', compact('processing','count','new','complete'));
-        } else {
-            $data = Client::where('status','1')
-                    ->when($type, function ($query) use ($type) {
-                                $query->where('rlid', $type);
-                            })
-                    ->orderby('id','ASC')->get();
-            $count = $data->count();
-            return view('admin.client.ksaprocessing', compact('data','count'));
-        }
+
+        $data = Client::where('status','1')
+                ->when($type, function ($query) use ($type) {
+                            $query->where('rlid', $type);
+                        })
+                ->orderby('id','ASC')->get();
+        $count = $data->count();
+        return view('admin.client.ksaprocessing', compact('data','count'));
         
     }
 

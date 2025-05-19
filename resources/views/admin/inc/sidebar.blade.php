@@ -49,6 +49,16 @@
     </li>
     @endif
 
+    @if(Auth::user()->is_type == '1' && (in_array('5', json_decode(Auth::user()->role->permission))))
+    <li class="nav-item">
+      <a href="{{route('admin.rl')}}" class="nav-link {{ (request()->is('admin/rl*')) ? 'active' : '' }}">
+        <i class="nav-icon fas fa-th"></i>
+        <p>
+          RL
+        </p>
+      </a>
+    </li>
+    @endif
 
     
 

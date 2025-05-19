@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CodeMaster;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
@@ -90,4 +91,24 @@ class CodeMasterController extends Controller
             return response()->json(['success'=>false,'message'=>'Delete Failed']);
         }
     }
+
+    // rl details 
+    public function rlView()
+    {
+        $data = CodeMaster::where('type', 'RL')->get();
+        return view('admin.rl.index', compact('data'));
+    }
+
+    public function rlDetails($id)
+    {
+        if ($id) {
+            $processing = Client::where('status','1')->where('rlid', $id)->orderby('id','ASC')->get();
+            $new = Client::where('status','0')->where('rlid', $id)->orderby('id','ASC')->get();
+            $complete = Client::where('status','2')->where('rlid', $id)->orderby('id','ASC')->get();
+            return view('admin.rl.rldetails', compact('processing','new','complete'));
+        } 
+        
+    }
+
+
 }
