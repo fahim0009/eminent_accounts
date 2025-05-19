@@ -38,6 +38,7 @@
                   @endphp
 
                   @foreach ($clients as $key => $data)
+
                   <tr>
                     <td style="text-align: center">{{ ($count1) }} </td>
                     <td style="text-align: center">{{$data->passport_name}} ( {{$data->passport_number}} )</td>
@@ -45,7 +46,20 @@
 
                       @if ($data->medical_exp_date) 
 
-                     <p>{{$data->medical_exp_date}}</p>
+                      @php
+                      
+                          $date =\Carbon\Carbon::parse($data->medical_exp_date); 
+                          $daysDiff = $date->diffInDays(\Carbon\Carbon::now(), false);
+                          $color = '';
+
+                          if ($daysDiff > 15) {
+                              $color = 'background-color: yellow;';
+                          } elseif ($daysDiff > 8) {
+                              $color = 'background-color: red; color: white;';
+                          }
+                      @endphp
+
+                     <p style="{{ $color }}">{{$data->medical_exp_date}}</p>
  
                       @else            
                       <div class="input-group">
