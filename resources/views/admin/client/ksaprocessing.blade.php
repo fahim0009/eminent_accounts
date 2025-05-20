@@ -52,7 +52,30 @@
                           @csrf
 
                           @if($data->visa_exp_date)
-                          <p>{{$data->visa_exp_date}} &nbsp &nbsp</p>
+
+                          <!-- // expirey warning -->
+                                @php
+                                $expiryDate = \Carbon\Carbon::parse($data->visa_exp_date);
+                                $today = \Carbon\Carbon::today();
+                                $color = '';
+
+                                if ($expiryDate->lessThan($today)) {
+                                    // Already expired
+                                    $color = 'background-color: black; color: white;';
+                                } else {
+                                    // Not yet expired — check how close
+                                    $daysRemaining = $today->diffInDays($expiryDate);
+
+                                    if ($daysRemaining <= 8) {
+                                        $color = 'background-color: red; color: white;';
+                                    } elseif ($daysRemaining <= 15) {
+                                        $color = 'background-color: yellow;';
+                                    }
+                                }
+                                @endphp
+                            <!-- // expirey warning end -->
+
+                          <p style="{{ $color }}">{{$data->visa_exp_date}} &nbsp &nbsp</p>
                           @else
                           <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
                           @endif
