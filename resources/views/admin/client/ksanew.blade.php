@@ -47,17 +47,26 @@
                       @if ($data->medical_exp_date) 
 
                       @php
-                      
-                          $date =\Carbon\Carbon::parse($data->medical_exp_date); 
-                          $daysDiff = $date->diffInDays(\Carbon\Carbon::now(), false);
-                          $color = '';
 
-                          if ($daysDiff > 15) {
-                              $color = 'background-color: yellow;';
-                          } elseif ($daysDiff > 8) {
+                      $expiryDate = \Carbon\Carbon::parse($data->medical_exp_date);
+                      $today = \Carbon\Carbon::today();
+                      $color = '';
+
+                      if ($expiryDate->lessThan($today)) {
+                          // Already expired
+                          $color = 'background-color: black; color: white;';
+                      } else {
+                          // Not yet expired — check how close
+                          $daysRemaining = $today->diffInDays($expiryDate);
+
+                          if ($daysRemaining <= 8) {
                               $color = 'background-color: red; color: white;';
+                          } elseif ($daysRemaining <= 15) {
+                              $color = 'background-color: yellow;';
                           }
+                      }
                       @endphp
+
 
                      <p style="{{ $color }}">{{$data->medical_exp_date}}</p>
  
