@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\CodeMasterController;
 use App\Http\Controllers\Admin\BusinessPartnerController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EquityController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\KafelaClientController;
@@ -45,6 +46,15 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/new-admin-update', [AdminController::class, 'adminUpdate']);
     Route::get('/new-admin/{id}', [AdminController::class, 'adminDelete']);
     Route::post('/users/{id}/status', [AdminController::class, 'updateStatus'])->name('updateStatus');
+
+    // employee
+    Route::get('/employee', [EmployeeController::class, 'index'])->name('admin.employee');
+    Route::post('/employee', [EmployeeController::class, 'store']);
+    Route::get('/employee/{id}/edit', [EmployeeController::class, 'edit']);
+    Route::post('/employee-update', [EmployeeController::class, 'update']);
+    Route::get('/employee/{id}', [EmployeeController::class, 'delete']);
+    Route::post('/employee/{id}/status', [EmployeeController::class, 'changeStatus'])->name('updateStatus');
+    // employee
     
     Route::get('/agent', [AgentController::class, 'index'])->name('admin.agent');
     Route::get('/agent-client/{id}', [AgentController::class, 'getClient'])->name('admin.agentClient');

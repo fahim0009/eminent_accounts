@@ -85,6 +85,17 @@
         </p>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a href="{{route('admin.employee')}}" class="nav-link {{ (request()->is('admin/employee*')) ? 'active' : '' }}">
+        <i class="nav-icon fas fa-th"></i>
+        <p>
+          Employee
+        </p>
+      </a>
+    </li>
+
+
     @endif
     
     
