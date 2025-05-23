@@ -175,9 +175,9 @@
                         <div class="col-md-6">
                             <div class="form-group" id="chart_of_account_container">
                                 <label for="chart_of_account_id" class="control-label">Chart of Account</label>
+                                <input type="hidden" name="chart_of_account_val" id="chart_of_account_val">
                                 <select class="form-control select2" id="chart_of_account_id" name="chart_of_account_id">
                                     <option value="">Select chart of account</option>
-                                    
                                 </select>
                             </div>
                         </div>
@@ -238,6 +238,19 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-md-12"id="employeeDiv">
+                            <div class="form-group">
+                                <label for="employee_id" class="control-label">Employee</label>
+                                <select  name="employee_id" class="form-control" id="employee_id">
+                                    <option value="">Select</option>
+                                    @foreach ($employees as $employee)
+                                    <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="amount" class="control-label">BDT Amount</label>
@@ -272,30 +285,58 @@
 <script>
     $(document).ready(function() {
 
-        $("#account_head").change(function() {
+        $('#employeeDiv').hide();
+        $("#account_head").change(function () {
             var accountHead = $(this).val();
             var office = $('#office').val();
-            console.log(office);
-            if (accountHead) {
-                $.ajax({
-                    url: "{{ route('admin.get.chart.of.accounts') }}", // Replace with your route
-                    type: "GET",
-                    data: { account_head: accountHead, office: office },
-                    success: function(response) {
-                        $("#chart_of_account_id").empty().append('<option value="">Select chart of account</option>');
-                        $.each(response.data, function(key, value) {
-                            $("#chart_of_account_id").append('<option value="' + value.id + '">' + value.account_name + '</option>');
-                        });
-                        fetchTranType(accountHead);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            } else {
+
+            if (!accountHead) {
                 $("#chart_of_account_id").empty().append('<option value="">Select chart of account</option>');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('admin.get.chart.of.accounts') }}",
+                type: "GET",
+                data: {
+                    account_head: accountHead,
+                    office: office
+                },
+                success: function (response) {
+                    var $select = $("#chart_of_account_id");
+                    $select.empty().append('<option value="">Select chart of account</option>');
+
+                    $.each(response.data, function (index, account) {
+                        $select.append('<option value="' + account.id + '" data-name="' + account.account_name.toLowerCase() + '">' + account.account_name + '</option>');
+                    });
+
+                    // Optional: reset salary div when loading new data
+                    $('#employeeDiv').hide();
+
+                    // Fetch related transaction type if needed
+                    fetchTranType(accountHead);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching chart of accounts:", xhr.responseText);
+                }
+            });
+        });
+
+        $('#chart_of_account_id').on('change', function () {
+            let selectedText = $("#chart_of_account_id option:selected").text().toLowerCase();
+
+                $('#chart_of_account_val').val(selectedText);
+            if (selectedText.includes('salary')) {
+                $('#employeeDiv').show();
+            } else {
+                $('#employeeDiv').hide();
             }
         });
+
+        // Optionally trigger change on page load if value is pre-selected
+        $('#chart_of_account_id').trigger('change');
+
+
 
         function fetchTranType(accountHead) {
             if (accountHead) {
@@ -342,19 +383,13 @@
         function clearPayableHolder() {
             $("#payable_holder_id").val('');
         }
-    });
-</script>
-
-
-
-<!-- Main script -->
-<script>
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
-
+        
+        
+        
     var charturl = "{{URL::to('/admin/dk-account')}}";
     var storeurl = "{{URL::to('/admin/account-store')}}";
+    var editurl = "{{URL::to('/admin/account-edit')}}";
+    var upurl = "{{URL::to('/admin/account-update')}}";
     var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
@@ -479,28 +514,36 @@
         if (purpose) {
             let id = button.val();
             $.ajax({
-                url: charturl + '/' + id,
+                url: editurl + '/' + id,
                 type: 'GET',
                 beforeSend: function(request) {
                     return request.setRequestHeader('X-CSRF-Token', $("meta[name='csrf-token']").attr('content'));
                 },
                 success: function(response) {
                     console.log(response);
+
+                    var $select = $("#chart_of_account_id");
+                    $select.empty().append('<option value="">Select chart of account</option>');
+
+                    $.each(response.coa, function (index, account) {
+                        $select.append('<option value="' + account.id + '" data-name="' + account.account_name.toLowerCase() + '">' + account.account_name + '</option>');
+                    });
+
                     $('#date').val(response.date);
                     $('#ref').val(response.ref);
 
-                    if (response.transaction_type == 'Prepaid Adjust') {
-                        $("#pre_adjust").hide();
-                    } else {
-                        $("#pre_adjust").show();
-                    }
+                    fetchTranType(response.account_head);
+                    
                     $('#office').val(response.office);
                     $('#transaction_type').val(response.transaction_type);
                     $('#amount').val(response.amount);
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
 
+                    $('#account_head').val(response.account_head);
                     $('#chart_of_account_id').val(response.chart_of_account_id);
+                    $('#chart_of_account_val').val(response.chart_of_account_val);
+                    $('#employee_id').val(response.employee_id);
 
                     var payableHolderId = response.payable_holder_id;
                     $('#payable_holder_id').val(payableHolderId);
@@ -586,7 +629,7 @@
         let id = $(this).val();
         // console.log(id);
         $.ajax({
-            url: charturl + '/' + id,
+            url: upurl + '/' + id,
             type: 'PUT',
             data: formData,
             beforeSend: function(request) {
@@ -619,6 +662,9 @@
             }
         });
     });
+
+    
+});
 </script>
 
 <script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChartOfAccount;
+use App\Models\Employee;
 use App\Models\Transaction;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -46,9 +47,9 @@ class AccountsController extends Controller
                 ->make(true);
         }
         $coa = ChartOfAccount::where('status', 1)->get();
-        
+        $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.dkaccounts', compact('coa','accounts'));
+        return view('admin.transactions.dkaccounts', compact('coa','accounts','employees'));
     }
 
 
@@ -89,8 +90,9 @@ class AccountsController extends Controller
         }
         $coa = ChartOfAccount::where('status', 1)->get();
         
+        $employees = Employee::where('status', 1)->where('office', 'ksa')->get();
         $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.ksaaccounts', compact('coa','accounts'));
+        return view('admin.transactions.ksaaccounts', compact('coa','accounts','employees'));
     }
     
 
@@ -124,6 +126,8 @@ class AccountsController extends Controller
         $transaction = new Transaction();
         $transaction->table_type = $request->account_head;
         $transaction->office = $request->office;
+        $transaction->chart_of_account_val = $request->chart_of_account_val;
+        $transaction->employee_id = $request->employee_id;
         $transaction->date = $request->input('date');
         if ($request->document) {
             
@@ -152,7 +156,7 @@ class AccountsController extends Controller
     public function edit($id)
     {
         $transaction = Transaction::findOrFail($id);
-
+        $coa = ChartOfAccount::where('account_head', $transaction->chartOfAccount->account_head)->where('office', $transaction->office)->get();
         $responseData = [
             'id' => $transaction->id,
             'date' => $transaction->date,
@@ -163,6 +167,9 @@ class AccountsController extends Controller
             'amount' => $transaction->bdt_amount,
             'riyal_amount' => $transaction->foreign_amount,
             'payment_type' => $transaction->account_id,
+            'chart_of_account_val' => $transaction->chart_of_account_val,
+            'employee_id' => $transaction->employee_id,
+            'coa' => $coa,
         ];
         return response()->json($responseData);
     }
@@ -194,6 +201,9 @@ class AccountsController extends Controller
         }
 
         $transaction = Transaction::find($id);
+
+        $transaction->chart_of_account_val = $request->chart_of_account_val;
+        $transaction->employee_id = $request->employee_id;
 
         if ($request->document) {
             $image_path = public_path('images/asset/' . $transaction->document);
