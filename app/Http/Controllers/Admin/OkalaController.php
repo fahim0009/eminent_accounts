@@ -23,6 +23,32 @@ class OkalaController extends Controller
         return view('admin.okala.index', compact('data'));
     }
 
+
+    public function myOkalagroup()
+    {
+        $assignedCountSubquery = DB::table('okala_purchase_details')
+            ->selectRaw('count(*)')
+            ->whereColumn('okala_purchase_details.okala_purchase_id', 'okala_purchases.id')
+            ->whereNotNull('okala_purchase_details.assign_to');
+    
+        $data = DB::table('okala_purchases')
+            ->leftJoin('code_masters', 'okala_purchases.r_l_detail_id', '=', 'code_masters.id')
+            ->leftJoin('users', 'okala_purchases.user_id', '=', 'users.id')
+            ->where('okala_purchases.purchase_type', 0)
+            ->orderBy('okala_purchases.date', 'DESC')
+            ->select(
+                'okala_purchases.*',
+                'code_masters.type_name',
+                'users.name as vendor_name',
+                DB::raw("({$assignedCountSubquery->toSql()}) as assigned_count")
+            )
+            ->mergeBindings($assignedCountSubquery) // required for raw subquery binding
+            ->get();
+           $complete=  $data;
+
+        return view('admin.okala.myokala', compact('data', 'complete'));
+    }
+    
     public function okalaPurchase()
     {
         $data = OkalaPurchase::orderby('id','DESC')->get();

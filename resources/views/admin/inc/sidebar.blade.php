@@ -335,6 +335,12 @@
       </a>
 
       <ul class="nav nav-treeview">
+      <li class="nav-item">
+          <a href="{{route('admin.okgroup')}}" class="nav-link {{ (request()->is('admin/okala-group')) ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Okala Group</p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="{{route('admin.okala')}}" class="nav-link {{ (request()->is('admin/okala')) ? 'active' : '' }}">
             <i class="far fa-circle nav-icon"></i>
