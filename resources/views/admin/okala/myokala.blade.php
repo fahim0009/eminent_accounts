@@ -41,7 +41,7 @@
                     <table id="example1" class="table table-bordered table-striped">
                       <thead>
                       <tr>
-                        <!-- <th>Sl</th> -->
+                        <th>Sl</th>
                         <th>Date</th>
                         <th>Number</th>
                         <th>Availeable</th>
@@ -49,45 +49,30 @@
                         <th>Sponsor ID</th>
                         <th>RL</th>
                         <th>Vendor</th>
-                        <th>Status</th>
                       </tr>
                       </thead>
                       <tbody>
-                        @foreach ($data as $key => $data)
+                        @foreach ($data as $key => $entry)
 
                         
-                        @if (($data->number - $data->assigned_count) > 0)
+                        @if (($entry->number - $entry->assigned_count) > 0)
 
                         <tr>
-                          <!-- <td style="text-align: center">{{ $key + 1 }}</td> -->
+                          <td style="text-align: center">{{ $key + 1 }}</td>
 
-                          <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($data->date)->timestamp }}">
-                          {{ \Carbon\Carbon::parse($data->date)->format('d-m-Y') }}
+                          <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($entry->date)->timestamp }}">
+                          {{ \Carbon\Carbon::parse($entry->date)->format('d-m-Y') }}
                           </td>
-                          <td style="text-align: center">{{$data->number}}</td>
-                          <td style="text-align: center">{{$data->number - $data->assigned_count}}</td>
-                          <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
-                          <td style="text-align: center">{{$data->sponsorid}}</td>
-                          <td style="text-align: center">{{$data->type_name}}</td>
-                          <td style="text-align: center">{{$data->vendor_name}}</td>
+                          <td style="text-align: center">{{$entry->number}}</td>
+                          <td style="text-align: center">{{$entry->number - $entry->assigned_count}}</td>
+                          <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $entry->id)}}">{{$entry->visaid}}</a></td>
+                          <td style="text-align: center">{{$entry->sponsorid}}</td>
+                          <td style="text-align: center">{{$entry->type_name}}</td>
+                          <td style="text-align: center">{{$entry->vendor_name}}</td>
 
-                          <td style="text-align: center">
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if($data->status == 0) Processing @elseif($data->status == 1) Complete @else New @endif</span></button>
-                              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
-                                <span class="sr-only">Toggle Dropdown</span>
-                              </button>
-                              <div class="dropdown-menu" role="menu">
-                                <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="0">Processing</button>
-                                <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Complete</button>
-                              </div>
-                            </div>
-                          </td>                        
                         </tr>
                             
-                        @endif
-                        
-                 
+                        @endif                                     
 
 
                         @endforeach
@@ -111,15 +96,17 @@
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
-                    <table id="example2" class="table table-bordered table-striped">
+                  <table id="example2" class="table table-bordered table-striped">
+
                       <thead>
                       <tr>
-                        <!-- <th>Sl</th> -->
+                        <th>Sl</th>
                         <th>Date</th>
                         <th>Number</th>
                         <th>Availeable</th>
                         <th>Visa Number</th>
                         <th>Sponsor ID</th>
+                        <th>RL</th>
                         <th>Vendor</th>
                       </tr>
                       </thead>
@@ -130,8 +117,8 @@
                     @if (($cdata->number - $cdata->assigned_count) == 0)
 
                     <tr>
-                      <!-- <td style="text-align: center">{{ $key + 1 }}</td> -->
-                      <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($data->date)->timestamp }}">
+                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($cdata->date)->timestamp }}">
                           {{ \Carbon\Carbon::parse($cdata->date)->format('d-m-Y') }}
                       </td>
                       <td style="text-align: center">{{$cdata->number}}</td>
@@ -154,13 +141,6 @@
                 <!-- /.card -->
                 <!-- End visa and others transaction End  -->
               </div>
-
-                <!-- 
-              <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
-                coming soon
-              </div> -->
-
-
             </div>
           </div>
           <!-- /.card -->
@@ -204,9 +184,17 @@ $(function () {
     "autoWidth": false,
     "ordering": true,
     "buttons": ["copy", "csv", "excel", "pdf", "print"]
-  }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+  }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+  // Fix: Recalculate DataTables when switching tabs
+  $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    $($.fn.dataTable.tables(true)).DataTable()
+      .columns.adjust()
+      .responsive.recalc();
+  });
 });
 </script>
+
 
 <script>
 

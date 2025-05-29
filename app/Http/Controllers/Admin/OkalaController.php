@@ -35,7 +35,7 @@ class OkalaController extends Controller
             ->leftJoin('code_masters', 'okala_purchases.r_l_detail_id', '=', 'code_masters.id')
             ->leftJoin('users', 'okala_purchases.user_id', '=', 'users.id')
             ->where('okala_purchases.purchase_type', 0)
-            ->orderBy('okala_purchases.date', 'DESC')
+            ->orderBy('okala_purchases.id', 'DESC')
             ->select(
                 'okala_purchases.*',
                 'code_masters.type_name',
@@ -76,17 +76,22 @@ class OkalaController extends Controller
     {
 
         $data = DB::table('okala_purchase_details')
-            ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
-            ->whereNotNull('okala_purchase_details.assign_to')
-            ->orderBy('okala_purchase_details.id', 'DESC')
-            ->select(
-                'okala_purchase_details.*', 
-                'clients.passport_name', 
-                'clients.passport_number'
-            )
-            ->get();
+        ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
+        ->join('okala_purchases', 'okala_purchases.id', '=', 'okala_purchase_details.okala_purchase_id')
+        ->leftJoin('code_masters as mofa_cm', 'mofa_cm.id', '=', 'okala_purchases.trade')
+        ->leftJoin('code_masters as rl_cm', 'rl_cm.id', '=', 'okala_purchases.r_l_detail_id')
+        ->whereNotNull('okala_purchase_details.assign_to')
+        ->orderBy('okala_purchase_details.id', 'DESC')
+        ->select(
+            'okala_purchase_details.*', 
+            'clients.passport_name', 
+            'clients.passport_number',
+            'mofa_cm.type_name as mofa',
+            'rl_cm.type_name as rl'
+        )
+        ->get();
         
-        return view('admin.okala.index', compact('data'));
+        return view('admin.okala.assignedokala', compact('data'));
     }
 
     public function store(Request $request)
