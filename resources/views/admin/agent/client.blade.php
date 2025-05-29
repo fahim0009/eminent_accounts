@@ -264,17 +264,17 @@
                   </tr>
                   </thead>
                   <tbody>
-                    @foreach ($datas as $key => $data)
+                    @foreach ($datas as $key => $entry)
                     <tr>
                       <td style="text-align: center">{{ $key + 1 }}</td>
-                      <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
-                      <td style="text-align: center">{{$data->passport_number}}</td>
-                      <td style="text-align: center">{{$data->total_package}}</td>
-                      <td style="text-align: center">{{$data->total_received}}</td>
+                      <td style="text-align: center"><a href="{{route('admin.clientDetails', $entry->id)}}">{{$entry->passport_name}}</a></td>
+                      <td style="text-align: center">{{$entry->passport_number}}</td>
+                      <td style="text-align: center">{{$entry->total_package}}</td>
+                      <td style="text-align: center">{{$entry->total_received}}</td>
                       <td style="text-align: center">
-                        @if ($data->status == 0) New
-                        @elseif($data->status == 1)Processing
-                        @elseif($data->status == 2) Complete @else Decline @endif
+                        @if ($entry->status == 0) New
+                        @elseif($entry->status == 1)Processing
+                        @elseif($entry->status == 2) Complete @else Decline @endif
                       </td>                    
                     </tr>
                     @endforeach 
@@ -316,6 +316,8 @@
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
                     @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'service_discount'))
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
+                    @else
+
                     @endif
   
                   @empty
@@ -341,27 +343,30 @@
                   </thead>
                   <tbody>
                     @foreach ($clientTransactions as $key => $tran)
-                    <tr>
                
   
                       @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'service_discount'))
+                      <tr>
                       <td style="text-align: center">{{ $key + 1 }}</td>
                       <td style="text-align: center">{{$tran->date}}</td>
                       <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
                       <td style="text-align: center">{{$tran->bdt_amount}}</td>
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$tbalance}}</td>
+                      </tr>
                       <?php $tbalance = $tbalance + $tran->bdt_amount;?>
   
                       @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon'))
+                      <tr>
                       <td style="text-align: center">{{ $key + 1 }}</td>
                       <td style="text-align: center">{{$tran->date}}</td>
                       <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$tran->bdt_amount}}</td>
                       <td style="text-align: center">{{$tbalance}}</td>
+                      </tr>
                       <?php $tbalance = $tbalance - $tran->bdt_amount;?>
-  
+ 
                       @endif
   
                     </tr>
@@ -399,7 +404,7 @@
                     </div>
                     </div>
 
-                <table id="example2" class="table table-bordered table-striped">
+                <table id="example3" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>Sl</th>
@@ -412,10 +417,11 @@
                   </thead>
                   <tbody>
                     @foreach ($clientTransactions as $okala_key => $okala_tran)
-                    <tr>
 
+                    
   
                       @if(($okala_tran->tran_type == 'okala_received') || ($okala_tran->tran_type == 'okalasales_discount'))
+                      <tr>
                       <td style="text-align: center">{{ $okala_key + 1 }}</td>
                       <td style="text-align: center">{{$okala_tran->date}}</td>
                       <td style="text-align: center">{{$okala_tran->ref}}  @if(isset($okala_tran->note)){{$okala_tran->note}}@endif</td>
@@ -423,9 +429,11 @@
                       <td style="text-align: center">{{$okala_tran->bdt_amount}}</td>
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$tokala_bal}}</td>
+                      </tr>
                       <?php $tokala_bal = $tokala_bal + $okala_tran->bdt_amount;?>
   
                       @elseif(($okala_tran->tran_type == 'okala_sales') || ($okala_tran->tran_type == 'okalasales_adon'))
+                      <tr>
                       <td style="text-align: center">{{ $okala_key + 1 }}</td>
                       <td style="text-align: center">{{$okala_tran->date}}</td>
                       <td style="text-align: center">{{$okala_tran->ref}}  @if(isset($okala_tran->note)){{$okala_tran->note}}@endif</td>
@@ -433,8 +441,8 @@
                       <td style="text-align: center"></td>
                       <td style="text-align: center">{{$okala_tran->bdt_amount}}</td>
                       <td style="text-align: center">{{$tokala_bal}}</td>
+                      </tr>
                       <?php $tokala_bal = $tokala_bal - $okala_tran->bdt_amount;?>
-  
                       @endif
   
                     </tr>
@@ -597,17 +605,15 @@
         "responsive": true, "lengthChange": false, "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print"]
       }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+      $("#example3").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
       
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
     });
+
+    
 
     $(function() {
       $('.stsBtn').click(function() {
