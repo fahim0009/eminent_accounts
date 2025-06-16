@@ -20,11 +20,6 @@ class Client extends Model
         return $this->hasMany(KafelaClient::class);
     }
 
-    public function mofaHistory()
-    {
-        return $this->hasMany(MofaHistory::class);
-    }
-
     public function okalaDetail()
     {
         return $this->hasMany(OkalaDetail::class, 'assign_to', 'id');
@@ -40,7 +35,10 @@ class Client extends Model
         return $this->belongsTo(CodeMaster::class, 'mofa_trade', 'id');
     }
 
-
+    public function mofaHistories()
+    {
+        return $this->hasMany(MofaHistory::class)->orderBy('date', 'desc');
+    }
 
    
 

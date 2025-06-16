@@ -40,11 +40,19 @@
                     <td style="text-align: center">{{$data->passport_name}}
                       <br> ({{$data->passport_number}})
                     </td>
-                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a></td>
+                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->agent_id)}}"> <u><b>{{$data->agent_name}} {{$data->agent_surname}}</b> </u></a></td>
 
                     <td style="text-align: center">
-                    {{ \App\Models\CodeMaster::where('id', $data->mofa_trade)->value('type_name') }} <hr>
-                    {{ \App\Models\CodeMaster::where('id', $data->rlid)->value('type_name') }}
+                    @if ($data->mofa_trade) 
+
+                    <p>{{$data->mofa_trade}}</p> <hr>
+                    <p>{{$data->rlname}}</p>
+
+                    @else  
+                    <p>Not Set</p> <hr>
+                    <p> Not set</p>
+                    @endif
+
                     </td>
 
                     <td style="text-align: center"> 

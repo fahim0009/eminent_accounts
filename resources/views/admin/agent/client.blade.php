@@ -307,21 +307,28 @@
                 </form>
                 
                 <!--get total balance -->
-                  <?php
+                @php
                     $tbalance = 0;
-                  ?> 
-                  @forelse ($clientTransactions as $sdata)
-                          
-                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'service_sales') || ($sdata->tran_type == 'package_adon') || ($sdata->tran_type == 'service_adon'))
-                    <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
-                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'service_received') || ($sdata->tran_type == 'package_discount') || ($sdata->tran_type == 'service_discount'))
-                    <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
-                    @else
+                @endphp
 
-                    @endif
-  
-                  @empty
-                  @endforelse
+                @forelse ($clientTransactions as $sdata)
+                    @php
+                        $addTypes = ['package_sales', 'service_sales', 'package_adon', 'service_adon'];
+                        $subTypes = ['package_received', 'service_received', 'package_discount', 'service_discount'];
+
+                        // Skip if transaction is canceled
+                        if ($sdata->status != 2) {
+                            if (in_array($sdata->tran_type, $addTypes)) {
+                                $tbalance += $sdata->bdt_amount;
+                            } elseif (in_array($sdata->tran_type, $subTypes)) {
+                                $tbalance -= $sdata->bdt_amount;
+                            }
+                        }
+                    @endphp
+                @empty
+                @endforelse
+
+
 
                   <!-- /.card-header -->
                     <div class="row">
@@ -330,51 +337,76 @@
                     </div>
                     </div>
 
-                <table id="example2" class="table table-bordered table-striped">
-                  <thead>
-                  <tr>
-                    <th>Sl</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Received</th>
-                    <th>Bill</th>
-                    <th>Balance</th>                  
-                  </tr>
-                  </thead>
-                  <tbody>
-                    @foreach ($clientTransactions as $key => $tran)
-               
-  
-                      @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'service_received') || ($tran->tran_type == 'package_discount') || ($tran->tran_type == 'service_discount'))
-                      <tr>
-                      <td style="text-align: center">{{ $key + 1 }}</td>
-                      <td style="text-align: center">{{$tran->date}}</td>
-                      <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
-                      <td style="text-align: center">{{$tran->bdt_amount}}</td>
-                      <td style="text-align: center"></td>
-                      <td style="text-align: center">{{$tbalance}}</td>
-                      </tr>
-                      <?php $tbalance = $tbalance + $tran->bdt_amount;?>
-  
-                      @elseif(($tran->tran_type == 'package_sales') || ($tran->tran_type == 'service_sales') || ($tran->tran_type == 'package_adon') || ($tran->tran_type == 'service_adon'))
-                      <tr>
-                      <td style="text-align: center">{{ $key + 1 }}</td>
-                      <td style="text-align: center">{{$tran->date}}</td>
-                      <td style="text-align: center">{{$tran->ref}}  @if(isset($tran->note)){{$tran->note}}@endif</td>
-                      <td style="text-align: center"></td>
-                      <td style="text-align: center">{{$tran->bdt_amount}}</td>
-                      <td style="text-align: center">{{$tbalance}}</td>
-                      </tr>
-                      <?php $tbalance = $tbalance - $tran->bdt_amount;?>
- 
-                      @endif
-  
-                    </tr>
-                    @endforeach
-                  
-                  </tbody>
-                </table>
-                 <!-- End visa and others transaction End  -->
+                    <table id="example2" class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Sl</th>
+                          <th>Date</th>
+                          <th>Description</th>
+                          <th>Received</th>
+                          <th>Bill</th>
+                          <th>Balance</th>                  
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($clientTransactions as $key => $tran)
+                          @php
+
+                          if ($tran->tran_type == 'package_received') {
+                                  $dsc = 'Package';
+                              } elseif ($tran->tran_type == 'service_received') {
+                                  $dsc = 'Service';
+                              } else {
+                                  $dsc = '';
+                              }
+
+                              $description = $dsc .' '. $tran->ref . (isset($tran->note) ? ' ' . $tran->note : '');
+                              $received = '';
+                              $bill = '';
+                              $rowClass = '';
+
+                              // Flag for canceled transaction (status = 2)
+                              $isCanceled = ($tran->status == 2);
+                              if ($isCanceled) {
+                                  $rowClass = 'table-danger'; // Bootstrap red row
+                              }
+                          @endphp
+
+                          @if(in_array($tran->tran_type, ['package_received', 'service_received', 'package_discount', 'service_discount']))
+                              @php $received = $tran->bdt_amount; @endphp
+                              <tr class="{{ $rowClass }}">
+                                <td class="text-center">{{ $key + 1 }}</td>
+                                <td class="text-center">{{ $tran->date }}</td>
+                                <td class="text-center">{{ $description }}</td>
+                                <td class="text-center">{{ $received }}</td>
+                                <td class="text-center"></td>
+                                <td class="text-center">{{ number_format($tbalance, 2) }}</td>
+                              </tr>
+                              @if(!$isCanceled)
+                                  @php $tbalance += $tran->bdt_amount; @endphp
+                              @endif
+
+                          @elseif(in_array($tran->tran_type, ['package_sales', 'service_sales', 'package_adon', 'service_adon']))
+                              @php $bill = $tran->bdt_amount; @endphp
+                              <tr class="{{ $rowClass }}">
+                                <td class="text-center">{{ $key + 1 }}</td>
+                                <td class="text-center">{{ $tran->date }}</td>
+                                <td class="text-center">{{ $description }}</td>
+                                <td class="text-center"></td>
+                                <td class="text-center">{{ $bill }}</td>
+                                <td class="text-center">{{ number_format($tbalance, 2) }}</td>
+                              </tr>
+                              @if(!$isCanceled)
+                                  @php $tbalance -= $tran->bdt_amount; @endphp
+                              @endif
+                          @endif
+                        @endforeach
+                      </tbody>
+                    </table>
+
+
+
+                                    <!-- End visa and others transaction End  -->
               </div>
 
 

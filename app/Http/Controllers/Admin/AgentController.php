@@ -42,95 +42,108 @@ class AgentController extends Controller
 
     public function getClient(Request $request, $id)
     {
-
+        // Get Clients with package summary
         $datas = DB::table('clients')
-                ->leftJoin('transactions', 'clients.id', '=', 'transactions.client_id')
-                ->select(
-                    'clients.id',      // Include only necessary columns
-                    'clients.passport_name',
-                    'clients.passport_number',
-                    'clients.package_cost',   
-                    'clients.status',   
-                    DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount") THEN transactions.bdt_amount ELSE 0 END), 0) as total_received'),
-                    DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon") THEN transactions.bdt_amount ELSE 0 END), 0) as total_package')
-                )
-                ->where('clients.user_id', '=', $id)
-                ->groupBy('clients.id', 'clients.passport_name', 'clients.passport_number', 'clients.package_cost', 'clients.status') // Group by all selected columns
-                ->orderby('id','DESC')
-                ->get();
-
-        //  ############################ start visa & service sales calculation  ######################################
-
-        $processing = Client::where('status','1')->where('user_id', $id)->count();
-        $decline = Client::where('status','3')->where('user_id', $id)->count();
-        $completed = Client::where('status','2')->where('user_id', $id)->count();
-
-        // total package amout with extara charge if added 
-        $totalPackageAmount = Transaction::where('user_id', $id)
-                            ->whereIn('tran_type', ['package_sales', 'package_adon'])
-                            ->sum('bdt_amount');
-
-        // processing package amout with extara charge if added 
-        $processingPackageAmount = DB::table('transactions')
-            ->join('clients', 'transactions.client_id', '=', 'clients.id')  // Join the tables
-            ->where('clients.status', 1)
+            ->leftJoin('transactions', 'clients.id', '=', 'transactions.client_id')
+            ->select(
+                'clients.id',
+                'clients.passport_name',
+                'clients.passport_number',
+                'clients.package_cost',
+                'clients.status',
+                DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount") AND transactions.status IN (1, 2) THEN transactions.bdt_amount ELSE 0 END), 0) as total_received'),
+                DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon") AND transactions.status IN (1, 2) THEN transactions.bdt_amount ELSE 0 END), 0) as total_package')
+            )
+            ->where('clients.user_id', $id)
+            ->groupBy(
+                'clients.id',
+                'clients.passport_name',
+                'clients.passport_number',
+                'clients.package_cost',
+                'clients.status'
+            )
+            ->orderBy('clients.id', 'DESC')
+            ->get();
+    
+    
+        // Client status counts
+        $processing = Client::where('status', 1)->where('user_id', $id)->count();
+        $decline = Client::where('status', 3)->where('user_id', $id)->count();
+        $completed = Client::where('status', 2)->where('user_id', $id)->count();
+    
+        // Package amount totals by status
+        $packageAmounts = DB::table('transactions')
+            ->join('clients', 'transactions.client_id', '=', 'clients.id')
+            ->selectRaw("
+                SUM(CASE WHEN clients.status = 1 THEN transactions.bdt_amount ELSE 0 END) as processing,
+                SUM(CASE WHEN clients.status = 2 THEN transactions.bdt_amount ELSE 0 END) as completed,
+                SUM(CASE WHEN transactions.status = 1 THEN transactions.bdt_amount ELSE 0 END) as total
+            ")
             ->where('transactions.user_id', $id)
             ->whereIn('transactions.tran_type', ['package_sales', 'package_adon'])
-            ->sum('transactions.bdt_amount');
-
-        // completed package amout with extara charge if added 
-        $completedPackageAmount = DB::table('transactions')
-            ->join('clients', 'transactions.client_id', '=', 'clients.id')  // Join the tables
-            ->where('clients.status', 2)
-            ->where('transactions.user_id', $id)
-            ->whereIn('transactions.tran_type', ['package_sales', 'package_adon'])
-            ->sum('transactions.bdt_amount');   
-
-        // package discount on total package cost 
-        $totalPkgDiscountAmnt = Transaction::where('user_id',$id)->where('tran_type','package_discount')->sum('bdt_amount');
-
-        //   total package receive amount 
-        $totalPackageReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','package_received')->sum('bdt_amount');
-
-        //  others bill amount like medical contact , embassay extra fees, manpower speed money 
-        $totaServiceamt = Transaction::where('user_id',$id)
-                        ->whereIn('tran_type', ['service_sales', 'service_adon'])    
-                        ->sum('bdt_amount');
-
-        //   total service receive amount 
-        $totalServiceReceivedAmnt = Transaction::where('user_id',$id)->where('tran_type','service_received')->sum('bdt_amount');                        
- 
-        //   receive amount for running work that is not delivered yet including others bill amount      
-        $rcvamntForProcessing = ($totalPackageReceivedAmnt +  $totalPkgDiscountAmnt) - ($completedPackageAmount + $totaServiceamt);
-
-        // $directReceivedAmnt = Transaction::where('user_id',$id)->whereNull('client_id')->where('tran_type','Received')->sum('bdt_amount');
-
-        $dueForvisa = (($totalPackageAmount + $totaServiceamt)  - ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt + $totalServiceReceivedAmnt));
-
+            ->first();
+    
+        // Discounts and receives
+        $totalPkgDiscountAmnt = Transaction::where('user_id', $id)->where('tran_type', 'package_discount')->sum('bdt_amount');
+        $totalPackageReceivedAmnt = Transaction::where('user_id', $id)->where('tran_type', 'package_received')->sum('bdt_amount');
+    
+        // Service related amounts
+        $totaServiceamt = Transaction::where('user_id', $id)
+            ->whereIn('tran_type', ['service_sales', 'service_adon'])
+            ->sum('bdt_amount');
+    
+        $totalServiceReceivedAmnt = Transaction::where('user_id', $id)
+            ->where('tran_type', 'service_received')
+            ->sum('bdt_amount');
+    
+        // Pending processing amount
+        $rcvamntForProcessing = ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt) - ($packageAmounts->completed);
+    
+        // Total due
+        $dueForvisa = ($packageAmounts->total + $totaServiceamt) - ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt + $totalServiceReceivedAmnt);
+    
+        // Total visa and service received
         $ttlVisanSrvcRcv = Transaction::where('user_id', $id)
-                            ->whereIn('tran_type', ['package_received', 'service_received'])
-                            ->sum('bdt_amount');
-
-        $agents = User::where('id',$id)->get();
-        $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
-        $accounts = Account::orderby('id','DESC')->get();           
-        
-        
-        $clientTransactions = Transaction::where('user_id',$id)
-        ->when($request->from_date, function ($query) use ($request) {
-            return $query->where('date', '>=', $request->from_date);
-        })
-        ->when($request->to_date, function ($query) use ($request) {
-            return $query->where('date', '<=', $request->to_date);
-        })
-        ->when($request->from_date && $request->to_date, function ($query) use ($request) {
-            return $query->whereBetween('date', [$request->from_date, $request->to_date]);
-        })
-        ->orderby('date','DESC')->get();
-
-
-        return view('admin.agent.client', compact('datas','agents','countries','accounts','processing','decline','completed','id','completedPackageAmount','processingPackageAmount','totalPackageAmount','ttlVisanSrvcRcv','rcvamntForProcessing','totaServiceamt','totalPkgDiscountAmnt','dueForvisa','clientTransactions'));
-    }   
+            ->whereIn('tran_type', ['package_received', 'service_received'])
+            ->sum('bdt_amount');
+    
+        // Static data
+        $agents = User::where('id', $id)->get();
+        $countries = CodeMaster::where('type', 'COUNTRY')->orderBy('id', 'DESC')->get();
+        $accounts = Account::orderBy('id', 'DESC')->get();
+    
+        // Filtered transactions by date
+        $clientTransactions = Transaction::where('user_id', $id)
+                    ->whereIn('status', [1, 2]) // Filter by transaction status
+                    ->when($request->from_date, function ($query) use ($request) {
+                        $query->where('date', '>=', $request->from_date);
+                    })
+                    ->when($request->to_date, function ($query) use ($request) {
+                        $query->where('date', '<=', $request->to_date);
+                    })
+                    ->orderBy('date', 'DESC')
+                    ->get();
+    
+    
+        return view('admin.agent.client', compact(
+            'datas',
+            'agents',
+            'countries',
+            'accounts',
+            'processing',
+            'decline',
+            'completed',
+            'id',
+            'packageAmounts',
+            'ttlVisanSrvcRcv',
+            'rcvamntForProcessing',
+            'totaServiceamt',
+            'totalPkgDiscountAmnt',
+            'dueForvisa',
+            'clientTransactions'
+        ));
+    }
+    
     
 
 

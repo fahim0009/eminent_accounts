@@ -91,15 +91,10 @@
                       <div class="input-group">
                         <select name="mofa_trade" id="mofa_trade{{$data->id}}" class="form-control mofa_trade">
                           <option value="">Please Select</option>
-                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->select('id','type','type_name')->get() as $mofa)
+                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->where('status', 1)->select('id','type','type_name')->get() as $mofa)
                           <option value="{{$mofa->id}}">{{$mofa->type_name}}</option>
                           @endforeach
                         </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary mofa_trade_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
-                        </div>
                       </div>
                         <p><small class="mofa_trade_msg" id="mofa_trade_msg{{$data->id}}"></small></p>
                       @endif
@@ -115,20 +110,22 @@
                         <div class="input-group">
                         <select name="rldetail" id="rldetail{{$data->id}}" class="form-control rldetail">
                           <option value="">Please Select</option>
-                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->select('id','type','type_name')->get() as $rl)
+                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->where('status', 1)->select('id','type','type_name')->get() as $rl)
                           <option value="{{$rl->id}}">{{$rl->type_name}}</option>
                           @endforeach
                         </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary rldetail_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
-                        </div>
+
+                        <div class="col-sm-3 d-flex align-items-start" style="margin-top: 0rem;">
+                      <button class="btn btn-primary save-mofa-all-btn w-100" data-userid="{{ $data->user_id }}" data-id="{{ $data->id }}">
+                          <i class="fas fa-save"></i> Save All
+                      </button>
+                      </div>
+
                         </div>
                         <p><small class="rldetail_msg" id="rldetail_msg{{$data->id}}"></small></p>
                       @endif
                     </td>
-                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user_name}} {{$data->user_surname}}</b> </u></a> </td>
+                    <td style="text-align: center"><a href="{{route('admin.agentClient', $data->agent_id)}}"> <u><b>{{$data->agent_name}} {{$data->agent_surname}}</b> </u></a> </td>
                     
                     
                   </tr>
@@ -284,110 +281,65 @@
       });
 
 
-      $('.mofa_trade_btn').click(function () {
-        
+
+      $(document).on('click', '.toggle-mofa-form', function () {
           var id = $(this).data('id');
-          var mofa_trade = $('#mofa_trade'+id).val();
-          if (mofa_trade == '') {
-              $('#mofa_trade_msg'+id).html('<span class="text-danger">Please select a trade</span>');
-              return false;
+          $('#mofaFormRow' + id).slideToggle(); // smooth toggle effect
+      });
+
+      $('.save-mofa-all-btn').click(function (e) {
+          e.preventDefault();
+          
+          var client_id = $(this).data('id');
+          var agent_id = $(this).data('userid');
+          var currentDate = new Date();
+          var mofa_date = currentDate.toISOString().split('T')[0];
+          var mofa_trade = $('#mofa_trade' + client_id).val();
+          var rldetail = $('#rldetail' + client_id).val();
+          // Clear previous error messages
+          $('#mofa_date_msg' + client_id).html('');
+          $('#mofa_trade_msg' + client_id).html('');
+          $('#rldetail_msg' + client_id).html('');
+
+          // Basic validation
+          if (!mofa_date) {
+              $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
+              return;
           }
-          var url = "{{URL::to('/admin/change-client-mofa-trade')}}";
+          if (!mofa_trade) {
+              $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
+              return;
+          }
+          if (!rldetail) {
+              $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
+              return;
+          }
+
           $.ajax({
+              url: "{{ url('/admin/change-client-mofa-rl') }}",
               type: "GET",
               dataType: "json",
-              url: url,
-              data: {'mofa_trade': mofa_trade, 'id': id},
+              data: {
+                client_id: client_id,
+                agent_id: agent_id,
+                  date: mofa_date,
+                  mofa_trade: mofa_trade,
+                  rlid: rldetail
+              },
               success: function (data) {
                   if (data.status == 303) {
-
-                    $('#mofa_trade_msg'+id).html(data.message);
-
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: data.message
-                          });
-                        });
+                      $('#mofa_trade_msg' + client_id).html(data.message);
+                      Swal.fire({ icon: 'warning', toast: true, position: 'top-end', timer: 3000, title: data.message });
                   } else if (data.status == 300) {
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: data.message
-                          });
-                        });
+                      Swal.fire({ icon: 'success', toast: true, position: 'top-end', timer: 3000, title: data.message });
                   }
               },
-              error: function (data) {
-                  console.log(data);
+              error: function (xhr, status, error) {
+                  console.error(error);
+                  Swal.fire({ icon: 'error', toast: true, position: 'top-end', timer: 3000, title: 'Something went wrong' });
               }
           });
       });
-
-      $('.rldetail_btn').click(function () {
-        
-          var id = $(this).data('id');
-          var rldetail = $('#rldetail'+id).val();
-          if (rldetail == '') {
-              $('#rldetail_msg'+id).html('<span class="text-danger">Please select a RL</span>');
-              return false;
-          }
-          var url = "{{URL::to('/admin/change-client-rl-detail')}}";
-          $.ajax({
-              type: "GET",
-              dataType: "json",
-              url: url,
-              data: {'rldetail': rldetail, 'id': id},
-              success: function (data) {
-                  if (data.status == 303) {
-
-                    $('#rldetail_msg'+id).html(data.message);
-
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'warning',
-                            title: data.message
-                          });
-                        });
-                  } else if (data.status == 300) {
-                      $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: data.message
-                          });
-                        });
-                  }
-              },
-              error: function (data) {
-                  console.log(data);
-              }
-          });
-      });
-
 
 
       

@@ -12,7 +12,7 @@ use App\Models\CodeMaster;
 use App\Models\Country;
 use App\Models\MofaHistory;
 use App\Models\Transaction;
-// use Illuminate\Http\Response;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
@@ -75,37 +75,66 @@ class ClientController extends Controller
     // ksa new client
     public function ksaNewClient()
     {
+            $latestHistory = DB::table('mofa_histories as mh1')
+            ->select('mh1.client_id', DB::raw('MAX(mh1.id) as latest_id'))
+            ->groupBy('mh1.client_id');
+
+        // Now join that subquery and resolve the foreign keys
         $clients = DB::table('clients')
-        ->leftJoin('code_masters as mofa_code_masters', 'clients.mofa_trade', '=', 'mofa_code_masters.id') // First join
-        ->leftJoin('code_masters as rlid_code_masters', 'clients.rlid', '=', 'rlid_code_masters.id') // Second join
-        ->leftJoin('users', 'clients.user_id', '=', 'users.id') // Join users table
-        ->select(
-            'clients.*', 
-            'mofa_code_masters.type_name as mofa_trade', // Type name for mofa_trade
-            'rlid_code_masters.type_name as rlname', // Type name for rlid
-            'users.id as user_id', 
-            'users.name as user_name', 
-            'users.surname as user_surname'
-        )
-        ->where('clients.status', '0')
-        ->orderBy('clients.id', 'ASC')
-        ->get();
+            ->leftJoinSub($latestHistory, 'latest_mh', function ($join) {
+                $join->on('clients.id', '=', 'latest_mh.client_id');
+            })
+            ->leftJoin('mofa_histories', 'mofa_histories.id', '=', 'latest_mh.latest_id')
+            ->leftJoin('code_masters as mofa_code_masters', 'mofa_histories.mofa_trade', '=', 'mofa_code_masters.id')
+            ->leftJoin('code_masters as rlid_code_masters', 'mofa_histories.rlid', '=', 'rlid_code_masters.id')
+            ->leftJoin('users', 'clients.user_id', '=', 'users.id')
+            ->select(
+                'clients.*',
+                'mofa_code_masters.type_name as mofa_trade',
+                'rlid_code_masters.type_name as rlname',
+                'users.id as agent_id',
+                'users.name as agent_name',
+                'users.surname as agent_surname'
+            )
+            ->where('clients.status', '0')
+            ->orderBy('clients.id', 'ASC')
+            ->get();
 
         $count = $clients->count();
-        return view('admin.client.ksanew', compact('clients','count'));
+        return view('admin.client.ksanew', compact('clients', 'count'));
     }
 
     // ksa processing client
     public function ksaProcessingClient($type = Null)
     {
 
-        $data = Client::where('status', '1')
-        ->orderBy('id', 'ASC')
+        $latestHistory = DB::table('mofa_histories as mh1')
+        ->select('mh1.client_id', DB::raw('MAX(mh1.id) as latest_id'))
+        ->groupBy('mh1.client_id');
+
+    // Now join that subquery and resolve the foreign keys
+    $data = DB::table('clients')
+        ->leftJoinSub($latestHistory, 'latest_mh', function ($join) {
+            $join->on('clients.id', '=', 'latest_mh.client_id');
+        })
+        ->leftJoin('mofa_histories', 'mofa_histories.id', '=', 'latest_mh.latest_id')
+        ->leftJoin('code_masters as mofa_code_masters', 'mofa_histories.mofa_trade', '=', 'mofa_code_masters.id')
+        ->leftJoin('code_masters as rlid_code_masters', 'mofa_histories.rlid', '=', 'rlid_code_masters.id')
+        ->leftJoin('users', 'clients.user_id', '=', 'users.id')
+        ->select(
+            'clients.*',
+            'mofa_code_masters.type_name as mofa_trade',
+            'rlid_code_masters.type_name as rlname',
+            'users.id as agent_id',
+            'users.name as agent_name',
+            'users.surname as agent_surname'
+        )
+        ->where('clients.status', '1')
+        ->orderBy('clients.id', 'ASC')
         ->get();
 
-        $count = $data->count();
-
-        return view('admin.client.ksaprocessing', compact('data', 'count'));
+    $count = $data->count();
+    return view('admin.client.ksaprocessing', compact('data', 'count'));
         
     }
 
@@ -123,34 +152,35 @@ class ClientController extends Controller
         }
     }
 
-    public function ksaMofaTrade(Request $request)
+    public function ksaMofaRl(Request $request)
     {
-        $data = Client::find($request->id);
-        $data->mofa_trade = $request->mofa_trade;
-        $data->updated_by = Auth::user()->id;
-        if ($data->save()) {
-            $message ="MOFA Trade Updated Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message]);
-        }
-        else{
-            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
-        }
+
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'agent_id' => 'required|exists:users,id',
+            'date' => 'required|date',
+            'mofa_trade' => 'required|exists:code_masters,id',
+            'rlid' => 'required|exists:code_masters,id',
+        ]);
+
+    try {
+        MofaHistory::create([
+            'client_id'   => $request->client_id,
+            'user_id'     => $request->agent_id,
+            'date'        => $request->date,
+            'mofa_trade'  => $request->mofa_trade,
+            'rlid'        => $request->rlid,
+            'status'      => 1, // default status if needed
+            'created_by'  => auth()->user()->name ?? 'system',
+            'updated_by'  => auth()->user()->name ?? 'system',
+        ]);
+
+        return response()->json(['status' => 300, 'message' => 'MOFA record saved successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 303, 'message' => 'Error: ' . $e->getMessage()]);
     }
 
-    public function ksaRL(Request $request)
-    {
-        $data = Client::find($request->id);
-        $data->rlid = $request->rldetail;
-        $data->updated_by = Auth::user()->id;
-        if ($data->save()) {
-            $message ="RL Updated Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message]);
-        }
-        else{
-            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
-        }
     }
-
 
     public function changeMofaRequestStatus(Request $request)
     {
@@ -380,7 +410,7 @@ class ClientController extends Controller
 
     public function getClientInfo($id)
     {
-        $data = Client::where('id',$id)->first();
+        $data = Client::with(['mofaHistories.mofaTrade', 'mofaHistories.rlidCode'])->find($id);
         $trans = Transaction::where('client_id',$id)->orderby('id','DESC')->get();
         $agents = User::where('is_type','2')->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
@@ -642,76 +672,85 @@ class ClientController extends Controller
     }
 
     public function changeClientStatus(Request $request)
-    {
-        $user = Client::find($request->id);
+{
+    $client = Client::find($request->id);
+    $oldStatus = $client->status; // capture old status
 
-        if ($user->status == 0) {
-            $stsval = "New";
-        }elseif($user->status == 1){
-            $stsval = "Processing";
-        }elseif($user->status == 2){
-            $stsval = "Complete";
-        }elseif($user->status == 3){
-            $stsval = "Decline";
-        }else{
-            $stsval = "Something is wrong";
-        }
+    // Determine old status label
+    $stsval = match($oldStatus) {
+        0 => "New",
+        1 => "Processing",
+        2 => "Complete",
+        3 => "Decline",
+        default => "Something is wrong"
+    };
 
-        if (($user->status == 1 || $user->status == 2) && ($request->status == 3)) {
-            $message ="Decline is not possible because passenger already in ".$stsval.". It has a transaction data.";
-            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
-        }
-
-        if ($user->status == $request->status) {
-            $message ="Passenger already in ".$stsval." .";
-            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
-        }
-
-
-        if ($user->status == $request->status) {
-
-            $message ="Passenger already in ".$stsval." .";
-            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
-        }
-
-        $user->status = $request->status;
-        if($user->save()){
-
-            if ($request->status == 1) {
-                $tran = new Transaction();
-                $tran->date = date('Y-m-d');
-                $tran->tran_type = "package_sales";
-                $tran->payment_type = "Receivable";
-                $tran->bdt_amount = $user->package_cost;
-                $tran->user_id = $user->user_id;
-                $tran->client_id = $user->id;
-                $tran->ref = "Package ". $user->passport_name . " (".$user->passport_number.")";
-                $tran->save();
-                $tran->tran_id = 'VS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
-                $tran->save();
-            }
-
-            if ($user->status == 0) {
-                $stsval = "New";
-            }elseif($user->status == 1){
-                $stsval = "Processing";
-            }elseif($user->status == 2){
-                $stsval = "Complete";
-            }elseif($user->status == 3){
-                $stsval = "Decline";
-            }else{
-                $stsval = "Something is wrong";
-            }
-    
-            
-            $message ="Status Change Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message,'stsval'=>$stsval,'id'=>$request->id]);
-        }else{
-            $message ="There was an error to change status!!.";
-            return response()->json(['status'=> 303,'message'=>$message]);
-        }
-
+    // Prevent change if already complete or declined
+    if ($oldStatus == 2 || $oldStatus == 3) {
+        $message = "Status change is not possible because passenger already in $stsval.";
+        return response()->json(['status' => 300, 'message' => $message, 'stsval' => $stsval, 'id' => $request->id]);
     }
+
+    // Prevent setting the same status again
+    if ($oldStatus == $request->status) {
+        $message = "Passenger already in $stsval.";
+        return response()->json(['status' => 300, 'message' => $message, 'stsval' => $stsval, 'id' => $request->id]);
+    }
+
+    $client->status = $request->status;
+
+    if ($client->save()) {
+
+        // If setting to Processing (1) — create a sales transaction
+        if ($request->status == 1) {
+            $tran = new Transaction();
+            $tran->date = date('Y-m-d');
+            $tran->tran_type = "package_sales";
+            $tran->payment_type = "Receivable";
+            $tran->bdt_amount = $client->package_cost;
+            $tran->user_id = $client->user_id;
+            $tran->client_id = $client->id;
+            $tran->ref = "Package ". $client->passport_name . " (".$client->passport_number.")";
+            $tran->save();
+            $tran->tran_id = 'VS' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
+            $tran->save();
+        }
+
+        // If changing from Processing (1) to Decline (3) — cancel and add decline charge
+        if ($oldStatus == 1 && $request->status == 3) {
+            Transaction::where('client_id', $client->id)
+                ->where('tran_type', 'package_sales')
+                ->update(['status' => 2]);
+
+            $tran = new Transaction();
+            $tran->date = date('Y-m-d');
+            $tran->tran_type = "package_adon";
+            $tran->payment_type = "Receivable";
+            $tran->bdt_amount = $request->decline_charge;
+            $tran->user_id = $client->user_id;
+            $tran->client_id = $client->id;
+            $tran->ref = "Package Cancel ". $client->passport_name . " (".$client->passport_number.")";
+            $tran->save();
+            $tran->tran_id = 'VC' . date('ymd') . str_pad($tran->id, 4, '0', STR_PAD_LEFT);
+            $tran->save();
+        }
+
+        // Determine new status label
+        $stsval = match($client->status) {
+            0 => "New",
+            1 => "Processing",
+            2 => "Complete",
+            3 => "Decline",
+            default => "Something is wrong"
+        };
+
+        return response()->json(['status' => 300, 'message' => "Status Change Successfully.", 'stsval' => $stsval, 'id' => $client->id]);
+    } else {
+        return response()->json(['status' => 303, 'message' => "There was an error to change status!!"]);
+    }
+}
+
+
 
     public function client_image_download($id)
     {

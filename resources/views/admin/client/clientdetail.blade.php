@@ -458,9 +458,9 @@
                     ?> 
                     @forelse ($trans as $sdata)
                             
-                    @if(($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'package_adon'))
+                    @if((($sdata->tran_type == 'package_sales') || ($sdata->tran_type == 'package_adon')) && ($sdata->status == 1))
                     <?php $tbalance = $tbalance + $sdata->bdt_amount;?>
-                    @elseif(($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'package_discount'))
+                    @elseif((($sdata->tran_type == 'package_received') || ($sdata->tran_type == 'package_discount')) && ($sdata->status == 1))
                     <?php $tbalance = $tbalance - $sdata->bdt_amount;?>
                     @endif
      
@@ -536,109 +536,161 @@
               </div>
               <div class="card-body">
                 
-                <div class="row">
-                  <div class="col-sm-4">
-                    <label>Mofa</label>
-
-                    @if ($data->mofa_trade) 
-
-                     <p>{{$data->trade->type_name}}</p>
- 
-                      @else
-                        
-                    
-                      <div class="input-group">
-                        <select name="mofa_trade" id="mofa_trade{{$data->id}}" class="form-control mofa_trade">
-                          <option value="">Please Select</option>
-                          @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->select('id','type','type_name')->get() as $mofa)
-                          <option value="{{$mofa->id}}">{{$mofa->type_name}}</option>
-                          @endforeach
-                        </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary mofa_trade_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
+              <div class="row">
+                  <!-- decline charge  -->
+              <div class="col-sm-4">            
+              <div class="form-group mt-3 decline-charge-wrapper d-none" id="declineChargeRow{{$data->id}}">
+                        <label for="declineChargeInput{{$data->id}}"><strong>Decline Charge</strong></label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" class="form-control" id="declineChargeInput{{$data->id}}" placeholder="Enter decline charge">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-danger submitDeclineBtn" data-id="{{$data->id}}">Submit</button>
+                            </div>
                         </div>
-                      </div>
-                      <p><small class="mofa_trade_msg" id="mofa_trade_msg{{$data->id}}"></small></p>
-                    
-                    @endif
+                    </div>
+              </div>
+              <!-- end decline charge  -->
 
-                  </div>
+              
+                  <!-- ################# client statu ############## -->
 
-                  <div class="col-sm-4">
-                    <label>RL</label>
-
-                    @if ($data->rlid) 
-
-                      <p>{{$data->rldetail->type_name ?? ''}}</p>
-
-                      @else
-                        
-                    
-                      <div class="input-group">
-                        <select name="rldetail" id="rldetail{{$data->id}}" class="form-control rldetail">
-                          <option value="">Please Select</option>
-                          @foreach (\App\Models\CodeMaster::where('type', 'RL')->select('id','type','type_name')->get() as $rl)
-                          <option value="{{$rl->id}}">{{$rl->type_name}}</option>
-                          @endforeach
-                        </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary rldetail_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
-                        </div>
-                      </div>
-                      <p><small class="rldetail_msg" id="rldetail_msg{{$data->id}}"></small></p>
-
-                    @endif
-                  </div>
-
-                  <div class="col-sm-4">
-                    
+                  <div class="col-sm-4">                    
                     <label>Status</label>
+                    <div  class="input-group">                    
 
-                    <div  class="input-group">
-                      @if ($data->status == 0)
-
+                        @if ($data->status == 0)
                         <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) New
-                          @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span>
+                        @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span>
                         </button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                           <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="1">Processing</button>
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
-                        </div>
-                          
-                      @else
-
+                        <button class="dropdown-item stsBtn" data-id="{{$data->id}}" data-status="{{$data->status}}" value="1">Processing</button>
+                        <button class="dropdown-item stsBtn" data-id="{{$data->id}}" data-status="{{$data->status}}" value="3">Decline</button>
+                        @elseif($data->status == 1)
                         <button type="button" class="btn btn-secondary"><span id="stsval{{$data->id}}"> @if ($data->status == 0) New
-                          @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span></button>
+                        @elseif($data->status == 1) Processing @elseif($data->status == 2) Complete @else Decline @endif</span>
+                        </button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                           <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="2">Complete</button>
-                          <button class="dropdown-item stsBtn" data-id="{{$data->id}}" value="3">Decline</button>
-                        </div>
-                        
+                        <button class="dropdown-item stsBtn" data-id="{{$data->id}}" data-status="{{$data->status}}"  value="2">Complete</button>
+                        <button class="dropdown-item stsBtn" data-id="{{$data->id}}" data-status="{{$data->status}}"  value="3">Decline</button>
+                        @elseif($data->status == 2)
+                        <p class="btn btn-success" >Complete</p>
+                        @elseif($data->status == 3)
+                        <p class="btn btn-danger" >Decline</p>
                         @endif
+                        </div>                          
                     </div>
                     
                   </div>
                 </div>
+            <!-- ################# END client statu ############## -->
 
-                
+                    <br> <br>
+
+        <!-- Toggle Button -->
+        <button type="button" class="btn btn-outline-primary mb-2 toggle-mofa-form" data-id="{{ $data->id }}">
+            <i class="fas fa-plus-circle"></i> New MOFA
+        </button>
+
+
+        <!-- *************** New MOFA Section *************** -->
+        <div class="row mofa-form-row" id="mofaFormRow{{ $data->id }}" style="display: none;">
+
+                <!-- Date Input -->
+                <div class="col-sm-2">
+                    <label>Date</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Date</span>
+                        <input type="date" id="mofa_date{{ $data->id }}" name="date" class="form-control" value="{{ old('date') }}">
+                    </div>
+                    <p><small class="mofa_date_msg" id="mofa_date_msg{{ $data->id }}"></small></p>
+                </div>
+
+                <!-- MOFA Trade Dropdown -->
+                <div class="col-sm-3">
+                    <label>MOFA</label>
+                    <div class="input-group">
+                        <select name="mofa_trade" id="mofa_trade{{ $data->id }}" class="form-control mofa_trade">
+                            <option value="">Please Select</option>
+                            @foreach (\App\Models\CodeMaster::where('type', 'TRADE')->select('id', 'type_name')->get() as $mofa)
+                                <option value="{{ $mofa->id }}">{{ $mofa->type_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <p><small class="mofa_trade_msg" id="mofa_trade_msg{{ $data->id }}"></small></p>
+                </div>
+
+                <!-- RL Dropdown -->
+                <div class="col-sm-3">
+                    <label>RL</label>
+                    <div class="input-group">
+                        <select name="rldetail" id="rldetail{{ $data->id }}" class="form-control rldetail">
+                            <option value="">Please Select</option>
+                            @foreach (\App\Models\CodeMaster::where('type', 'RL')->select('id', 'type_name')->get() as $rl)
+                                <option value="{{ $rl->id }}">{{ $rl->type_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <p><small class="rldetail_msg" id="rldetail_msg{{ $data->id }}"></small></p>
+                </div>
+
+
+                <div class="col-sm-2 d-flex align-items-start" style="margin-top: 2rem;">
+
+                    <button class="btn btn-primary save-mofa-all-btn w-100" data-userid="{{ $data->user_id }}" data-id="{{ $data->id }}">
+                        <i class="fas fa-save"></i> Save All
+                    </button>
+                </div>
+
+
+
+
+                </div>
+
+
+            <!-- Previous all mofa details  -->
+            @foreach ($data->mofaHistories as $history)
+            <div class="row">
+
+               <div class="col-sm-2">
+                    <label>Date</label>
+                    @if ($history->date) 
+                     <p>{{$history->date}}</p> 
+                      @else                        
+                    <p> Null </p>                    
+                    @endif
+                </div>
+
+
+
+                  <div class="col-sm-3">
+                    <label>Mofa</label>
+                    @if ($history->mofaTrade->type_name) 
+                     <p>{{$history->mofaTrade->type_name}}</p> 
+                      @else
+                      <p> Null </p>                    
+                    @endif
+                </div>
+
+
+                  <div class="col-sm-3">
+                    <label>RL</label>
+                    @if ($history->rlidCode->type_name)
+                      <p>{{$history->rlidCode->type_name}}</p>
+                      @else                        
+                      <p> Null </p>
+                    @endif
+                  </div>  
                   
                   
-            </div>
+                  </div>
+                @endforeach
 
-
-
-
-          </div>
           <!-- /.col -->
         </div>
         <!-- /.row -->
@@ -675,8 +727,20 @@
         var url = "{{URL::to('/admin/change-client-status')}}";
           var id = $(this).data('id');
           var status = $(this).attr('value');
-          // console.log(id);
-          $.ajax({
+          var past_status = $(this).attr('data-status');
+
+          // alert(status+past_status);
+          
+          // return;
+
+            if ((status == '3') && (past_status == '1')) {
+
+              $('#declineChargeRow' + id).removeClass('d-none');
+
+
+            } else {
+              // if not decline complete will start 
+              $.ajax({
               type: "GET",
               dataType: "json",
               url: url,
@@ -717,117 +781,123 @@
                     console.log(d);
                 }
           });
+          // status complete end hare
+            }
       })
-    })
+    });
+
+    // decline charge start 
+    $(document).on('click', '.submitDeclineBtn', function() {
+    var id = $(this).data('id');
+    var amount = $('#declineChargeInput' + id).val();
+    var url = "{{ URL::to('/admin/change-client-status') }}";
+// alert(id);return;
+    if (amount == '') {
+      alert('Please enter a decline charge amount');
+      return;
+    }
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: {
+        _token: "{{ csrf_token() }}",
+        id: id,
+        status: 3,
+        decline_charge: amount
+      },
+      success: function(d) {
+        var Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        if (d.status == 300) {
+          $('#stsval' + id).html(d.stsval);
+          $('#declineChargeRow' + id).remove(); // remove input row after success
+          Toast.fire({
+            icon: 'success',
+            title: d.message
+          });
+        } else {
+          Toast.fire({
+            icon: 'warning',
+            title: d.message
+          });
+        }
+      },
+      error: function(d) {
+        console.log("Error:", d);
+      }
+    });
+  });
 
 
   </script>
 
 <script>
 
-    $('.mofa_trade_btn').click(function () {
-        
-        var id = $(this).data('id');
-        var mofa_trade = $('#mofa_trade'+id).val();
-        if (mofa_trade == '') {
-            $('#mofa_trade_msg'+id).html('<span class="text-danger">Please select a trade</span>');
-            return false;
-        }
-        var url = "{{URL::to('/admin/change-client-mofa-trade')}}";
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: url,
-            data: {'mofa_trade': mofa_trade, 'id': id},
-            success: function (data) {
-                if (data.status == 303) {
 
-                  $('#mofa_trade_msg'+id).html(data.message);
+      $(document).on('click', '.toggle-mofa-form', function () {
+          var id = $(this).data('id');
+          $('#mofaFormRow' + id).slideToggle(); // smooth toggle effect
+      });
 
-                    $(function() {
-                        var Toast = Swal.mixin({
-                          toast: true,
-                          position: 'top-end',
-                          showConfirmButton: false,
-                          timer: 3000
-                        });
-                        Toast.fire({
-                          icon: 'warning',
-                          title: data.message
-                        });
-                      });
-                } else if (data.status == 300) {
-                    $(function() {
-                        var Toast = Swal.mixin({
-                          toast: true,
-                          position: 'top-end',
-                          showConfirmButton: false,
-                          timer: 3000
-                        });
-                        Toast.fire({
-                          icon: 'success',
-                          title: data.message
-                        });
-                      });
-                }
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-    });
+      $('.save-mofa-all-btn').click(function (e) {
+          e.preventDefault();
+          
+          var client_id = $(this).data('id');
+          var agent_id = $(this).data('userid');
+          var mofa_date = $('#mofa_date' + client_id).val();
+          var mofa_trade = $('#mofa_trade' + client_id).val();
+          var rldetail = $('#rldetail' + client_id).val();
+          // Clear previous error messages
+          $('#mofa_date_msg' + client_id).html('');
+          $('#mofa_trade_msg' + client_id).html('');
+          $('#rldetail_msg' + client_id).html('');
 
-    $('.rldetail_btn').click(function () {
-      
-        var id = $(this).data('id');
-        var rldetail = $('#rldetail'+id).val();
-        if (rldetail == '') {
-            $('#rldetail_msg'+id).html('<span class="text-danger">Please select a RL</span>');
-            return false;
-        }
-        var url = "{{URL::to('/admin/change-client-rl-detail')}}";
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: url,
-            data: {'rldetail': rldetail, 'id': id},
-            success: function (data) {
-                if (data.status == 303) {
+          // Basic validation
+          if (!mofa_date) {
+              $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
+              return;
+          }
+          if (!mofa_trade) {
+              $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
+              return;
+          }
+          if (!rldetail) {
+              $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
+              return;
+          }
 
-                  $('#rldetail_msg'+id).html(data.message);
+          $.ajax({
+              url: "{{ url('/admin/change-client-mofa-rl') }}",
+              type: "GET",
+              dataType: "json",
+              data: {
+                client_id: client_id,
+                agent_id: agent_id,
+                  date: mofa_date,
+                  mofa_trade: mofa_trade,
+                  rlid: rldetail
+              },
+              success: function (data) {
+                  if (data.status == 303) {
+                      $('#mofa_trade_msg' + client_id).html(data.message);
+                      Swal.fire({ icon: 'warning', toast: true, position: 'top-end', timer: 3000, title: data.message });
+                  } else if (data.status == 300) {
+                      Swal.fire({ icon: 'success', toast: true, position: 'top-end', timer: 3000, title: data.message });
+                  }
+              },
+              error: function (xhr, status, error) {
+                  console.error(error);
+                  Swal.fire({ icon: 'error', toast: true, position: 'top-end', timer: 3000, title: 'Something went wrong' });
+              }
+          });
+      });
 
-                    $(function() {
-                        var Toast = Swal.mixin({
-                          toast: true,
-                          position: 'top-end',
-                          showConfirmButton: false,
-                          timer: 3000
-                        });
-                        Toast.fire({
-                          icon: 'warning',
-                          title: data.message
-                        });
-                      });
-                } else if (data.status == 300) {
-                    $(function() {
-                        var Toast = Swal.mixin({
-                          toast: true,
-                          position: 'top-end',
-                          showConfirmButton: false,
-                          timer: 3000
-                        });
-                        Toast.fire({
-                          icon: 'success',
-                          title: data.message
-                        });
-                      });
-                }
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-    });
 </script>
 
 <script>
