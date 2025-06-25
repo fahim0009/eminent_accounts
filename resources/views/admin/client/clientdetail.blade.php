@@ -582,6 +582,8 @@
                         <p class="btn btn-success" >Complete</p>
                         @elseif($data->status == 3)
                         <p class="btn btn-danger" >Decline</p>
+                        @elseif($data->status == 4)
+                        <p class="btn btn-danger" >Visa Decline</p>                        
                         @endif
                         </div>                          
                     </div>
@@ -803,7 +805,7 @@
       data: {
         _token: "{{ csrf_token() }}",
         id: id,
-        status: 3,
+        status: 4,
         decline_charge: amount
       },
       success: function(d) {
@@ -847,6 +849,9 @@
 
       $('.save-mofa-all-btn').click(function (e) {
           e.preventDefault();
+
+          var $btn = $(this);
+          $btn.prop('disabled', true); // Disable button
           
           var client_id = $(this).data('id');
           var agent_id = $(this).data('userid');
@@ -859,18 +864,27 @@
           $('#rldetail_msg' + client_id).html('');
 
           // Basic validation
-          if (!mofa_date) {
-              $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
-              return;
-          }
-          if (!mofa_trade) {
-              $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
-              return;
-          }
-          if (!rldetail) {
-              $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
-              return;
-          }
+          // if (!mofa_date) {
+          //     $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
+          //     return;
+          // }
+          // if (!mofa_trade) {
+          //     $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
+          //     return;
+          // }
+          // if (!rldetail) {
+          //     $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
+          //     return;
+          // }
+
+          
+    if (!mofa_date || !mofa_trade || !rldetail) {
+        if (!mofa_date) $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
+        if (!mofa_trade) $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
+        if (!rldetail) $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
+        $btn.prop('disabled', false); // Re-enable button on validation fail
+        return;
+    }
 
           $.ajax({
               url: "{{ url('/admin/change-client-mofa-rl') }}",
@@ -889,6 +903,13 @@
                       Swal.fire({ icon: 'warning', toast: true, position: 'top-end', timer: 3000, title: data.message });
                   } else if (data.status == 300) {
                       Swal.fire({ icon: 'success', toast: true, position: 'top-end', timer: 3000, title: data.message });
+                              // Clear the form fields
+                    $('#mofa_date' + client_id).val('');
+                    $('#mofa_trade' + client_id).val('');
+                    $('#rldetail' + client_id).val('');
+
+
+
                   }
               },
               error: function (xhr, status, error) {

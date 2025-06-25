@@ -548,6 +548,8 @@ class ClientController extends Controller
             $stsval = "Complete";
         }elseif($data->status == 3){
             $stsval = "Decline";
+        }elseif($data->status == 4){
+            $stsval = "Visa Cancel";
         }else{
             $stsval = "Something is wrong";
         }
@@ -682,6 +684,7 @@ class ClientController extends Controller
         1 => "Processing",
         2 => "Complete",
         3 => "Decline",
+        4 => "Visa Cancel",
         default => "Something is wrong"
     };
 
@@ -716,8 +719,8 @@ class ClientController extends Controller
             $tran->save();
         }
 
-        // If changing from Processing (1) to Decline (3) — cancel and add decline charge
-        if ($oldStatus == 1 && $request->status == 3) {
+        // If changing from Processing (1) to Decline (4) — cancel and add decline charge
+        if ($oldStatus == 1 && $request->status == 4) {
             Transaction::where('client_id', $client->id)
                 ->where('tran_type', 'package_sales')
                 ->update(['status' => 2]);
@@ -741,6 +744,7 @@ class ClientController extends Controller
             1 => "Processing",
             2 => "Complete",
             3 => "Decline",
+            4 => "Visa Cancel",
             default => "Something is wrong"
         };
 

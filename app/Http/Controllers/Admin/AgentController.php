@@ -77,9 +77,11 @@ class AgentController extends Controller
             ->selectRaw("
                 SUM(CASE WHEN clients.status = 1 THEN transactions.bdt_amount ELSE 0 END) as processing,
                 SUM(CASE WHEN clients.status = 2 THEN transactions.bdt_amount ELSE 0 END) as completed,
+                SUM(CASE WHEN clients.status = 4 THEN transactions.bdt_amount ELSE 0 END) as visacancel,
                 SUM(CASE WHEN transactions.status = 1 THEN transactions.bdt_amount ELSE 0 END) as total
             ")
             ->where('transactions.user_id', $id)
+            ->where('transactions.status', 1)
             ->whereIn('transactions.tran_type', ['package_sales', 'package_adon'])
             ->first();
     
@@ -95,9 +97,9 @@ class AgentController extends Controller
         $totalServiceReceivedAmnt = Transaction::where('user_id', $id)
             ->where('tran_type', 'service_received')
             ->sum('bdt_amount');
-    
+    // dd($packageAmounts->visacancel);
         // Pending processing amount
-        $rcvamntForProcessing = ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt) - ($packageAmounts->completed);
+        $rcvamntForProcessing = ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt) - ($packageAmounts->completed + $packageAmounts->visacancel);
     
         // Total due
         $dueForvisa = ($packageAmounts->total + $totaServiceamt) - ($totalPackageReceivedAmnt + $totalPkgDiscountAmnt + $totalServiceReceivedAmnt);
