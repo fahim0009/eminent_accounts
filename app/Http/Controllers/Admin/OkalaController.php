@@ -78,6 +78,7 @@ class OkalaController extends Controller
         $data = DB::table('okala_purchase_details')
         ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
         ->join('okala_purchases', 'okala_purchases.id', '=', 'okala_purchase_details.okala_purchase_id')
+        ->leftJoin('users', 'clients.user_id', '=', 'users.id')
         ->leftJoin('code_masters as mofa_cm', 'mofa_cm.id', '=', 'okala_purchases.trade')
         ->leftJoin('code_masters as rl_cm', 'rl_cm.id', '=', 'okala_purchases.r_l_detail_id')
         ->whereNotNull('okala_purchase_details.assign_to')
@@ -87,7 +88,9 @@ class OkalaController extends Controller
             'clients.passport_name', 
             'clients.passport_number',
             'mofa_cm.type_name as mofa',
-            'rl_cm.type_name as rl'
+            'rl_cm.type_name as rl',
+             'users.name as agent_name', 
+             'users.surname as agent_surname'
         )
         ->get();
         

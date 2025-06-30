@@ -21,7 +21,7 @@
       <div class="container-fluid">
         <div class="row justify-content-md-center">
           <!-- right column -->
-          <div class="col-md-8">
+          <div class="col-md-6">
             <!-- general form elements disabled -->
             <div class="card card-secondary">
               <div class="card-header">
@@ -44,12 +44,21 @@
 
                     <div class="col-sm-6">
                       <div class="form-group">
+                        <label>Surname</label>
+                        <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname">
+                      </div>
+                    </div>
+                    </div>
+                    <div class="row">
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
                         <label>Phone</label>
                         <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter phone">
                       </div>
                     </div>
                     
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Email</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
@@ -116,7 +125,7 @@
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
                     <td style="text-align: center">
-                      <a href="{{route('admin.vendorHistory', $data->id)}}" class="btn btn-xs btn-success">{{$data->name}}</a>
+                      <a href="{{route('admin.vendorHistory', $data->id)}}" class="btn btn-xs btn-success">{{$data->name}} {{$data->surname}}</a>
                       
                     </td>
                     <td style="text-align: center">{{$data->email}}</td>
@@ -200,6 +209,7 @@
           if($(this).val() == 'Create') {
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
+              form_data.append("name", $("#surname").val());
               form_data.append("email", $("#email").val());
               form_data.append("phone", $("#phone").val());
               form_data.append("address", $("#address").val());
@@ -240,6 +250,7 @@
           if($(this).val() == 'Update'){
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
+              form_data.append("surname", $("#surname").val());
               form_data.append("email", $("#email").val());
               form_data.append("phone", $("#phone").val());
               form_data.append("address", $("#address").val());
@@ -319,6 +330,7 @@
       //Delete  
       function populateForm(data){
           $("#name").val(data.name);
+          $("#surname").val(data.surname);
           $("#phone").val(data.phone);
           $("#email").val(data.email);
           $("#address").val(data.address);

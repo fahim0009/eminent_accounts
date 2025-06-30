@@ -33,6 +33,7 @@
                   <th>Sponsor Id</th>
                   <th>Trade</th>
                   <th>Assign To</th>
+                  <th>Agent Name</th>
                   <th>RL Id</th>
                   <th>Vendor</th>
                 </tr>
@@ -54,6 +55,7 @@
                       {{$data->passport_name}} ({{$data->passport_number}})                    
 
                     </td>
+                    <td style="text-align: center">{{$data->agent_name}} {{$data->agent_surname}}</td>
                     <td style="text-align: center">
                     @if (isset($data->rl))
                       {{$data->rl}}

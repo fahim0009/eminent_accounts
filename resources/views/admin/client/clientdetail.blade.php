@@ -47,26 +47,83 @@
                 </p>
                 <input type="hidden" id="agent_id" value="{{$data->user_id}}">
                 <hr>
-                {{-- <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-                <p class="text-muted">Malibu, California</p>
-                <hr> --}}
+
 
                 <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
 
                 <p class="text-muted">{{$data->description}}</p>
 
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Total Received</strong>
-                <p class="text-muted">{{$data->total_rcv}}</p>
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Due Amount</strong>
-                <p class="text-muted">{{$data->due_amount}}</p>
               </div>
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
+
+
+
+            <!-- Okala assign -->
+            <div class="card card-secondary">
+              <div class="card-header">
+                <h3 class="card-title">Okala Assign Details</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+
+              @foreach($assign as $item)   
+                <div class="row">
+                      <div class="col-sm-12 d-flex align-items-center gap-2">
+                          <strong>Assign Date:</strong>
+                          @if($item->date)
+                              <p class="text-muted mb-0">&nbsp {{ $item->date }}</p> 
+                          @else
+                              <p class="mb-0">Not assign</p> 
+                          @endif  
+                      </div>
+
+                      <div class="col-sm-12 d-flex align-items-center gap-2">
+                          <strong>VISA ID:</strong>
+                          @if($item->visa_id)                        
+                              <p class="text-muted mb-0">&nbsp {{ $item->visa_id }}</p> 
+                          @else
+                              <p class="mb-0">Not assign</p> 
+                          @endif  
+                      </div>
+
+                      <div class="col-sm-12 d-flex align-items-center gap-2">
+                          <strong>Sponsor ID:</strong>                        
+                          @if($item->sponsor_id)                        
+                              <p class="text-muted mb-0">&nbsp {{ $item->sponsor_id }}</p> 
+                          @else
+                              <p class="mb-0">Not assign</p>  
+                          @endif  
+                      </div>
+
+                      <div class="col-sm-12 d-flex align-items-center gap-2">
+                          <strong>Vendor:</strong>
+                          @if($item->vendor_name)                        
+                              <p class="text-muted mb-0">&nbsp {{ $item->vendor_name }} {{ $item->vendor_surname }}</p> 
+                          @else
+                              <p class="mb-0">Not assign</p>
+                          @endif    
+                      </div>
+                       </div>
+                    @endforeach
+             
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+
           </div>
           <!-- /.col -->
+
+
+          
+
+
+
           <div class="col-md-9">
             <div class="card">
               <div class="card-header p-2">
@@ -530,6 +587,7 @@
             </div>
             <!-- /.card -->
 
+
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Status</h3>
@@ -863,19 +921,6 @@
           $('#mofa_trade_msg' + client_id).html('');
           $('#rldetail_msg' + client_id).html('');
 
-          // Basic validation
-          // if (!mofa_date) {
-          //     $('#mofa_date_msg' + client_id).html('<span class="text-danger">Please select a date</span>');
-          //     return;
-          // }
-          // if (!mofa_trade) {
-          //     $('#mofa_trade_msg' + client_id).html('<span class="text-danger">Please select a trade</span>');
-          //     return;
-          // }
-          // if (!rldetail) {
-          //     $('#rldetail_msg' + client_id).html('<span class="text-danger">Please select an RL</span>');
-          //     return;
-          // }
 
           
     if (!mofa_date || !mofa_trade || !rldetail) {

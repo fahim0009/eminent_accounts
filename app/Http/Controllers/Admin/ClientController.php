@@ -415,7 +415,14 @@ class ClientController extends Controller
         $agents = User::where('is_type','2')->get();
         $countries = CodeMaster::where('type','COUNTRY')->orderby('id','DESC')->get();
         $accounts = Account::orderby('id','DESC')->get();
-        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','trans'));
+
+        $assign = DB::table('okala_purchase_details as opd')
+            ->join('users as u', 'opd.user_id', '=', 'u.id')
+            ->where('opd.assign_to', $id)
+            ->select('opd.*', 'u.name as vendor_name', 'u.surname as vendor_surname') // adjust fields as needed
+            ->get();
+        //  dd($assign);   
+        return view('admin.client.clientdetail', compact('data','agents','countries','accounts','trans','assign'));
     }
 
     public function store(Request $request)

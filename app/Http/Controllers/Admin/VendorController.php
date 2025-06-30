@@ -44,7 +44,7 @@ class VendorController extends Controller
         }
         $data = new User;
         $data->name = $request->name;
-        $data->surname = $request->name;
+        $data->surname = $request->surname;
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->email = $request->email;
@@ -97,6 +97,7 @@ class VendorController extends Controller
 
         $data = User::find($request->codeid);
         $data->name = $request->name;
+        $data->surname = $request->surname;
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->email = $request->email;
