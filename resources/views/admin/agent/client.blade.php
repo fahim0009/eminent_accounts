@@ -98,8 +98,6 @@
                       </div>
                     </div>
                     
-
-
                   </div>
 
                   <div class="row">
@@ -201,9 +199,6 @@
                             Create Bill
                           </button>
 
-                          {{-- <a href="{{route('admin.agentTran', $id)}}" class="btn btn-primary" >
-                            All transaction
-                          </a> --}}
 
                         </td>
                       </tr>
@@ -228,67 +223,69 @@
     <!-- Main content -->
 <section class="content" id="newBtnSection">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 col-sm-12">
-        <div class="card card-secondary card-tabs">
-          <div class="card-header p-0 pt-1">
-            <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+    
+  <div class="row">
+  <div class="col-12 col-sm-12">
+    <div class="card card-secondary card-tabs">
+      <div class="card-header p-0 pt-1">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab">All Client</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab">VISA Transaction</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab">Okala Transaction</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body">
+        <div class="tab-content" id="custom-tabs-one-tabContent">
+
+          <!-- All Clients Main Tab -->
+          <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+
+            <!-- Sub-tabs under All Clients -->
+            <ul class="nav nav-pills mb-3" id="client-subtabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="false">All Client</a>
+                <a class="nav-link active" id="subtab-processing-tab" data-toggle="pill" href="#subtab-processing" role="tab">Processing</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">VISA Transaction</a>
+                <a class="nav-link" id="subtab-new-tab" data-toggle="pill" href="#subtab-new" role="tab">New</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Okala Transaction</a>
+                <a class="nav-link" id="subtab-complete-tab" data-toggle="pill" href="#subtab-complete" role="tab">Complete</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
-              </li> -->
+              <li class="nav-item">
+                <a class="nav-link" id="subtab-decline-tab" data-toggle="pill" href="#subtab-decline" role="tab">Visa Cancel/Decline</a>
+              </li>
             </ul>
-          </div>
-          <div class="card-body">
-            <div class="tab-content" id="custom-tabs-one-tabContent">
-              <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
-                
 
-                <table id="example1" class="table table-bordered table-striped mt-4">
-                  <thead>
-                  <tr>
-                    <th>Sl</th>
-                    <th>Passport Name</th>
-                    <th>Passport Number</th>
-                    <th>Package Cost</th>
-                    <th>Received Amount</th>
-                    <th>Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    @foreach ($datas as $key => $entry)
-                    <tr>
-                      <td style="text-align: center">{{ $key + 1 }}</td>
-                      <td style="text-align: center"><a href="{{route('admin.clientDetails', $entry->id)}}">{{$entry->passport_name}}</a></td>
-                      <td style="text-align: center">{{$entry->passport_number}}</td>
-                      <td style="text-align: center">{{$entry->total_package}}</td>
-                      <td style="text-align: center">{{$entry->total_received}}</td>
-                      <td style="text-align: center">
-                        @if ($entry->status == 0) New
-                        @elseif($entry->status == 1)Processing
-                        @elseif($entry->status == 2) Complete @else Decline @endif
-                      </td>                    
-                    </tr>
-                    @endforeach 
-                  
-                  </tbody>
-                </table>
-
-
+            <!-- Sub-tab contents -->
+            <div class="tab-content" id="client-subtabContent">
+              <div class="tab-pane fade show active" id="subtab-processing" role="tabpanel">
+                @include('partials.processing-clients', ['datas' => $datas->where('status', 1)])
               </div>
-              <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+              <div class="tab-pane fade" id="subtab-new" role="tabpanel">
+                @include('partials.new-clients', ['datas' => $datas->where('status', 0)])
+              </div>
+              <div class="tab-pane fade" id="subtab-complete" role="tabpanel">
+                @include('partials.completed-clients', ['datas' => $datas->where('status', 2)])
+              </div>
+              <div class="tab-pane fade" id="subtab-decline" role="tabpanel">
+                @include('partials.decline-cancel-clients', ['datas' => $datas->whereIn('status', [3, 4])])
+              </div>
+            </div>
+          </div>
 
+          <!-- Other main tabs -->
+          <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+            {{-- VISA Transaction content --}}
+            
               <!-- visa and others transaction start  -->
-
-                <form method="GET" action="{{ route('admin.agentClient', $id) }}">
+              <form method="GET" action="{{ route('admin.agentClient', $id) }}">
                   <div class="row">
                     <div class="col-sm-3">
                       <label>From Date</label>
@@ -328,8 +325,6 @@
                 @empty
                 @endforelse
 
-
-
                   <!-- /.card-header -->
                     <div class="row">
                     <div class="col-sm-12 text-center">
@@ -360,7 +355,7 @@
                                   $dsc = '';
                               }
 
-                              $description = $dsc .' '. $tran->ref . (isset($tran->note) ? ' ' . $tran->note : '');
+                              $description = trim("{$dsc} {$tran->ref} {$tran->note}");
                               $received = '';
                               $bill = '';
                               $rowClass = '';
@@ -403,19 +398,15 @@
                         @endforeach
                       </tbody>
                     </table>
-
-
-
-                                    <!-- End visa and others transaction End  -->
+               <!-- End visa and others transaction End  -->
               </div>
 
 
               <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
-                Okala transactions  
-                <!-- Start visa and others transaction Start  -->
+            {{-- Okala Transaction content --}}
 
-                <!--get total okala balance -->
-                <?php
+              <!--get total okala balance -->
+              <?php
                     $tokala_bal = 0;
                 ?> 
                   @forelse ($clientTransactions as $okala_data)
@@ -478,30 +469,27 @@
                       @endif
   
                     </tr>
-                    @endforeach
-                  
+                    @endforeach                 
                   </tbody>
                 </table>
 
                 <!-- End visa and others transaction End  -->
               </div>
 
-<!-- 
-              <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
-                coming soon
-              </div> -->
-
-
-            </div>
           </div>
-          <!-- /.card -->
+
         </div>
       </div>
-      
     </div>
   </div>
+</div>
 </section>
 <!-- /.content -->
+
+
+
+
+
 
 <!-- Modal Receive Payment-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -573,8 +561,9 @@
 </div>
 <!-- end  -->
 
-<!-- modal create bill  -->
- 
+
+
+<!-- modal create bill  --> 
 <!-- Modal -->
 <div class="modal fade" id="exampleModa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -642,6 +631,26 @@
         "responsive": true, "lengthChange": false, "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print"]
       }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
+
+      $("#example4").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example4_wrapper .col-md-6:eq(0)');
+
+      $("#example5").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example5_wrapper .col-md-6:eq(0)');
+
+      $("#example6").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example6_wrapper .col-md-6:eq(0)');
+
+      $("#example7").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example7_wrapper .col-md-6:eq(0)');
       
     });
 
@@ -990,6 +999,79 @@
         //update  end
       });
       // bill create end
+
+
+
+  //header for csrf-token is must in laravel
+      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+      //
+
+      $('.medical_exp_date_btn').click(function () {
+        
+          var $btn = $(this); // store reference to the button
+          var id = $btn.data('id');
+          var medical_exp_date = $('#medical_exp_date' + id).val();
+
+          if (medical_exp_date === '') {
+              $('#smsg' + id).html('<span class="text-danger">Please select a date</span>');
+              return false;
+          }
+
+    $btn.prop('disabled', true); 
+          var url = "{{URL::to('/admin/change-client-medical-exp-date')}}";
+          $.ajax({
+              type: "GET",
+              dataType: "json",
+              url: url,
+              data: {'medical_exp_date': medical_exp_date, 'id': id},
+              success: function (data) {
+                  if (data.status == 303) {
+
+                    $('#smsg'+id).html(data.message);
+
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'warning',
+                            title: data.message
+                          });
+                        });
+                  } else if (data.status == 300) {
+                      $(function() {
+                          var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                          });
+                          Toast.fire({
+                            icon: 'success',
+                            title: data.message
+                          });
+                        });
+                        
+            // Reload page after short delay
+            setTimeout(function () {
+                location.reload();
+            }, 2000);
+
+                        
+                  }
+              },
+              error: function (data) {
+                  console.log(data);
+              }
+          });
+      });
+
+
+
+
 
 
   });

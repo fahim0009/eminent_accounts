@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CodeMaster;
 use App\Models\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
@@ -95,20 +96,89 @@ class CodeMasterController extends Controller
     // rl details 
     public function rlView()
     {
-        $data = CodeMaster::where('type', 'RL')->get();
-        return view('admin.rl.index', compact('data'));
+
+    $activeData = CodeMaster::where('status', 1)->where('type', 'RL')->get();
+    $inactiveData = CodeMaster::where('status', 0)->where('type', 'RL')->get();
+
+    return view('admin.rl.index', compact('activeData', 'inactiveData'));
+
     }
 
-    public function rlDetails($id)
+    public function toggleStatusAjax(Request $request)
     {
-        if ($id) {
-            $processing = Client::where('status','1')->where('rlid', $id)->orderby('id','ASC')->get();
-            $new = Client::where('status','0')->where('rlid', $id)->orderby('id','ASC')->get();
-            $complete = Client::where('status','2')->where('rlid', $id)->orderby('id','ASC')->get();
-            return view('admin.rl.rldetails', compact('processing','new','complete'));
-        } 
-        
+    
+        $user = CodeMaster::findOrFail($request->id);
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'Status updated successfully.']);
+
     }
 
+
+    public function rlDetails($rlid)
+    {
+        if (!$rlid || !is_numeric($rlid)) {
+            abort(404);
+        }
+    
+        $clients = Client::leftJoin(DB::raw("
+                (
+                    SELECT mh1.*
+                    FROM mofa_histories mh1
+                    INNER JOIN (
+                        SELECT client_id, MAX(date) AS latest_date
+                        FROM mofa_histories
+                        WHERE rlid = $rlid
+                        GROUP BY client_id
+                    ) mh2 ON mh1.client_id = mh2.client_id AND mh1.date = mh2.latest_date
+                    WHERE mh1.rlid = $rlid
+                ) AS latest_mofa
+            "), 'clients.id', '=', 'latest_mofa.client_id')
+            ->leftJoin(DB::raw("
+                (
+                    SELECT client_id, COUNT(*) AS mofa_count
+                    FROM mofa_histories
+                    WHERE rlid = $rlid
+                    GROUP BY client_id
+                ) AS mofa_counts
+            "), 'clients.id', '=', 'mofa_counts.client_id')
+            ->select(
+                'clients.*',
+                'latest_mofa.date',
+                'latest_mofa.client_id as mh_client_id',
+                'latest_mofa.mofa_trade',
+                'latest_mofa.note',
+                'latest_mofa.status as mh_status',
+                DB::raw('IFNULL(mofa_counts.mofa_count, 0) as mofa_count')
+            )
+            ->whereExists(function ($query) use ($rlid) {
+                $query->select(DB::raw(1))
+                    ->from('mofa_histories')
+                    ->whereRaw('mofa_histories.client_id = clients.id')
+                    ->where('mofa_histories.rlid', $rlid);
+            })
+            ->orderBy('clients.id', 'ASC')
+            ->get();
+            
+       
+    $clientsNew = $clients->where('status', 0);
+    $clientsProcessing = $clients->where('status', 1);
+    $clientsCompleted = $clients->where('status', 2);
+
+    return view('admin.rl.rldetails', [
+        'clientsNew' => $clientsNew,
+        'clientsProcessing' => $clientsProcessing,
+        'clientsCompleted' => $clientsCompleted,
+    ]);
+
+
+
+
+    }
+    
+ 
+    
+    
 
 }

@@ -88,7 +88,7 @@
                                     <th>ID</th>
                                     <th>Date</th>
                                     <th>Account</th>
-                                    <th>Document</th>
+                                    <th>Note</th>
                                     <th>Payment Type</th>
                                     <th>Amount</th>
                                     <th><i class=""></i> Action</th>
@@ -109,26 +109,16 @@
                                         <th>ID</th>
                                         <th>Date</th>
                                         <th>Account</th>
-                                        <th>Document</th>
+                                        <th>Note</th>
                                         <th>Payment Type</th>
                                         <th>Amount</th>
                                     @endslot
                                     @endcomponent
                                 </div>
                             @endforeach
-                            
-              
-              
+                 
               
                           </div>
-
-
-
-
-                                
-
-
-
 
                     </div>
                 </div>
@@ -156,7 +146,6 @@
                                 <input type="date" name="date" class="form-control" id="date" value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-
                         
                         <div class="col-sm-6">
                             <div class="form-group">

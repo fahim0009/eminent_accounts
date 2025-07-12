@@ -257,6 +257,7 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     // RL 
     Route::get('/rl', [CodeMasterController::class, 'rlView'])->name('admin.rl');
     Route::get('/rl-details/{id}', [CodeMasterController::class, 'rlDetails'])->name('admin.rldetails');
+    Route::post('/toggle-status-ajax', [CodeMasterController::class, 'toggleStatusAjax'])->name('admin.toggleStatusAjax');
 
 
     //okala

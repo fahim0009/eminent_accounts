@@ -1,7 +1,8 @@
 @extends('admin.layouts.admin')
 
 @section('content')
-
+    <!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
     <!-- Main content -->
     <section class="content" id="contentContainer">
@@ -36,32 +37,33 @@
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table id="" class="table table-bordered table-striped">
+                       <table id="processingTable" class="table table-bordered table-striped">
+
                           <thead>
                           <tr>
                             <th>Sl</th>
                             <th>Passport Name</th>
                             <th>Agent Name</th>
                             <th>Mofa</th>
-                            <th>Visa Exp Date and Image</th>
-                            <th>Manpower</th>
-                            
+                            <th>Mofa Count</th>
+                            <th>Visa Exp Date</th>
+                            <th>Manpower</th>                            
                           </tr>
                           </thead>
                           <tbody>
 
-                            @foreach ($processing as $key => $data)
+                            @foreach ($clientsProcessing as $pkey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($key + 1) }} </td>
-                              <td style="text-align: center">{{$data->passport_name}}
-                                 ({{$data->passport_number}})
+                              <td style="text-align: center">{{ ($pkey + 1) }} </td>
+                              <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
+                                 ({{$data->passport_number}})</a>
                               </td>
                               <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a></td>
 
                               <td style="text-align: center">
                               {{ \App\Models\CodeMaster::where('id', $data->mofa_trade)->value('type_name') }}
                               </td>
-
+                              <td>{{$data->mofa_count}}</td>
                               <td style="text-align: center"> 
                                   <form id="visaForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
                                     @csrf
@@ -73,17 +75,8 @@
                                     @endif
 
                                     <input type="hidden" name="id" value="{{ $data->id }}">
-                                      @if($data->visa)
-                                        <a class="btn btn-secondary" href="{{ asset('images/client/visa/' . $data->visa) }}" target="_blank">
-                                          <i class="fas fa-download"></i>
-                                        </a>
-                                      @else
-                                        <label for="visa_image{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
-                                          <i class="fas fa-upload"></i>
-                                        </label>
-                                        <input type="file" id="visa_image{{$data->id}}" name="visa_image" class="form-control mb-2 mr-2" style="display: none;">
-                                      @endif
-                                      @if(empty($data->visa) || empty($data->visa_exp_date))
+                                     
+                                      @if(empty($data->visa_exp_date))
                                       <button type="button" class="btn btn-secondary submitVisa" data-id="{{$data->id}}">
                                       <i class="fas fa-save"></i>
                                       </button>
@@ -117,7 +110,6 @@
                            
                               
                             </tr>
-                      
                             @endforeach
                           
                           </tbody>
@@ -142,13 +134,15 @@
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table id="" class="table table-bordered table-striped">
+                       <table id="completedTable" class="table table-bordered table-striped">
+
                           <thead>
                           <tr>
                             <th>Sl</th>
                             <th>Passport Name</th>
                             <th>Agent Name</th>
                             <th>Mofa</th>
+                             <th>Mofa Count</th>
                             <th>Visa Exp Date and Image</th>
                             <th>Manpower</th>
                             
@@ -156,18 +150,18 @@
                           </thead>
                           <tbody>
 
-                            @foreach ($complete as $key => $data)
+                            @foreach ($clientsCompleted as $ckey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($key + 1) }} </td>
-                              <td style="text-align: center">{{$data->passport_name}}
-                                ({{$data->passport_number}})
+                              <td style="text-align: center">{{ ($ckey + 1) }} </td>
+                              <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
+                                ({{$data->passport_number}})</a>
                               </td>
                               <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a></td>
 
                               <td style="text-align: center">
                               {{ \App\Models\CodeMaster::where('id', $data->mofa_trade)->value('type_name') }} 
                               </td>
-
+                              <td>{{$data->mofa_count}}</td>
                               <td style="text-align: center"> 
                                   <form id="visaForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
                                     @csrf
@@ -177,23 +171,6 @@
                                     @else
                                     <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
                                     @endif
-
-                                    <input type="hidden" name="id" value="{{ $data->id }}">
-                                      @if($data->visa)
-                                        <a class="btn btn-secondary" href="{{ asset('images/client/visa/' . $data->visa) }}" target="_blank">
-                                          <i class="fas fa-download"></i>
-                                        </a>
-                                      @else
-                                        <label for="visa_image{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
-                                          <i class="fas fa-upload"></i>
-                                        </label>
-                                        <input type="file" id="visa_image{{$data->id}}" name="visa_image" class="form-control mb-2 mr-2" style="display: none;">
-                                      @endif
-                                      @if(empty($data->visa) || empty($data->visa_exp_date))
-                                      <button type="button" class="btn btn-secondary submitVisa" data-id="{{$data->id}}">
-                                      <i class="fas fa-save"></i>
-                                      </button>
-                                      @endif
                                   </form>
                                   <p><small class="visa_msg" id="visa_msg{{$data->id}}"></small></p>
                                 
@@ -245,54 +222,46 @@
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table id="" class="table table-bordered table-striped">
+                       <table id="newTable" class="table table-bordered table-striped">
+
                           <thead>
                           <tr>
                             <th>Sl</th>
                             <th>Passport Name</th>
                             <th>Agent Name</th>
                             <th>Mofa</th>
-                            <th>Visa Exp Date and Image</th>
-                            <th>Manpower</th>
+                             <th>Mofa Count</th>
+                            <th>Medical Exp Date</th>
                             
                           </tr>
                           </thead>
                           <tbody>
 
-                            @foreach ($new as $key => $data)
+                            @foreach ($clientsNew as $nkey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($key + 1) }} </td>
-                              <td style="text-align: center">{{$data->passport_name}}
-                                 ({{$data->passport_number}})
+                              <td style="text-align: center">{{ ($nkey + 1) }} </td>
+                              <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
+                                 ({{$data->passport_number}})</a>
                               </td>
                               <td style="text-align: center"><a href="{{route('admin.agentClient', $data->user_id)}}"> <u><b>{{$data->user->name}} {{$data->user->surname}}</b> </u></a></td>
 
                               <td style="text-align: center">
                               {{ \App\Models\CodeMaster::where('id', $data->mofa_trade)->value('type_name') }} 
                               </td>
-
+                              <td>{{$data->mofa_count}}</td>
                               <td style="text-align: center"> 
                                   <form id="visaForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
                                     @csrf
 
-                                    @if($data->visa_exp_date)
-                                    <p>{{$data->visa_exp_date}} &nbsp &nbsp</p>
+                                    @if($data->medical_exp_date)
+                                    <p>{{$data->medical_exp_date}} &nbsp &nbsp</p>
                                     @else
-                                    <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
+                                    <input type="date" name="medical_date" id="medical_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
                                     @endif
 
                                     <input type="hidden" name="id" value="{{ $data->id }}">
-                                      @if($data->visa)
-                                        <a class="btn btn-secondary" href="{{ asset('images/client/visa/' . $data->visa) }}" target="_blank">
-                                          <i class="fas fa-download"></i>
-                                        </a>
-                                      @else
-                                        <label for="visa_image{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
-                                          <i class="fas fa-upload"></i>
-                                        </label>
-                                        <input type="file" id="visa_image{{$data->id}}" name="visa_image" class="form-control mb-2 mr-2" style="display: none;">
-                                      @endif
-                                      @if(empty($data->visa) || empty($data->visa_exp_date))
+                                    
+                                      @if(empty($data->medical_exp_date))
                                       <button type="button" class="btn btn-secondary submitVisa" data-id="{{$data->id}}">
                                       <i class="fas fa-save"></i>
                                       </button>
@@ -300,30 +269,8 @@
                                   </form>
                                   <p><small class="visa_msg" id="visa_msg{{$data->id}}"></small></p>
                                 
-                              </td>
-  
-                              <td style="text-align: center"> 
-                                <form id="manpoerForm{{$data->id}}" enctype="multipart/form-data" class="form-inline">
-                                  @csrf
-                                  <input type="hidden" name="id" value="{{ $data->id }}">
-                                  @if($data->manpower_image)
-                                    <a class="btn btn-secondary" href="{{ asset('images/client/manpower/' . $data->manpower_image) }}" target="_blank">
-                                    <i class="fas fa-download"></i>
-                                    </a>                    
-                                  @else
-                                    <label for="manpower_image{{$data->id}}" class="btn btn-secondary mb-2 mr-2">
-                                      <i class="fas fa-upload"></i>
-                                    </label>
-                                    <input type="file" id="manpower_image{{$data->id}}" name="manpower_image" class="form-control mb-2 mr-2" style="display: none;">
-                                    <button type="button" class="btn btn-secondary submitManpower" data-id="{{$data->id}}">
-                                    <i class="fas fa-save"></i>
-                                  </button>
-                                  @endif
-                                </form>
-                                <p><small class="manpower_msg" id="manpower_msg{{$data->id}}"></small></p>
-
-                              </td>                       
-         
+                              </td> 
+                            
                             </tr>
                     
                             @endforeach
@@ -352,30 +299,37 @@
 
 
 
+<!-- jQuery (required for DataTables) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
-    
 
 
 @endsection
 @section('script')
+
 <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "pageLength": 100,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
+  $(document).ready(function () {
+    $('#processingTable').DataTable({
+      "responsive": true,
+      "autoWidth": false
     });
+    
+    $('#completedTable').DataTable({
+      "responsive": true,
+      "autoWidth": false
+    });
+    
+    $('#newTable').DataTable({
+      "responsive": true,
+      "autoWidth": false
+    });
+  });
+</script>
+
+<script>
 
     $(function() {
       $('.stsBtn').click(function() {
@@ -643,7 +597,6 @@
                           });
                         });
                   } else {
-                      // $('#training_finger_msg'+id).html(data.message);
                         $(function() {
                           var Toast = Swal.mixin({
                           toast: true,

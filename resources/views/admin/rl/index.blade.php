@@ -1,116 +1,113 @@
 @extends('admin.layouts.admin')
 
 @section('content')
-
-<!-- Main content -->
 <section class="content" id="contentContainer">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <!-- /.card -->
+        <div class="row">
+            <div class="col-12">
 
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">All Data</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>RL Name</th>
-                  <th>RL Address</th>
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
-                  <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">
-                    <a href="{{route('admin.rldetails', $data->id)}}"> <u><b>{{$data->type_name}}</b> </u></a>                     
+                <div class="card card-secondary card-tabs">
+                    <div class="card-header p-0 pt-1">
+                        <ul class="nav nav-tabs" id="custom-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="active-tab" data-toggle="pill" href="#active" role="tab">Active</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="inactive-tab" data-toggle="pill" href="#inactive" role="tab">Inactive</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="custom-tabs-tabContent">
 
-                    </td>
-                    <td style="text-align: center">{{$data->type_description}}</td>
-                  </tr>
-                  @endforeach
-                
-                </tbody>
-              </table>
+                            <!-- Active Tab -->
+                            <div class="tab-pane fade show active" id="active" role="tabpanel">
+                                <table id="activeTable" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl</th>
+                                            <th>RL Name</th>
+                                            <th>RL Address</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($activeData as $key => $data)
+                                        <tr data-id="{{ $data->id }}">
+                                            <td>{{ $key + 1 }}</td>
+                                            <td><a href="{{route('admin.rldetails', $data->id)}}"><b>{{ $data->type_name }}</b></a></td>
+                                            <td>{{ $data->type_description }}</td>
+                                            <td>
+                                          <div class="custom-control custom-switch">
+                                              <input type="checkbox" class="custom-control-input toggle-status" id="customSwitchStatus{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->status == 1 ? 'checked' : '' }}>
+                                              <label class="custom-control-label" for="customSwitchStatus{{ $data->id }}"></label>
+                                          </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Inactive Tab -->
+                            <div class="tab-pane fade" id="inactive" role="tabpanel">
+                                <table id="inactiveTable" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl</th>
+                                            <th>RL Name</th>
+                                            <th>RL Address</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($inactiveData as $key => $data)
+                                        <tr data-id="{{ $data->id }}">
+                                            <td>{{ $key + 1 }}</td>
+                                            <td><a href="{{route('admin.rldetails', $data->id)}}"><b>{{ $data->type_name }}</b></a></td>
+                                            <td>{{ $data->type_description }}</td>
+                                            <td>
+                                          <div class="custom-control custom-switch">
+                                              <input type="checkbox" class="custom-control-input toggle-status" id="customSwitchStatus{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->status == 1 ? 'checked' : '' }}>
+                                              <label class="custom-control-label" for="customSwitchStatus{{ $data->id }}"></label>
+                                          </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
         </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </section>
-<!-- /.content -->
-
-
 @endsection
+
 @section('script')
 <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
-  </script>
+var stsurl = "{{URL::to('/admin/toggle-status-ajax')}}";
 
-<script>
-  $(document).ready(function () {
-      $("#addThisFormContainer").hide();
-      $("#newBtn").click(function(){
-          clearform();
-          $("#newBtn").hide(100);
-          $("#addThisFormContainer").show(300);
+       // active-deactive users
+      $(document).on('change', '.toggle-status', function() {
+            var code_id = $(this).data('id');
+            var status = $(this).prop('checked') ? 1 : 0;
 
-      });
-      $("#FormCloseBtn").click(function(){
-          $("#addThisFormContainer").hide(200);
-          $("#newBtn").show(100);
-          clearform();
-      });
-      //header for csrf-token is must in laravel
-      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
-      //
-      var url = "{{URL::to('/admin/setting')}}";
-      var upurl = "{{URL::to('/admin/setting-update')}}";
-      // console.log(url);
-      $("#addBtn").click(function(){
-      //   alert("#addBtn");
-          if($(this).val() == 'Create') {
-              var form_data = new FormData();
-              form_data.append("name", $("#name").val());
-              form_data.append("type", $("#type").val());
-              form_data.append("type_code", $("#type_code").val());
-              form_data.append("type_description", $("#type_description").val());
-              $.ajax({
-                url: url,
-                method: "POST",
-                contentType: false,
-                processData: false,
-                data:form_data,
-                success: function (d) {
-                    if (d.status == 303) {
-                        $(".ermsg").html(d.message);
-                    }else if(d.status == 300){
+            $.ajax({
+                url: stsurl,
+                method: 'POST',
+                data: {
+                    id: code_id,
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
 
-                      $(function() {
+                    $(function() {
                           var Toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
@@ -119,107 +116,16 @@
                           });
                           Toast.fire({
                             icon: 'success',
-                            title: 'Data create successfully.'
+                            title: response.message
                           });
                         });
                       window.setTimeout(function(){location.reload()},2000)
-                    }
+
                 },
-                error: function (d) {
-                    console.log(d);
+                error: function(xhr, status, error) {
+                    showError('An error occurred. Please try again.');
                 }
             });
-          }
-          //create  end
-          //Update
-          if($(this).val() == 'Update'){
-              var form_data = new FormData();
-              form_data.append("name", $("#name").val());
-              form_data.append("codeid", $("#codeid").val());
-              
-              $.ajax({
-                  url:upurl,
-                  type: "POST",
-                  dataType: 'json',
-                  contentType: false,
-                  processData: false,
-                  data:form_data,
-                  success: function(d){
-                      console.log(d);
-                      if (d.status == 303) {
-                          $(".ermsg").html(d.message);
-                          pagetop();
-                      }else if(d.status == 300){
-                        $(function() {
-                          var Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                          });
-                          Toast.fire({
-                            icon: 'success',
-                            title: 'Data updated successfully.'
-                          });
-                        });
-                          window.setTimeout(function(){location.reload()},2000)
-                      }
-                  },
-                  error:function(d){
-                      console.log(d);
-                  }
-              });
-          }
-          //Update
       });
-      //Edit
-      $("#contentContainer").on('click','#EditBtn', function(){
-          //alert("btn work");
-          codeid = $(this).attr('rid');
-          //console.log($codeid);
-          info_url = url + '/'+codeid+'/edit';
-          //console.log($info_url);
-          $.get(info_url,{},function(d){
-              populateForm(d);
-              pagetop();
-          });
-      });
-      //Edit  end
-      //Delete 
-      $("#contentContainer").on('click','#deleteBtn', function(){
-            if(!confirm('Sure?')) return;
-            codeid = $(this).attr('rid');
-            info_url = url + '/'+codeid;
-            $.ajax({
-                url:info_url,
-                method: "GET",
-                type: "DELETE",
-                data:{
-                },
-                success: function(d){
-                    if(d.success) {
-                        alert(d.message);
-                        location.reload();
-                    }
-                },
-                error:function(d){
-                    console.log(d);
-                }
-            });
-        });
-      //Delete  
-      function populateForm(data){
-          $("#name").val(data.name);
-          $("#codeid").val(data.id);
-          $("#addBtn").val('Update');
-          $("#addBtn").html('Update');
-          $("#addThisFormContainer").show(300);
-          $("#newBtn").hide(100);
-      }
-      function clearform(){
-          $('#createThisForm')[0].reset();
-          $("#addBtn").val('Create');
-      }
-  });
 </script>
 @endsection

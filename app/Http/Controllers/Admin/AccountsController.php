@@ -15,7 +15,10 @@ class AccountsController extends Controller
     {
         if($request->ajax()){
             $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
-            $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
+            // $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
+            $transactions = Transaction::with(['chartOfAccount', 'employee']) // add 'employee'
+                ->where('office', 'dhaka')
+                ->where('status', 1);
 
             if ($request->type) {
                 $transactions->where('table_type', $request->input('type'));

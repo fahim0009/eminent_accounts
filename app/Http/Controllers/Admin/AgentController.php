@@ -49,6 +49,8 @@ class AgentController extends Controller
                 'clients.id',
                 'clients.passport_name',
                 'clients.passport_number',
+                'clients.visa_exp_date',
+                'clients.medical_exp_date',
                 'clients.package_cost',
                 'clients.status',
                 DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount") AND transactions.status IN (1, 2) THEN transactions.bdt_amount ELSE 0 END), 0) as total_received'),
@@ -59,6 +61,8 @@ class AgentController extends Controller
                 'clients.id',
                 'clients.passport_name',
                 'clients.passport_number',
+                'clients.medical_exp_date',
+                'clients.visa_exp_date',
                 'clients.package_cost',
                 'clients.status'
             )
