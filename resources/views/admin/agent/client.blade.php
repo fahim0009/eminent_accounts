@@ -314,7 +314,7 @@
                         $subTypes = ['package_received', 'service_received', 'package_discount', 'service_discount'];
 
                         // Skip if transaction is canceled
-                        if ($sdata->status != 2) {
+                        if ($sdata->status == 1) {
                             if (in_array($sdata->tran_type, $addTypes)) {
                                 $tbalance += $sdata->bdt_amount;
                             } elseif (in_array($sdata->tran_type, $subTypes)) {

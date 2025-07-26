@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
     <!-- Main content -->
     <section class="content">
       
@@ -539,12 +537,22 @@
                                 </thead>
                                 <tbody>
                                   @foreach ($trans as $key => $tran)
-                                  <tr>
+
+                                  @php
+                                  $rowClass = '';
+                                  // Flag for canceled transaction (status = 2)
+                                  $isCanceled = ($tran->status == 2);
+                                  if ($isCanceled) {
+                                      $rowClass = 'table-danger'; // Bootstrap red row
+                                  }  
+                                  @endphp
+
+                                  <tr class="{{ $rowClass }}">
                                     <td style="text-align: center">{{ $key + 1 }}</td>
                                     <td style="text-align: center">{{$tran->date}}</td>
                                     <td style="text-align: center">@if(isset($tran->account_id)){{$tran->account->short_name}}@else {{$tran->ref}} @endif @if(isset($tran->note))({{$tran->note}})@endif</td>
-                                    <!-- <td style="text-align: center">{{$tran->bdt_amount}}</td> -->
 
+                                    
                                     @if(($tran->tran_type == 'package_received') || ($tran->tran_type == 'package_discount'))
 
                                     <td style="text-align: center">{{$tran->bdt_amount}}</td>

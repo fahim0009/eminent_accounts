@@ -59,6 +59,7 @@ class HomeController extends Controller
             DB::raw('COALESCE(SUM(CASE WHEN tran_type IN ("service_sales", "service_adon") THEN bdt_amount ELSE 0 END), 0) as total_service'),
             DB::raw('COALESCE(SUM(CASE WHEN tran_type IN ("service_received", "service_discount") THEN bdt_amount ELSE 0 END), 0) as total_serviceReceived')
         )
+        ->where('status', 1)
         ->first();
 
         return view('admin.dashboard', compact('new','processing','decline','completed','datas','tickets'));

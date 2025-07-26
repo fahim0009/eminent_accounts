@@ -421,7 +421,6 @@ class ClientController extends Controller
             ->where('opd.assign_to', $id)
             ->select('opd.*', 'u.name as vendor_name', 'u.surname as vendor_surname') // adjust fields as needed
             ->get();
-        //  dd($assign);   
         return view('admin.client.clientdetail', compact('data','agents','countries','accounts','trans','assign'));
     }
 

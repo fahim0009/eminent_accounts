@@ -30,8 +30,8 @@ class AgentController extends Controller
             'users.phone',   
             'users.status',
             'users.is_type',
-            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon","service_sales","service_adon","okala_sales","okalasales_adon") THEN transactions.bdt_amount ELSE 0 END), 0) as total_receiable'),  
-            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount","service_received","service_discount","okala_received","okalasales_discount") THEN transactions.bdt_amount ELSE 0 END), 0) as total_received')
+            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_sales", "package_adon","service_sales","service_adon","okala_sales","okalasales_adon") AND transactions.status IN (1) THEN transactions.bdt_amount ELSE 0 END), 0) as total_receiable'),  
+            DB::raw('COALESCE(SUM(CASE WHEN transactions.tran_type IN ("package_received", "package_discount","service_received","service_discount","okala_received","okalasales_discount") AND transactions.status IN (1) THEN transactions.bdt_amount ELSE 0 END), 0) as total_received')
         )
         ->where('users.is_type', '=', '2')
         ->groupBy('users.id', 'users.name', 'users.surname', 'users.email', 'users.phone','users.status','users.is_type',) // Group by all selected columns
