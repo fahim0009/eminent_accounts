@@ -21,7 +21,34 @@
       <td style="text-align: center">{{ $key + 1 }}</td>
       <td style="text-align: center"><a href="{{ route('admin.clientDetails', $entry->id) }}">{{ $entry->passport_name }}</a></td>
       <td style="text-align: center">{{ $entry->passport_number }}</td>
-      <td style="text-align: center">{{ $entry->visa_exp_date }}</td>
+
+      <!-- // expirey warning -->
+      @if($entry->visa_exp_date)
+
+      @php
+      $expiryDate = \Carbon\Carbon::parse($entry->visa_exp_date);
+      $today = \Carbon\Carbon::today();
+      $color = '';
+
+      if ($expiryDate->lessThan($today)) {
+          // Already expired
+          $color = 'background-color: black; color: white;';
+      } else {
+          // Not yet expired — check how close
+          $daysRemaining = $today->diffInDays($expiryDate);
+
+          if ($daysRemaining <= 8) {
+              $color = 'background-color: red; color: white;';
+          } elseif ($daysRemaining <= 15) {
+              $color = 'background-color: yellow;';
+          }
+      }
+      @endphp
+     <!-- // expirey warning end -->
+     <td style="{{ $color }}; text-align: center;">{{ $entry->visa_exp_date }}</td>
+       @else
+      <td style="text-align: center">Not Set</td>
+      @endif
       <td style="text-align: center">{{ $entry->total_package }}</td>
       <td style="text-align: center">{{ $entry->total_received }}</td>
       <td style="text-align: center">

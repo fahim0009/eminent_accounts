@@ -182,7 +182,6 @@
                       \App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->trade)->first();
                       $rl = \App\Models\CodeMaster::where('id', $data->r_l_detail_id)->first();
                       // $purchaseType =\App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->purchase_type
-                      // dd( $data);
                   @endphp
                   <tr>
                     <td style="text-align: center">{{ $key + 1 }}</td>
