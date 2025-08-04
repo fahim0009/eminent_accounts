@@ -28,26 +28,25 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                          <!-- Image loader -->
+          <!-- Loader Overlay -->
+          <div id="loading" style="display:none; position: absolute; top: 0; left: 0; z-index: 9999; width: 100%; height: 100%; background-color: rgba(255,255,255,0.7); text-align: center;">
+              <img src="{{ asset('assets/common/loader.gif') }}" id="loading-image" alt="Loading..." style="margin-top: 20%;">
+          </div>
+
+        <!-- Image loader -->
+              <div class="ermsg"></div>
                 <form id="createThisForm">
                   @csrf
                   <input type="hidden" class="form-control" id="codeid" name="codeid">
-
-                  
-                  <div class="row">
-                    <div class="col-sm-12">
-                        <label>Client ID</label>
-                        <input type="number" class="form-control" id="clientid" name="clientid" value="">
-                    </div>
-                  </div>
-
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Agents</label>
-                        <select name="user_id" id="user_id" class="form-control">
+                        <select name="user_id" id="user_id" class="form-control" disabled>
                           <option value="">Select</option>
                           @foreach ($agents as $item)
-                          <option value="{{$item->id}}">{{$item->name}}</option>
+                          <option value="{{$item->id}}" selected>{{$item->name}}</option>
                           @endforeach
                         </select>
                       </div>
@@ -118,11 +117,26 @@
 
                   </div>
                   
-
+                  <!-- toggle swich  -->
                   <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-3">
                       <div class="form-group">
-                        <label>Description</label>
+                        <label for="is_ticket">Ticket</label><br>
+                        <input type="checkbox" id="is_ticket" name="is_ticket" value="1" data-toggle="toggle" data-on="Yes" data-off="No">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="is_job">Job</label><br>
+                        <input type="checkbox" id="is_job" name="is_job" value="1" data-toggle="toggle" data-on="Yes" data-off="No">
+                      </div>
+                    </div>
+
+                  <!-- discription  -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Note</label>
                         <input type="text" class="form-control" id="description" name="description">
                       </div>
                     </div>
@@ -726,11 +740,13 @@
       var url = "{{URL::to('/admin/client')}}";
       var upurl = "{{URL::to('/admin/client-update')}}";
       // console.log(url);
-      $("#addBtn").click(function(){
+       $("#addBtn").click(function(){
       //   alert("#addBtn");
-            $(this).prop('disabled', true);
           if($(this).val() == 'Create') {
 
+            $('#addBtn').prop('disabled', true).text('Saving...');
+
+            $('#loading').show();
               var passport_image = $('#passport_image').prop('files')[0];
               if(typeof passport_image === 'undefined'){
                   passport_image = 'null';
@@ -743,7 +759,6 @@
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
               form_data.append('client_image', client_image);
-              form_data.append("clientid", $("#clientid").val());
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
@@ -751,6 +766,9 @@
               form_data.append("user_id", $("#user_id").val());
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
+              form_data.append("is_ticket", $('#is_ticket').is(':checked') ? 1 : 0);
+              form_data.append("is_job", $('#is_job').is(':checked') ? 1 : 0);
+
 
 
 
@@ -761,11 +779,12 @@
                 processData: false,
                 data:form_data,
                 success: function (d) {
+                console.log(d);
                     if (d.status == 303) {
                         $(".ermsg").html(d.message);
-                        $("#addBtn").prop('disabled', false);
+                        $('#loading').hide();
+                        $('#addBtn').prop('disabled', false).text('Create');
                     }else if(d.status == 300){
-
                       $(function() {
                           var Toast = Swal.mixin({
                             toast: true,
@@ -778,10 +797,13 @@
                             title: 'Data create successfully.'
                           });
                         });
+                      $('#loading').hide();
+                      $('#addBtn').prop('disabled', false).text('Create');  
                       window.setTimeout(function(){location.reload()},2000)
                     }
                 },
                 error: function (d) {
+                  $('#loading').hide();
                     console.log(d);
                 }
             });
@@ -789,6 +811,9 @@
           //create  end
           //Update
           if($(this).val() == 'Update'){
+
+            $('#addBtn').prop('disabled', true).text('Updating...');
+
               var passport_image = $('#passport_image').prop('files')[0];
               if(typeof passport_image === 'undefined'){
                   passport_image = 'null';
@@ -801,7 +826,6 @@
               var form_data = new FormData();
               form_data.append('passport_image', passport_image);
               form_data.append('client_image', client_image);
-              form_data.append("clientid", $("#clientid").val());
               form_data.append("passport_number", $("#passport_number").val());
               form_data.append("passport_name", $("#passport_name").val());
               form_data.append("passport_rcv_date", $("#passport_rcv_date").val());
@@ -810,6 +834,8 @@
               form_data.append("package_cost", $("#package_cost").val());
               form_data.append("description", $("#description").val());
               form_data.append("codeid", $("#codeid").val());
+              form_data.append("is_ticket", $('#is_ticket').is(':checked') ? 1 : 0);
+              form_data.append("is_job", $('#is_job').is(':checked') ? 1 : 0);
               
               $.ajax({
                   url:upurl,
@@ -822,7 +848,7 @@
                       console.log(d);
                       if (d.status == 303) {
                           $(".ermsg").html(d.message);
-                          $("#addBtn").prop('disabled', false);
+                          $('#addBtn').prop('disabled', false).text('Create');
                           pagetop();
                       }else if(d.status == 300){
                         $(function() {
@@ -837,6 +863,7 @@
                             title: 'Data updated successfully.'
                           });
                         });
+                        $('#addBtn').prop('disabled', false).text('Create');
                           window.setTimeout(function(){location.reload()},2000)
                       }
                   },
@@ -848,17 +875,17 @@
           //Update
       });
       //Edit
-      // $("#contentContainer").on('click','#EditBtn', function(){
-      //     //alert("btn work");
-      //     codeid = $(this).attr('rid');
-      //     //console.log($codeid);
-      //     info_url = url + '/'+codeid+'/edit';
-      //     //console.log($info_url);
-      //     $.get(info_url,{},function(d){
-      //         populateForm(d);
-      //         pagetop();
-      //     });
-      // });
+      $("#contentContainer").on('click','#EditBtn', function(){
+          //alert("btn work");
+          codeid = $(this).attr('rid');
+          //console.log($codeid);
+          info_url = url + '/'+codeid+'/edit';
+          //console.log($info_url);
+          $.get(info_url,{},function(d){
+              populateForm(d);
+              pagetop();
+          });
+      });
       //Edit  end
       //Delete
       $("#contentContainer").on('click','#deleteBtn', function(){
@@ -883,21 +910,35 @@
             });
         });
         //Delete 
-      // function populateForm(data){
-      //     $("#clientid").val(data.clientid);
-      //     $("#passport_number").val(data.passport_number);
-      //     $("#passport_name").val(data.passport_name);
-      //     $("#passport_rcv_date").val(data.passport_rcv_date);
-      //     $("#country").val(data.country);
-      //     $("#user_id").val(data.user_id);
-      //     $("#package_cost").val(data.package_cost);
-      //     $("#description").val(data.description);
-      //     $("#codeid").val(data.id);
-      //     $("#addBtn").val('Update');
-      //     $("#addBtn").html('Update');
-      //     $("#addThisFormContainer").show(300);
-      //     $("#newBtn").hide(100);
-      // }
+      function populateForm(data){
+          $("#passport_number").val(data.passport_number);
+          $("#passport_name").val(data.passport_name);
+          $("#passport_rcv_date").val(data.passport_rcv_date);
+          $("#country").val(data.country_id);
+          $("#user_id").val(data.user_id);
+          $("#package_cost").val(data.package_cost);
+          $("#description").val(data.description);
+          $("#codeid").val(data.id);
+
+           // Update toggle switches
+            if (data.is_ticket == 1) {
+                $('#is_ticket').bootstrapToggle('on');
+            } else {
+                $('#is_ticket').bootstrapToggle('off');
+            }
+
+            if (data.is_job == 1) {
+                $('#is_job').bootstrapToggle('on');
+            } else {
+                $('#is_job').bootstrapToggle('off');
+            }
+
+    // Switch to Update Mode
+          $("#addBtn").val('Update');
+          $("#addBtn").html('Update');
+          $("#addThisFormContainer").show(300);
+          $("#newBtn").hide(100);
+      }
       function clearform(){
           $('#createThisForm')[0].reset();
           $("#addBtn").val('Create');

@@ -36,8 +36,7 @@
                     <td style="text-align: center">{{$data->passport_name}}</td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <!-- <td style="text-align: center">{{$data->package_cost}}</td>
-                    <td style="text-align: center">{{$data->total_rcv}}</td>
-                     -->
+                    <td style="text-align: center">{{$data->total_rcv}}</td> -->
                   </tr>
                   @endforeach
                 
@@ -133,10 +132,7 @@
   $(document).ready(function () {
     
       //header for csrf-token is must in laravel
-      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
-      //
-      
-      
+      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });       
       
   });
 </script>

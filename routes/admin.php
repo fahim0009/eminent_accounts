@@ -76,13 +76,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/processing-clients', [ClientController::class, 'processing'])->name('admin.processingclient');
     Route::get('/decline-clients', [ClientController::class, 'decline'])->name('admin.declineclient');
     Route::get('/completed-clients', [ClientController::class, 'completed'])->name('admin.completedclient');
+    Route::get('/visa-cancel-clients', [ClientController::class, 'visaCancel'])->name('admin.visacancel');
 
-    //ksa without job
-    Route::get('/ksa-without-job-client', [ClientController::class, 'withoutjobindex'])->name('withoutjob.client');
-    Route::get('/ksa-without-job-new-clients', [ClientController::class, 'withoutjobnew'])->name('withoutjob.newclient');
-    Route::get('/ksa-without-job-processing-clients', [ClientController::class, 'withoutjobprocessing'])->name('withoutjob.processingclient');
-    Route::get('/ksa-without-job-decline-clients', [ClientController::class, 'withoutjobdecline'])->name('withoutjob.declineclient');
-    Route::get('/ksa-without-job-completed-clients', [ClientController::class, 'withoutjobcompleted'])->name('withoutjob.completedclient');
 
     // ksa new client
     Route::get('/ksa-new-client', [ClientController::class, 'ksaNewClient'])->name('admin.ksaNewClient');
