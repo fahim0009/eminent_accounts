@@ -230,12 +230,32 @@
                         </div>
                       </div>
 
-                      <div class="row">
-                        <div class="col-sm-12">
-                            <label>Description</label>
-                            <textarea name="description" id="description" cols="30" rows="2" class="form-control" readonly="readonly">{{$data->description}}</textarea>
+                  <!-- toggle swich  -->
+                  <div class="row">
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label for="is_ticket">Ticket</label><br>
+                          <input type="checkbox" id="is_ticket" name="is_ticket" value="1" disabled data-toggle="toggle" data-on="Yes" data-off="No" @if($data->is_ticket == 1) checked @endif>
                         </div>
                       </div>
+
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label for="is_job">Job</label><br>
+                          <input type="checkbox" id="is_job" name="is_job" value="1" disabled data-toggle="toggle" data-on="Yes" data-off="No"  @if($data->is_job == 1) checked @endif>
+                        </div>
+                      </div>
+
+
+                  <!-- discription  -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" class="form-control" value="{{$data->description}}" id="description" name="description">
+                      </div>
+                    </div>
+
+                  </div>
 
                       <div class="form-group row mt-3">
                         <div class="col-sm-10">
@@ -766,10 +786,6 @@
     </section>
     <!-- /.content -->
 
-
-
-
-
 @endsection
 @section('script')
 <script>
@@ -797,14 +813,10 @@
           var status = $(this).attr('value');
           var past_status = $(this).attr('data-status');
 
-          // alert(status+past_status);
-          
-          // return;
 
             if ((status == '3') && (past_status == '1')) {
 
               $('#declineChargeRow' + id).removeClass('d-none');
-
 
             } else {
               // if not decline complete will start 
@@ -1018,8 +1030,8 @@
           form_data.append("flight_date", $("#flight_date").val());
           form_data.append("visa_exp_date", $("#visa_exp_date").val());
           form_data.append("codeid", $("#codeid").val());
-
-
+          form_data.append("is_ticket", $('#is_ticket').is(':checked') ? 1 : 0);
+          form_data.append("is_job", $('#is_job').is(':checked') ? 1 : 0);
 
           $.ajax({
             url: url,
@@ -1344,6 +1356,8 @@
             $("#visa_exp_date").attr("readonly", false);
             $("#package_cost").attr("readonly", false);
             $("#flight_date").attr("readonly", false);
+            $("#is_ticket").prop("disabled", false);
+            $("#is_job").prop("disabled", false);
             $("#editBtn").hide();
             $(".updateBtn").show();
         });

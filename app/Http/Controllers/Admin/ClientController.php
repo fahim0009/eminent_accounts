@@ -431,8 +431,8 @@ class ClientController extends Controller
         $data->package_cost = $request->package_cost;
         $data->description = $request->description;
         $data->is_job = $request->is_job;
-        $data->status = 0;
         $data->is_ticket = $request->is_ticket;
+        $data->status = 0;
 
         // image
         if ($request->passport_image != 'null') {
@@ -531,6 +531,8 @@ class ClientController extends Controller
         $data->description = $request->description;
         $data->flight_date = $request->flight_date;
         $data->visa_exp_date = $request->visa_exp_date;
+        $data->is_job = $request->is_job;
+        $data->is_ticket = $request->is_ticket;
         
         if (($data->status == 1) && isset($request->flight_date)) {
             $data->status = 2;
