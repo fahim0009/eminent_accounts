@@ -162,9 +162,9 @@ class CodeMasterController extends Controller
             ->get();
             
        
-    $clientsNew = $clients->where('status', 0);
-    $clientsProcessing = $clients->where('status', 1);
-    $clientsCompleted = $clients->where('status', 2);
+    $clientsNew = $clients->where('status', 0)->values();
+    $clientsProcessing = $clients->where('status', 1)->values();
+    $clientsCompleted = $clients->where('status', 2)->values();
 
     return view('admin.rl.rldetails', [
         'clientsNew' => $clientsNew,

@@ -18,7 +18,7 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
-                  <th>Passport Name</th>
+                  <th>Passenger Name</th>
                   <th>Agent Name</th>
                   <th>Mofa/RL</th>
                   <th>Visa Exp Date and Image</th>

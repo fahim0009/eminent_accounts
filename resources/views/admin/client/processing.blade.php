@@ -11,7 +11,7 @@
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">All Data</h3>
+              <h3 class="card-title">KSA Processing Clients.</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -19,12 +19,9 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
-                  {{-- <th>Client ID</th> --}}
                   <th>Passport Name</th>
                   <th>Passport Number</th>
-                  <!-- <th>Package Cost</th> -->
                   <th>Agent Name</th>
-                  <!-- <th>Received Amount</th> -->
                   <th>Assign</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -39,7 +36,6 @@
                   @foreach ($data as $key => $data)
                   <tr>
                     <td style="text-align: center">{{ ($count1) }} </td>
-                    {{-- <td style="text-align: center">{{$data->clientid}}</td> --}}
                     <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}</a></td>
                     <td style="text-align: center">{{$data->passport_number}}</td>
                     <!-- <td style="text-align: center">{{$data->package_cost}}</td> -->

@@ -54,7 +54,7 @@
 
                             @foreach ($clientsProcessing as $pkey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($pkey + 1) }} </td>
+                              <td style="text-align: center">{{ $loop->remaining + 1 }} </td>
                               <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
                                  ({{$data->passport_number}})</a>
                               </td>
@@ -124,9 +124,8 @@
     
     
                   <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
-                    <!-- Start visa and others transaction Start  -->
-    
-                    
+                                        <!-- Start visa and others transaction Start  -->
+                       
                     
                     <div class="card">
                       <div class="card-header">
@@ -152,7 +151,7 @@
 
                             @foreach ($clientsCompleted as $ckey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($ckey + 1) }} </td>
+                              <td style="text-align: center">{{ count($clientsCompleted) - $ckey }}</td>
                               <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
                                 ({{$data->passport_number}})</a>
                               </td>
@@ -239,7 +238,7 @@
 
                             @foreach ($clientsNew as $nkey => $data)
                             <tr>
-                              <td style="text-align: center">{{ ($nkey + 1) }} </td>
+                              <td style="text-align: center">  {{ count($clientsNew) - $nkey }} </td>
                               <td style="text-align: center"><a href="{{route('admin.clientDetails', $data->id)}}">{{$data->passport_name}}
                                  ({{$data->passport_number}})</a>
                               </td>
@@ -311,21 +310,33 @@
 @section('script')
 
 <script>
-  $(document).ready(function () {
-    $('#processingTable').DataTable({
-      "responsive": true,
-      "autoWidth": false
+  // helper to apply descending serial numbers per table
+  function applyDescendingIndex(tableSelector) {
+    const t = $(tableSelector).DataTable({
+      responsive: true,
+      autoWidth: false,
+      columnDefs: [
+        { targets: 0, orderable: false, searchable: false } // SL column
+      ]
     });
-    
-    $('#completedTable').DataTable({
-      "responsive": true,
-      "autoWidth": false
-    });
-    
-    $('#newTable').DataTable({
-      "responsive": true,
-      "autoWidth": false
-    });
+
+    t.on('order.dt search.dt draw.dt', function () {
+      const info = t.page.info(); // has start and recordsDisplay after filtering
+      t.column(0, { search: 'applied', order: 'applied', page: 'current' })
+        .nodes()
+        .each(function (cell, i) {
+          // Descending across the filtered set + current page
+          cell.innerHTML = info.recordsDisplay - (info.start + i);
+        });
+    }).draw();
+
+    return t;
+  }
+
+  $(function () {
+    applyDescendingIndex('#processingTable');
+    applyDescendingIndex('#completedTable');
+    applyDescendingIndex('#newTable');
   });
 </script>
 
