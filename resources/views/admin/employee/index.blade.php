@@ -121,6 +121,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Salary</th>
                   <th>office</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -133,6 +134,7 @@
                     <td style="text-align: center">{{$data->name}}</td>
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
+                    <td style="text-align: center">{{$data->salary}}</td>
                     <td style="text-align: center">{{$data->office}}</td>
                     
                     

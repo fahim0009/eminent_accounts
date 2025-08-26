@@ -34,7 +34,7 @@
                 
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">All Data</h3>
+                    <h3 class="card-title">Processing Okala</h3>
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -55,10 +55,8 @@
                         @foreach ($data as $key => $entry)
 
                         
-                        @if (($entry->number - $entry->assigned_count) > 0)
-
                         <tr>
-                          <td style="text-align: center">{{ $key + 1 }}</td>
+                          <td style="text-align: center"></td>
 
                           <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($entry->date)->timestamp }}">
                           {{ \Carbon\Carbon::parse($entry->date)->format('d-m-Y') }}
@@ -72,8 +70,6 @@
 
                         </tr>
                             
-                        @endif                                     
-
 
                         @endforeach
                       
@@ -92,7 +88,7 @@
 
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">All Data</h3>
+                    <h3 class="card-title">Completed Okala</h3>
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -114,10 +110,8 @@
                       @foreach ($complete as $key => $cdata)
 
                                             
-                    @if (($cdata->number - $cdata->assigned_count) == 0)
-
                     <tr>
-                      <td style="text-align: center">{{ $key + 1 }}</td>
+                      <td style="text-align: center"></td> <!-- leave SL empty -->
                       <td style="text-align: center" data-order="{{ \Carbon\Carbon::parse($cdata->date)->timestamp }}">
                           {{ \Carbon\Carbon::parse($cdata->date)->format('d-m-Y') }}
                       </td>
@@ -128,9 +122,8 @@
                       <td style="text-align: center">{{$cdata->type_name}}</td>
                       <td style="text-align: center">{{$cdata->vendor_name}}</td>                     
                     </tr>
-                        
-                    @endif
 
+                        
                     @endforeach
 
                       </tbody>
@@ -170,28 +163,68 @@
 
 <script>
 $(function () {
-  $("#example1").DataTable({
-    "responsive": true,
-    "lengthChange": false,
-    "autoWidth": false,
-    "ordering": true,
-    "buttons": ["copy", "csv", "excel", "pdf", "print"]
-  }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-  $('#example2').DataTable({
-    "responsive": true,
-    "lengthChange": false,
-    "autoWidth": false,
-    "ordering": true,
-    "buttons": ["copy", "csv", "excel", "pdf", "print"]
-  }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
 
-  // Fix: Recalculate DataTables when switching tabs
-  $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-    $($.fn.dataTable.tables(true)).DataTable()
-      .columns.adjust()
-      .responsive.recalc();
-  });
+var t1 = $("#example1").DataTable({
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  ordering: true,
+  buttons: ["copy", "csv", "excel", "pdf", "print"],
+  columnDefs: [
+    { targets: 0, orderable: false, searchable: false, className: 'all' } // SL column
+  ]
+});
+
+// Continuous reverse SL across all pages
+t1.on('order.dt search.dt draw.dt', function () {
+  const total = t1.rows({ search: 'applied', order: 'applied' }).count();
+  const info  = t1.page.info();
+  let num     = total - info.start;
+
+  t1.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+    .every(function () {
+      this.data(num--);
+    });
+}).draw();
+
+
+
+
+
+var t2 = $("#example2").DataTable({
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  ordering: true,
+  buttons: ["copy", "csv", "excel", "pdf", "print"],
+  columnDefs: [
+    { targets: 0, orderable: false, searchable: false, className: 'all' } // SL column
+  ]
+});
+
+// Continuous reverse SL across all pages
+t2.on('order.dt search.dt draw.dt', function () {
+  // Total rows after filter + order
+  const total = t2.rows({ search: 'applied', order: 'applied' }).count();
+  const info  = t2.page.info();
+
+  // The first number on the current page (descending)
+  // e.g., total=37; page 0 start=0 -> startNum=37
+  //       page 1 start=10 -> startNum=27, etc.
+  let num = total - info.start;
+
+  // Fill only current page cells
+  t2.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+    .every(function () {
+      this.data(num--);
+    });
+}).draw();
+
+
+
+
+
 });
 </script>
 

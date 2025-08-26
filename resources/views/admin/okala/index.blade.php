@@ -130,123 +130,85 @@
     <!-- /.content -->
 
 
-<!-- Main content -->
-<section class="content" id="contentContainer">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <!-- /.card -->
+    <!-- Main content -->
+    <section class="content" id="contentContainer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- /.card -->
 
-          <div class="card">
-            <div class="card-header">
-              <!-- <h3 class="card-title">All Data</h3> -->
-              <form method="GET" action="#">
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <label>From Date</label>
-                      <input type="date" class="form-control" name="from_date" value="{{ request()->get('from_date') }}">
-                    </div>
-                    <div class="col-sm-3">
-                      <label>To Date</label>
-                      <input type="date" class="form-control" name="to_date" value="{{ request()->get('to_date') }}">
-                    </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-sm-12">
-                      <button type="submit" class="btn btn-secondary">Search</button>
-                    </div>
-                  </div>
-                </form>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Date</th>
-                  <th>Visa Id</th>
-                  <th>Sponsor Id</th>
-                  <th>Trade</th>
-                  <th>Assign To</th>
-                  <th>RL Id</th>
-                  {{-- <th>Purchase Type</th> --}}
-                  <th>Vendor</th>
-                  <!-- <th>Action</th> -->
-                </tr>
-                </thead>
-                <tbody>
-                  @foreach ($data as $key => $data)
-                  @php
-                      $tradename = \App\Models\CodeMaster::where('id', 
-                      \App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->trade)->first();
-                      $rl = \App\Models\CodeMaster::where('id', $data->r_l_detail_id)->first();
-                      // $purchaseType =\App\Models\OkalaPurchase::where('id', $data->okala_purchase_id)->first()->purchase_type
-                  @endphp
-                  <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
-                    <td style="text-align: center">{{$data->date}}</td>
-                    <td style="text-align: center">{{$data->visa_id}}</td>
-                    <td style="text-align: center">{{$data->sponsor_id}}</td>
-                    <td style="text-align: center">
-                      @if (isset($tradename))
-                      {{$tradename->type_name}}
-                      @endif
-                    </td>
-                    <td style="text-align: center; display:none">
-                      @if (isset($data->assign_to))
-                      {{$data->passport_name}} ({{$data->passport_number}})
-                      @else
-                      <select name="assignto" id="assignto" class="form-control assignto"  data-okala-id="{{ $data->id }}">
-                        <option value="">Select</option>
-                        @foreach (\App\Models\Client::select('id', 'passport_name','passport_number', 'status')->where('assign', 0)->where('status', 1)->get() as $client)
-                        <option value="{{$client->id}}">{{$client->passport_name}} ({{$client->passport_number}})</option>
-                        @endforeach
-                      </select>
-                      @endif
-                      <p id="message"></p>
-                    </td>
-                    <td style="text-align: center">
-
-                      @if (isset($data->assign_to))
-                      {{$data->passport_name}} ({{$data->passport_number}})
-                      @else
-                        <div class="input-group">
-                        <select name="assignto" id="assignto{{$data->id}}" class="form-control assignto">
-                          <option value="">Please Select</option>
-                          @foreach (\App\Models\Client::select('id', 'passport_name','passport_number', 'status')->where('assign', 0)->where('status', 1)->get() as $client)
-                            <option value="{{$client->id}}">{{$client->passport_name}} ({{$client->passport_number}})</option>
-                          @endforeach
-                        </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-secondary assignto_btn" data-id="{{$data->id}}">
-                          <i class="fas fa-save"></i>
-                          </button>
+              <div class="card">
+                <div class="card-header">
+                  <!-- <h3 class="card-title">All Data</h3> -->
+                  <form method="GET" action="#">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <label>From Date</label>
+                          <input type="date" class="form-control" name="from_date" value="{{ request()->get('from_date') }}">
                         </div>
+                        <div class="col-sm-3">
+                          <label>To Date</label>
+                          <input type="date" class="form-control" name="to_date" value="{{ request()->get('to_date') }}">
                         </div>
-                        <p><small class="message" id="message{{$data->id}}"></small></p>
-                      @endif
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-sm-12">
+                          <button type="submit" class="btn btn-secondary">Search</button>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th>Sl</th>
+                      <th>Date</th>
+                      <th>Visa Id</th>
+                      <th>Sponsor Id</th>
+                      <th>Trade</th>
+                      <th>Assign To</th>
+                      <th>RL Id</th>
+                      {{-- <th>Purchase Type</th> --}}
+                      <th>Vendor</th>
+                      <!-- <th>Action</th> -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                  @foreach ($data as $row)
+    <tr>
+      <td style="text-align:center"></td> {{-- SL filled by DataTables --}}
+      <td style="text-align:center" data-order="{{ \Carbon\Carbon::parse($row->date)->timestamp }}">
+        {{ \Carbon\Carbon::parse($row->date)->format('Y-m-d') }}
+      </td>
+      <td style="text-align:center">{{ $row->visa_id }}</td>
+      <td style="text-align:center">{{ $row->sponsor_id }}</td>
+      <td style="text-align:center">{{ $row->trade_name ?? '' }}</td>
 
-                    </td>
-                    <td style="text-align: center">@if (isset($rl))
-                      {{$rl->type_name}}
-                      @endif</td>
-                    {{-- <td style="text-align: center">
-                      @if (($purchaseType)=='0')
-                      {{'Own'}}
-                      @else
-                      {{'Other'}}
-                      @endif
-                    </td> --}}
-                    <td style="text-align: center">{{$name= \App\Models\User::where('id', $data->user_id)->first()?->name }}
-                     </td>
-                    
-                    <!-- <td style="text-align: center">
-                      <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                      <a id="deleteBtn" rid="{{$data->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
-                    </td> -->
-                  </tr>
-                  @endforeach
+      {{-- Assign To (single visible control; remove the hidden duplicate TD) --}}
+      <td style="text-align:center">
+        <div class="input-group">
+          <select class="form-control assignto" id="assignto{{ $row->id }}">
+            <option value="">Please Select</option>
+            @foreach ($clients as $c)
+              <option value="{{ $c->id }}">{{ $c->passport_name }} ({{ $c->passport_number }})</option>
+            @endforeach
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-secondary assignto_btn" data-id="{{ $row->id }}">
+              <i class="fas fa-save"></i>
+            </button>
+          </div>
+        </div>
+        <p><small class="message" id="message{{ $row->id }}"></small></p>
+      </td>
+
+      <td style="text-align:center">{{ $row->rl_name ?? '' }}</td>
+      <td style="text-align:center">{{ $row->vendor_name ?? '' }}</td>
+    </tr>
+    @endforeach
+
                 
                 </tbody>
               </table>
@@ -268,36 +230,34 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+$(document).ready(function () {
+  var t1 = $('#example1').DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL col
+    ]
+  });
 
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
+  // continuous reverse numbering
+  t1.on('order.dt search.dt draw.dt', function () {
+    const total = t1.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t1.page.info();
+    let num     = total - info.start;
+
+    t1.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () {
+        this.data(num--);
       });
-    });
-
-
-    $(document).ready(function () {
-      $('.clientselect').select2({
-            placeholder: 'Select a client',
-            width: '100%'
-        });
-    });
-
+  }).draw();
+});
   </script>
 <script>
   $(document).ready(function() {
  
-
       $('.assignto_btn').click(function () {
         
         var okalaId = $(this).data('id');

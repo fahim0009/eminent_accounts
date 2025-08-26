@@ -263,7 +263,7 @@
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="example2" class="table table-bordered table-striped">
                       <thead>
                       <tr>
                         <th>Sl</th>
@@ -441,23 +441,62 @@
       }
   });
 </script>
-<script>
 
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
+<script>
+$(document).ready(function () {
+  var t1 = $('#example1').DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL col
+    ]
+  });
+
+  // continuous reverse numbering
+  t1.on('order.dt search.dt draw.dt', function () {
+    const total = t1.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t1.page.info();
+    let num     = total - info.start;
+
+    t1.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () {
+        this.data(num--);
       });
+  }).draw();
+});
+
+var t2 = $("#example2").DataTable({
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  ordering: true,
+  buttons: ["copy", "csv", "excel", "pdf", "print"],
+  columnDefs: [
+    { targets: 0, orderable: false, searchable: false, className: 'all' } // SL column
+  ]
+});
+
+// Continuous reverse SL across all pages
+t2.on('order.dt search.dt draw.dt', function () {
+  // Total rows after filter + order
+  const total = t2.rows({ search: 'applied', order: 'applied' }).count();
+  const info  = t2.page.info();
+
+  // The first number on the current page (descending)
+  // e.g., total=37; page 0 start=0 -> startNum=37
+  //       page 1 start=10 -> startNum=27, etc.
+  let num = total - info.start;
+
+  // Fill only current page cells
+  t2.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+    .every(function () {
+      this.data(num--);
     });
+}).draw();
+
 
     $(function() {
       $('.stsBtn').click(function() {

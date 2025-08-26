@@ -15,7 +15,6 @@ class AccountsController extends Controller
     {
         if($request->ajax()){
             $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
-            // $transactions = Transaction::with('chartOfAccount')->where('office', 'dhaka')->where('status', 1);
             $transactions = Transaction::with(['chartOfAccount', 'employee']) // add 'employee'
                 ->where('office', 'dhaka')
                 ->where('status', 1);
@@ -40,14 +39,20 @@ class AccountsController extends Controller
 
             $transactions = $transactions->orderby('id', 'DESC')->get();
 
-            return DataTables::of($transactions)
-                ->addColumn('chart_of_account', function ($transaction) {
-                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
-                })
-                ->addColumn('account_name', function ($transaction) {
-                    return $transaction->account ? $transaction->account->name : "";
-                })
-                ->make(true);
+        return DataTables::of($transactions)
+            ->addColumn('chart_of_account', function ($t) {
+                $accountName = $t->chartOfAccount ? $t->chartOfAccount->account_name : $t->description;
+                if ($t->employee && stripos($accountName, 'salary') !== false) {
+                    // Only add employee if account name contains 'salary'
+                    return $accountName . ' (' . $t->employee->name . ')';
+                }
+                return $accountName;
+            })
+            ->addColumn('account_name', function ($t) {
+                return $t->account->name ?? '';
+            })
+            ->make(true);
+
         }
         $coa = ChartOfAccount::where('status', 1)->get();
         $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();

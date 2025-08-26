@@ -41,7 +41,7 @@
                 <tbody>
                   @foreach ($data as $key => $data)
                    <tr>
-                    <td style="text-align: center">{{ $key + 1 }}</td>
+                    <td style="text-align: center"></td>
                     <td style="text-align: center">{{$data->date}}</td>
                     <td style="text-align: center">{{$data->visa_id}}</td>
                     <td style="text-align: center">{{$data->sponsor_id}}</td>
@@ -87,7 +87,29 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function () {
-  $('#example1').DataTable();
+  var t1 = $('#example1').DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL col
+    ]
+  });
+
+  // continuous reverse numbering
+  t1.on('order.dt search.dt draw.dt', function () {
+    const total = t1.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t1.page.info();
+    let num     = total - info.start;
+
+    t1.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () {
+        this.data(num--);
+      });
+  }).draw();
 });
+
  </script>
 @endsection

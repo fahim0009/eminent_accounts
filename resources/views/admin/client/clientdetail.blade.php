@@ -251,7 +251,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Note</label>
-                        <input type="text" class="form-control" value="{{$data->description}}" id="description" name="description">
+                        <input type="text" class="form-control" value="{{$data->description}}" id="description" name="description" readonly="readonly">
                       </div>
                     </div>
 
@@ -1356,6 +1356,7 @@
             $("#visa_exp_date").attr("readonly", false);
             $("#package_cost").attr("readonly", false);
             $("#flight_date").attr("readonly", false);
+            $("#description").attr("readonly", false);
             $("#is_ticket").prop("disabled", false);
             $("#is_job").prop("disabled", false);
             $("#editBtn").hide();

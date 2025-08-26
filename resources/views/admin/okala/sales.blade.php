@@ -190,7 +190,7 @@
     
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">All Data</h3>
+                        <h3 class="card-title">Processing Sales</h3>
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
@@ -211,49 +211,40 @@
                           </tr>
                           </thead>
                           <tbody>
-                            @foreach ($okala_sales as $key => $okala)
-
-
-                            @if ($okala->status == 0)
+                            @foreach ($processing as $key => $procokala)
                             @php
-                            $user = \App\Models\User::where('id', $okala->user_id)->first();
+                            $user = \App\Models\User::where('id', $procokala->user_id)->first();
                             @endphp
                             <tr>
-                              <td style="text-align: center">{{ $key + 1 }}</td>
-                              <td style="text-align: center">{{$okala->date}}</td>
-                              <td style="text-align: center">{{$okala->number}}</td>
-                              <td style="text-align: center">{{$okala->visaid}}</td>
-                              <td style="text-align: center">{{$okala->sponsor_id}}</td>
+                              <td style="text-align: center"></td>
+                              <td style="text-align: center">{{$procokala->date}}</td>
+                              <td style="text-align: center">{{$procokala->number}}</td>
+                              <td style="text-align: center">{{$procokala->visaid}}</td>
+                              <td style="text-align: center">{{$procokala->sponsor_id}}</td>
                               <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
-                              <td style="text-align: center">{{$okala->vendor_name}} </td>
+                              <td style="text-align: center">{{$procokala->vendor_name}} </td>
 
                               
                               <td style="text-align: center">
                                 <div class="btn-group">
-                                  <button type="button" class="btn btn-secondary"><span id="stsval{{$okala->id}}"> @if($okala->status ==0) Processing @elseif($okala->status == 1) Complete @else New @endif</span></button>
+                                  <button type="button" class="btn btn-secondary"><span id="stsval{{$procokala->id}}"> @if($procokala->status ==0) Processing @elseif($procokala->status == 1) Complete @else New @endif</span></button>
                                   <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
                                     <span class="sr-only">Toggle Dropdown</span>
                                   </button>
                                   <div class="dropdown-menu" role="menu">
-                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="0">Processing</button>
-                                    <button class="dropdown-item stsBtn" data-id="{{$okala->id}}" value="1">Complete</button>
+                                    <button class="dropdown-item stsBtn" data-id="{{$procokala->id}}" value="0">Processing</button>
+                                    <button class="dropdown-item stsBtn" data-id="{{$procokala->id}}" value="1">Complete</button>
                                   </div>
                                 </div>
                               </td>
 
 
                               <td style="text-align: center">
-                                <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
-                                <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
+                                <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $procokala->id }}" data-agent-id="{{ $procokala->user_id }}" data-rl-id="">Receive</span>
+                                <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $procokala->id }}" data-vendor-id="{{ $procokala->user_id }}" data-program-id="">Transaction</span>
                               </td>               
-                              <!-- <td style="text-align: center">
-                                <a href="{{route('okalasalesDetails', $okala->id)}}"><i class="fa fa-eye" style="color: #24ae2f;font-size:16px;"></i></a>
-                                <a id="EditBtn" rid="{{$okala->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
-                                <a id="deleteBtn" rid="{{$okala->id}}"><i class="fa fa-trash-o" style="color: red;font-size:16px;"></i></a>
-                              </td> -->
-                            </tr>
-                            @endif
-                            
+
+                            </tr>                            
 
                             @endforeach
                           
@@ -273,12 +264,12 @@
                     
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">All Data</h3>
+                        <h3 class="card-title">Complete Sales</h3>
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
                         <input type="hidden" id="okalaCount" value="{{$data->count()}}">
-                        <table id="example1" class="table table-bordered table-striped">
+                        <table id="example2" class="table table-bordered table-striped">
                           <thead>
                           <tr>
                             <th style="text-align: center">Sl</th>
@@ -293,15 +284,12 @@
                           </tr>
                           </thead>
                           <tbody>
-                            @foreach ($okala_sales as $key => $okala)
-
-
-                            @if ($okala->status == 1)
+                            @foreach ($completed as $key => $okala)
                             @php
                             $user = \App\Models\User::where('id', $okala->user_id)->first();
                             @endphp
                             <tr>
-                              <td style="text-align: center">{{ $key + 1 }}</td>
+                              <td style="text-align: center"></td>
                               <td style="text-align: center">{{$okala->date}}</td>
                               <td style="text-align: center">{{$okala->number}}</td>
                               <td style="text-align: center">{{$okala->visaid}}</td>
@@ -309,16 +297,11 @@
                               <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
                               <td style="text-align: center">{{$okala->vendor_name}} </td>
 
-                              
-
-
                               <td style="text-align: center">
                                 <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>
                                 <span class="btn btn-success btn-xs trn-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-vendor-id="{{ $okala->user_id }}" data-program-id="">Transaction</span>
                               </td>     
-                            </tr>
-                            @endif
-                            
+                            </tr>                            
 
                             @endforeach
                           
@@ -347,10 +330,6 @@
       </div>
     </section>
     <!-- /.content -->
-
-
-
-
 
 <div class="modal fade" id="rcvModal" tabindex="-1" role="dialog" aria-labelledby="rcvModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -469,23 +448,43 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+function initTableWithReverseSL(selector) {
+  var t = $(selector).DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL column
+    ]
+  });
 
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
+  // Continuous reverse SL across all pages (works on sort/search/paging)
+  t.on('order.dt search.dt draw.dt', function () {
+    const total = t.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t.page.info();
+    let num     = total - info.start;
 
+    t.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () { this.data(num--); });
+  }).draw();
+
+  return t;
+}
+
+$(document).ready(function () {
+  const t1 = initTableWithReverseSL('#example1');
+  const t2 = initTableWithReverseSL('#example2');
+
+  // Keep layout tidy when switching tabs
+  $('a[data-toggle="pill"]').on('shown.bs.tab', function () {
+    t1.columns.adjust().responsive.recalc();
+    t2.columns.adjust().responsive.recalc();
+  });
+});
+</script>
+<script>
     $(function() {
       $('.stsBtn').click(function() {
         var url = "{{URL::to('/admin/change-okala-sales-status')}}";

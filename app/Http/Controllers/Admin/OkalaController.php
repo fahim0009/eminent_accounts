@@ -17,36 +17,71 @@ use Illuminate\Support\Facades\Hash;
 
 class OkalaController extends Controller
 {
-    public function index()
-    {
-        $data = OkalaPurchaseDetail::whereNull('assign_to')->orderby('id','DESC')->get();
-        return view('admin.okala.index', compact('data'));
-    }
+public function index()
+{
+    // Only unassigned details
+    $data = DB::table('okala_purchase_details as opd')
+        ->join('okala_purchases as op', 'opd.okala_purchase_id', '=', 'op.id')
+        ->leftJoin('code_masters as trade', 'op.trade', '=', 'trade.id')
+        ->leftJoin('code_masters as rl', 'op.r_l_detail_id', '=', 'rl.id')
+        ->leftJoin('users as u', 'op.user_id', '=', 'u.id') // vendor
+        ->whereNull('opd.assign_to')
+        ->orderByDesc('opd.id')
+        ->select([
+            'opd.id',
+            'opd.date',
+            'opd.visa_id',
+            'opd.sponsor_id',
+            'opd.user_id',        // for vendor lookup if needed
+            'opd.r_l_detail_id',  // original field
+            'opd.okala_purchase_id',
+            'trade.type_name as trade_name',
+            'rl.type_name as rl_name',
+            'u.name as vendor_name',
+        ])
+        ->get();
 
+    // Clients to assign (once, not per-row)
+    $clients = \App\Models\Client::select('id','passport_name','passport_number')
+        ->where('assign', 0)->where('status', 1)->orderByDesc('id')->get();
+
+    return view('admin.okala.index', compact('data','clients'));
+}
 
     public function myOkalagroup()
     {
-        $assignedCountSubquery = DB::table('okala_purchase_details')
-            ->selectRaw('count(*)')
-            ->whereColumn('okala_purchase_details.okala_purchase_id', 'okala_purchases.id')
-            ->whereNotNull('okala_purchase_details.assign_to');
-    
-        $data = DB::table('okala_purchases')
-            ->leftJoin('code_masters', 'okala_purchases.r_l_detail_id', '=', 'code_masters.id')
-            ->leftJoin('users', 'okala_purchases.user_id', '=', 'users.id')
-            ->where('okala_purchases.purchase_type', 0)
-            ->orderBy('okala_purchases.id', 'DESC')
-            ->select(
-                'okala_purchases.*',
-                'code_masters.type_name',
-                'users.name as vendor_name',
-                DB::raw("({$assignedCountSubquery->toSql()}) as assigned_count")
-            )
-            ->mergeBindings($assignedCountSubquery) // required for raw subquery binding
-            ->get();
-           $complete=  $data;
+    // Base query with a proper correlated subquery for assigned_count
+    $base = DB::table('okala_purchases as op')
+        ->leftJoin('code_masters as cm', 'op.r_l_detail_id', '=', 'cm.id')
+        ->leftJoin('users as u', 'op.user_id', '=', 'u.id')
+        ->where('op.purchase_type', 0)
+        ->select([
+            'op.*',
+            'cm.type_name',
+            'u.name as vendor_name',
+        ])
+        ->selectSub(function ($q) {
+            $q->from('okala_purchase_details as opd')
+              ->selectRaw('COUNT(*)')
+              ->whereColumn('opd.okala_purchase_id', 'op.id')
+              ->whereNotNull('opd.assign_to');
+        }, 'assigned_count')
+        ->orderByDesc('op.id');
 
-        return view('admin.okala.myokala', compact('data', 'complete'));
+    // Pull rows, then compute "available" in PHP (safe & simple)
+    $rows = $base->get()->map(function ($row) {
+        // make sure numeric types
+        $row->number          = (int) $row->number;
+        $row->assigned_count  = (int) $row->assigned_count;
+        $row->available       = $row->number - $row->assigned_count;
+        return $row;
+    });
+
+    // Split for tabs
+    $data     = $rows->filter(fn ($r) => $r->available > 0)->values(); // Processing
+    $complete = $rows->filter(fn ($r) => $r->available === 0)->values(); // Completed
+
+    return view('admin.okala.myokala', compact('data', 'complete'));
     }
     
     public function okalaPurchase()
@@ -288,14 +323,34 @@ class OkalaController extends Controller
 
     public function salesindex()
     {
-        $data = OkalaSaleDetail::orderby('id','DESC')->get();
-        $okala_sales = DB::table('okala_sales')
-                ->join('okala_purchases', 'okala_sales.okala_purchase_id', '=', 'okala_purchases.id')
-                ->join('users', 'okala_purchases.user_id', '=', 'users.id')
-                ->select('okala_sales.*', 'users.name as vendor_name')
-                ->get();
-        // $okala_sales= OkalaSale::orderby('id', 'DESC')->get();
-        return view('admin.okala.sales', compact('data','okala_sales'));
+        // Details table (if you actually render it elsewhere)
+        $data = \App\Models\OkalaSaleDetail::orderByDesc('id')->get();
+
+        // Main list with proper joins & aliases
+        $okala_sales = DB::table('okala_sales as os')
+            ->join('okala_purchases as op', 'os.okala_purchase_id', '=', 'op.id')
+            ->leftJoin('users as v', 'op.user_id', '=', 'v.id')   // vendor (from purchase)
+            ->leftJoin('users as a', 'os.user_id', '=', 'a.id')   // agent (who sold)
+            ->leftJoin('code_masters as rl', 'op.r_l_detail_id', '=', 'rl.id')
+            ->select([
+                'os.*',
+                'os.status as sale_status',   // 👈 make it explicit
+                'op.visaid',
+                'op.sponsorid as sponsor_id',
+                'op.number',
+                'rl.type_name as rl',
+                'v.name as vendor_name',
+                'a.name as agent_name',
+                'a.surname as agent_surname',
+            ])
+            ->orderByDesc('os.id')
+            ->get();
+
+        // Split for tabs using the aliased sale_status
+        $processing = $okala_sales->where('sale_status', 0)->values();
+        $completed  = $okala_sales->where('sale_status', 1)->values();
+
+        return view('admin.okala.sales', compact('data','okala_sales','processing','completed'));
     }
 
     public function salesDetails($id)
