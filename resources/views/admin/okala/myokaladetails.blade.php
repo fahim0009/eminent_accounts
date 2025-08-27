@@ -15,6 +15,9 @@
     </div>
 </section>
   <!-- /.content -->
+
+   
+
     <!-- Main content -->
     <section class="content" id="contentContainer">
         <div class="container-fluid">
@@ -23,10 +26,11 @@
               <!-- /.card -->
 
               <div class="card">
-                <div class="card-header">
-                  <h1 class="card-title">All Availeable Okala</h1>
 
+              <div class="card-header">
+                  <h1 class="card-title">All Availeable Okala</h1>
                 </div>
+                 
                 <!-- /.card-header -->
                 <div class="card-body">
                   <table id="example1" class="table table-bordered table-striped">
@@ -39,42 +43,49 @@
                       <th>Trade</th>
                       <th>Assign To</th>
                       <th>RL Id</th>
+                      {{-- <th>Purchase Type</th> --}}
                       <th>Vendor</th>
+                      <!-- <th>Action</th> -->
                     </tr>
                     </thead>
                     <tbody>
-                  @foreach ($data as $row)
-    <tr>
-      <td style="text-align:center"></td> {{-- SL filled by DataTables --}}
-      <td style="text-align:center" data-order="{{ \Carbon\Carbon::parse($row->date)->timestamp }}">
-        {{ \Carbon\Carbon::parse($row->date)->format('Y-m-d') }}
-      </td>
-      <td style="text-align:center">{{ $row->visa_id }}</td>
-      <td style="text-align:center">{{ $row->sponsor_id }}</td>
-      <td style="text-align:center">{{ $row->trade_name ?? '' }}</td>
+                @foreach ($data as $row)
+                    <tr>
+                      <td style="text-align:center"></td>
+                      <td style="text-align:center">{{ $row->date }}</td>
+                      <td style="text-align:center">{{ $row->visa_id }}</td>
+                      <td style="text-align:center">{{ $row->sponsorid }}</td>
+                      <td style="text-align:center">{{ $row->trade_name ?? '' }}</td>
 
-      {{-- Assign To (single visible control; remove the hidden duplicate TD) --}}
-      <td style="text-align:center">
-        <div class="input-group">
-          <select class="form-control assignto" id="assignto{{ $row->id }}">
-            <option value="">Please Select</option>
-            @foreach ($clients as $c)
-              <option value="{{ $c->id }}">{{ $c->passport_name }} ({{ $c->passport_number }})</option>
-            @endforeach
-          </select>
-          <div class="input-group-append">
-            <button class="btn btn-secondary assignto_btn" data-id="{{ $row->id }}">
-              <i class="fas fa-save"></i>
-            </button>
-          </div>
-        </div>
-        <p><small class="message" id="message{{ $row->id }}"></small></p>
-      </td>
+                      {{-- Assign To --}}
+                      <td style="text-align:center">
+                        @if ($row->assign_to) 
+                          {{-- already assigned --}}
+                          {{ $row->passport_name }} ({{ $row->passport_number }})
+                        @else
+                        {{-- Not assigned: show dropdown + save button --}}
+                            <div class="input-group">
+                              <select class="form-control assignto" id="assignto{{ $row->id }}">
+                                <option value="">Please Select</option>
+                                @foreach ($clients as $c)
+                                  <option value="{{ $c->id }}">{{ $c->passport_name }} ({{ $c->passport_number }})</option>
+                                @endforeach
+                              </select>
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary assignto_btn" data-id="{{ $row->id }}">
+                                  <i class="fas fa-save"></i>
+                                </button>
+                              </div>
+                            </div>
+                            <p><small class="message" id="message{{ $row->id }}"></small></p>
+                        @endif
+                      </td>
 
-      <td style="text-align:center">{{ $row->rl_name ?? '' }}</td>
-      <td style="text-align:center">{{ $row->vendor_name ?? '' }}</td>
-    </tr>
-    @endforeach
+                      <td style="text-align:center">{{ $row->rl_name ?? '' }}</td>
+                      <td style="text-align:center">{{ $row->vendor_name ?? '' }}</td>
+                    </tr>
+                    @endforeach
+
 
                 
                 </tbody>
@@ -186,4 +197,5 @@ $(document).ready(function () {
 
   });
 </script>
+
 @endsection

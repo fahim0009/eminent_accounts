@@ -78,10 +78,10 @@ public function index()
     });
 
     // Split for tabs
-    $data     = $rows->filter(fn ($r) => $r->available > 0)->values(); // Processing
+    $processing     = $rows->filter(fn ($r) => $r->available > 0)->values(); // Processing
     $complete = $rows->filter(fn ($r) => $r->available === 0)->values(); // Completed
 
-    return view('admin.okala.myokala', compact('data', 'complete'));
+    return view('admin.okala.myokala', compact('processing', 'complete'));
     }
     
     public function okalaPurchase()
@@ -91,21 +91,63 @@ public function index()
         return view('admin.okala.purchase', compact('data','complete'));
     }
 
-    public function okalapurchaseDetails($id)
-    {
 
-        $data = DB::table('okala_purchase_details')
-        ->leftJoin('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
-        ->where('okala_purchase_details.okala_Purchase_id', $id)
-        ->orderBy('okala_purchase_details.id', 'DESC')
-        ->select(
-            'okala_purchase_details.*', 
-            'clients.passport_name', 
-            'clients.passport_number'
-        )
+
+public function okalapurchaseDetails($id)
+{
+    abort_if(!is_numeric($id), 404);
+
+    // The purchase header (optional for context in view)
+    $purchase = DB::table('okala_purchases as op')
+        ->leftJoin('code_masters as rl', 'op.r_l_detail_id', '=', 'rl.id')
+        ->leftJoin('code_masters as tr', 'op.trade', '=', 'tr.id')
+        ->leftJoin('users as u', 'op.user_id', '=', 'u.id')
+        ->select([
+            'op.*',
+            'rl.type_name as rl_name',
+            'tr.type_name as trade_name',
+            'u.name as vendor_name',
+        ])
+        ->where('op.id', $id)
+        ->first();
+
+    abort_if(!$purchase, 404);
+
+    // All detail rows for this purchase id
+    $data = DB::table('okala_purchase_details as opd')
+        ->leftJoin('clients as c', 'opd.assign_to', '=', 'c.id')
+        ->leftJoin('okala_purchases as op', 'opd.okala_purchase_id', '=', 'op.id')
+        ->leftJoin('code_masters as rl', 'op.r_l_detail_id', '=', 'rl.id')
+        ->leftJoin('code_masters as tr', 'op.trade', '=', 'tr.id')
+        ->leftJoin('users as u', 'op.user_id', '=', 'u.id')
+        ->where('opd.okala_purchase_id', $id)
+        ->orderByDesc('opd.id')
+        ->select([
+            'opd.*',
+            'c.passport_name',
+            'c.passport_number',
+            'op.visaid',
+            'op.sponsorid',
+            'op.number',
+            'rl.type_name as rl_name',
+            'tr.type_name as trade_name',
+            'u.name as vendor_name',
+        ])
         ->get();
-        return view('admin.okala.index', compact('data'));
-    }
+
+    // Clients available for assigning (not assigned + processing only)
+    $clients = Client::select('id', 'passport_name', 'passport_number')
+        ->where('assign', 0)
+        ->where(function ($q) {
+            $q->where('status', 1)               // numeric Processing
+              ->orWhere('status', 'Processing'); // string Processing
+        })
+        ->orderBy('passport_name')
+        ->get();
+
+    return view('admin.okala.myokaladetails', compact('purchase', 'data', 'clients'));
+}
+
 
     public function assignedOkala()
     {

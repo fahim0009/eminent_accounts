@@ -52,7 +52,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                        @foreach ($data as $key => $entry)
+                        @foreach ($processing as $key => $entry)
 
                         
                         <tr>
@@ -67,7 +67,6 @@
                           <td style="text-align: center">{{$entry->sponsorid}}</td>
                           <td style="text-align: center">{{$entry->type_name}}</td>
                           <td style="text-align: center">{{$entry->vendor_name}}</td>
-
                         </tr>
                             
 
@@ -220,8 +219,6 @@ t2.on('order.dt search.dt draw.dt', function () {
       this.data(num--);
     });
 }).draw();
-
-
 
 
 
