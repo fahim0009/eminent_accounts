@@ -485,19 +485,20 @@
                 { data: 'tran_id', name: 'tran_id' },
                 { data: 'date', name: 'date' },
                 { data: 'chart_of_account', name: 'chart_of_account' },
-                {
-                    data: 'document',
-                    name: 'document',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row, meta) {
-                        if (row.document) {
-                            return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                        } else {
-                            return '';
-                        }
-                    }
-                },
+                { data: 'note', name: 'note' },
+                // {
+                //     data: 'document',
+                //     name: 'document',
+                //     orderable: false,
+                //     searchable: false,
+                //     render: function(data, type, row, meta) {
+                //         if (row.document) {
+                //             return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // },
                 { data: 'account_name', name: 'account_name' },
                 { data: 'bdt_amount', name: 'bdt_amount' }
             ]
