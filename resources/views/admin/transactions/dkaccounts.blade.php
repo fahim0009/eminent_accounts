@@ -187,8 +187,7 @@
                                 </select>
                             </div>
                         </div>
-
-                  
+            
 
                         
                     </div>
@@ -238,12 +237,20 @@
                         </div>
 
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amount" class="control-label">BDT Amount</label>
                                 <input type="text" name="amount" class="form-control" id="amount">
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="note" class="control-label">Note</label>
+                                <input type="text" name="note" class="form-control" id="note">
+                            </div>
+                        </div>
+
                         <div class="col-md-6 d-none">
                             <div class="form-group">
                                 <label for="riyal_amount" class="control-label">Riyal Amount</label>
@@ -414,18 +421,22 @@
                 name: 'chart_of_account'
             },
             {
-                data: 'document',
-                name: 'document',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    if (row.document) {
-                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                    } else {
-                        return '';
-                    }
-                }
+                data: 'note',
+                name: 'note'
             },
+            // {
+            //     data: 'document',
+            //     name: 'document',
+            //     orderable: false,
+            //     searchable: false,
+            //     render: function(data, type, row, meta) {
+            //         if (row.document) {
+            //             return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
+            //         } else {
+            //             return '';
+            //         }
+            //     }
+            // },
             {
                 data: 'account_name',
                 name: 'account_name'

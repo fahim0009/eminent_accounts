@@ -140,6 +140,7 @@ class AccountsController extends Controller
         $transaction = new Transaction();
         $transaction->table_type = $request->account_head;
         $transaction->office = $request->office;
+        $transaction->note = $request->note;
         $transaction->chart_of_account_val = $request->chart_of_account_val;
         $transaction->employee_id = $request->employee_id;
         $transaction->date = $request->input('date');
