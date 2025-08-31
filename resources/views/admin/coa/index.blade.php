@@ -230,7 +230,7 @@
               }else if(val == "Equity"){
 
                   clearfield();
-                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Equity Capital'>Equity Capital</option><option value='Retained Earnings'>Retained Earnings</option>");
+                  $("#sub_account_head").html("<option value=''>Please Select</option><option value='Equity Capital'>Equity Capital</option><option value='Equity Capital'>Equity Capital</option><option value='Withdrawals'>Withdrawals</option>");
 
               }else{
                 
