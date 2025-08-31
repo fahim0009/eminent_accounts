@@ -31,11 +31,12 @@ class AccountsController extends Controller
                 ]);
             }
 
-            if ($request->filled('account_name')) {
+            if ($request->filled('account_head')) {
                 $transactions->whereHas('chartOfAccount', function ($query) use ($request) {
-                    $query->where('account_name', $request->input('account_name'));
+                    $query->where('account_head', $request->input('account_head'));
                 });
             }
+
 
             $transactions = $transactions->orderby('id', 'DESC')->get();
 
@@ -56,7 +57,12 @@ class AccountsController extends Controller
         }
         $coa = ChartOfAccount::where('status', 1)->get();
         $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();
-        $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
+        $accounts = ChartOfAccount::where('status', 1)
+            ->select('account_head')
+            ->distinct()
+            ->get();
+
+
         return view('admin.transactions.dkaccounts', compact('coa','accounts','employees'));
     }
 

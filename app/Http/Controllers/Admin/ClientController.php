@@ -256,8 +256,8 @@ class ClientController extends Controller
     {
 
 
-        if(empty($request->visa_date) || empty($request->visa_image)){
-            $message ="VISA Date & VISA PDF both are required.";
+        if(empty($request->visa_date)){
+            $message ="VISA Date is required.";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
@@ -265,21 +265,21 @@ class ClientController extends Controller
         $data = Client::find($request->id);
         $data->visa_exp_date = $request->visa_date;
         // visa_image
-        if ($request->visa_image) {
-            if ($data->visa) {
-                $oldVisaPath = public_path('images/client/visa/') . $data->visa;
-                if (file_exists($oldVisaPath)) {
-                    unlink($oldVisaPath);
-                }
-            }
-            $request->validate([
-                'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
-            ]);
-            $rand = mt_rand(100000, 999999);
-            $visa_imageName = time(). $rand .'.'.$request->visa_image->extension();
-            $request->visa_image->move(public_path('images/client/visa'), $visa_imageName);
-            $data->visa = $visa_imageName;
-        }
+        // if ($request->visa_image) {
+        //     if ($data->visa) {
+        //         $oldVisaPath = public_path('images/client/visa/') . $data->visa;
+        //         if (file_exists($oldVisaPath)) {
+        //             unlink($oldVisaPath);
+        //         }
+        //     }
+        //     $request->validate([
+        //         'visa_image' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+        //     ]);
+        //     $rand = mt_rand(100000, 999999);
+        //     $visa_imageName = time(). $rand .'.'.$request->visa_image->extension();
+        //     $request->visa_image->move(public_path('images/client/visa'), $visa_imageName);
+        //     $data->visa = $visa_imageName;
+        // }
         $data->updated_by = Auth::user()->id;
         if ($data->save()) {
             $message ="Visa Updated Successfully.";

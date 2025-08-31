@@ -21,11 +21,10 @@
                   <th>Passenger Name</th>
                   <th>Agent Name</th>
                   <th>Mofa/RL</th>
-                  <th>Visa Exp Date and Image</th>
+                  <th>Visa Exp Date</th>
                   <th>Training | Finger</th>
                   <th>Manpower</th>
-                  <th>Fly/Delivery Date</th>
-                  
+                  <th>Fly/Delivery Date</th>                
                 </tr>
                 </thead>
                 <tbody>
@@ -60,7 +59,6 @@
                           @csrf
 
                           @if($data->visa_exp_date)
-
                           <!-- // expirey warning -->
                                 @php
                                 $expiryDate = \Carbon\Carbon::parse($data->visa_exp_date);
@@ -85,11 +83,12 @@
 
                           <p style="{{ $color }}">{{$data->visa_exp_date}} &nbsp &nbsp</p>
                           @else
+                          <div class="input-group">
                           <input type="date" name="visa_date" id="visa_date{{$data->id}}" value="" class="form-control mb-2 mr-2">
                           @endif
 
                           <input type="hidden" name="id" value="{{ $data->id }}">
-                            @if($data->visa)
+                            <!-- @if($data->visa)
                               <a class="btn btn-secondary" href="{{ asset('images/client/visa/' . $data->visa) }}" target="_blank">
                                 <i class="fas fa-download"></i>
                               </a>
@@ -98,36 +97,47 @@
                                 <i class="fas fa-upload"></i>
                               </label>
                               <input type="file" id="visa_image{{$data->id}}" name="visa_image" class="form-control mb-2 mr-2" style="display: none;">
-                            @endif
-                            @if(empty($data->visa) || empty($data->visa_exp_date))
+                            @endif -->
+                            @if(empty($data->visa_exp_date))
+                              <div class="input-group-append">
                             <button type="button" class="btn btn-secondary submitVisa" data-id="{{$data->id}}">
                             <i class="fas fa-save"></i>
                             </button>
+                              </div>
+                            </div>
                             @endif
                         </form>
-                        <p><small class="visa_msg" id="visa_msg{{$data->id}}"></small></p>
+                        <!-- <p><small class="visa_msg" id="visa_msg{{$data->id}}"></small></p> -->
                       
                     </td>
-                    <td style="text-align: center"> 
-                      <form id="trainingFingerForm{{$data->id}}" class="form-inline">
-                        @csrf
-                        <select name="training" id="training{{$data->id}}" class="form-control mb-2 mr-2 d-inline-block" style="width: auto;">
-                          <option value="1" {{ $data->training == 1 ? 'selected' : '' }}>Yes</option>
-                          <option value="0" {{ $data->training == 0 ? 'selected' : '' }}>No</option>
-                        </select>
-                        <select name="finger" id="finger{{$data->id}}" class="form-control mb-2 mr-2 d-inline-block" style="width: auto;">
-                          <option value="1" {{ $data->finger == 1 ? 'selected' : '' }}>Yes</option>
-                          <option value="0" {{ $data->finger == 0 ? 'selected' : '' }}>No</option>
-                        </select>
-                        <input type="hidden" name="id" value="{{ $data->id }}">
-                        <button type="button" class="badge badge-success submitTrainingFinger d-inline-block" data-id="{{$data->id}}">
-                            <i class="fas fa-check"></i>
-                        </button>
-                      </form>
-                      <p><small class="training_finger_msg" id="training_finger_msg{{$data->id}}"></small></p>
-                      
-                    </td>
-                    {{-- <td style="text-align: center"> 
+                      <td class="text-center">                     
+                          <form id="trainingFingerForm{{$data->id}}" class="d-flex align-items-center justify-content-center">
+                              @csrf
+                              <select name="training" id="training{{$data->id}}" 
+                                      class="form-control form-control-sm me-2" style="width: auto;">
+                                  <option value="1" {{ $data->training == 1 ? 'selected' : '' }}>Yes</option>
+                                  <option value="0" {{ $data->training == 0 ? 'selected' : '' }}>No</option>
+                              </select>
+
+                              <select name="finger" id="finger{{$data->id}}" 
+                                      class="form-control form-control-sm me-2" style="width: auto;">
+                                  <option value="1" {{ $data->finger == 1 ? 'selected' : '' }}>Yes</option>
+                                  <option value="0" {{ $data->finger == 0 ? 'selected' : '' }}>No</option>
+                              </select>
+
+                              <input type="hidden" name="id" value="{{ $data->id }}">
+                              
+                              <button type="button" 
+                                      class="btn btn-success btn-sm submitTrainingFinger" data-id="{{$data->id}}">
+                                  <i class="fas fa-check"></i>
+                              </button>
+                          </form>
+                          <p class="mb-0">
+                              <small class="training_finger_msg" id="training_finger_msg{{$data->id}}"></small>
+                          </p>                     
+                      </td>
+
+                                          {{-- <td style="text-align: center"> 
                       @if($data->visa == 1)
                       <span class="badge badge-success">Yes</span>
                       @else
@@ -282,11 +292,11 @@
               return false;
           }
 
-          var visa = $('#visa_image'+id).val();
-          if (visa == '') {
-              $('#visa_msg'+id).html('<span class="text-danger">Please upload Visa Copy</span>');
-              return false;
-          }
+          // var visa = $('#visa_image'+id).val();
+          // if (visa == '') {
+          //     $('#visa_msg'+id).html('<span class="text-danger">Please upload Visa Copy</span>');
+          //     return false;
+          // }
 
 
           var form = $('#visaForm'+id)[0];
