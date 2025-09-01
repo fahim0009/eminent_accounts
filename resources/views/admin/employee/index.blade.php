@@ -14,8 +14,6 @@
 </section>
   <!-- /.content -->
 
-
-
     <!-- Main content -->
     <section class="content" id="addThisFormContainer">
       <div class="container-fluid">
@@ -65,7 +63,7 @@
                     </div>
 
                     
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                       <div class="form-group">
                         <label>Office</label>
                         <select name="office" id="office" class="form-control">
@@ -73,6 +71,42 @@
                           <option value="dhaka">Dhaka</option>
                           <option value="ksa">KSA</option>
                         </select>
+                      </div>
+                    </div>
+
+                      <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Designation</label>
+                        <select name="designation" id="designation" class="form-control">
+                          <option value="">Select</option>
+                          <option value="Visa Processing Officer">Visa Processing Officer</option>
+                          <option value="Admin Officer">Admin Officer</option>
+                          <option value="General Manager">General Manager</option>
+                          <option value="Overseas Coordinator">Overseas Coordinator</option>
+                          <option value="Visa Consultant">Visa Consultant</option>
+                          <option value="Office Assistant">Office Assistant</option>
+                        </select>
+                      </div>
+                    </div>
+
+                      <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Joining Date</label>
+                        <input type="date" id="joining_date" name="joining_date" class="form-control">
+                      </div>
+                    </div>
+
+                      <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="address" name="address" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="note" name="note" class="form-control">
                       </div>
                     </div>
                     
@@ -122,6 +156,7 @@
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Salary</th>
+                  <th>Designation</th>
                   <th>office</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -135,6 +170,7 @@
                     <td style="text-align: center">{{$data->email}}</td>
                     <td style="text-align: center">{{$data->phone}}</td>
                     <td style="text-align: center">{{$data->salary}}</td>
+                    <td style="text-align: center">{{$data->designation}}</td>
                     <td style="text-align: center">{{$data->office}}</td>
                     
                     
@@ -219,9 +255,12 @@
               form_data.append("email", $("#email").val());
               form_data.append("phone", $("#phone").val());
               form_data.append("salary", $("#salary").val());
+              form_data.append("designation", $("#designation").val());
+              form_data.append("joining_date", $("#joining_date").val());
+              form_data.append("address", $("#address").val());
+              form_data.append("note", $("#note").val());
               form_data.append("office", $("#office").val());
               
-
               $.ajax({
                 url: url,
                 method: "POST",
@@ -261,6 +300,10 @@
               form_data.append("email", $("#email").val());
               form_data.append("phone", $("#phone").val());
               form_data.append("salary", $("#salary").val());
+              form_data.append("designation", $("#designation").val());
+              form_data.append("address", $("#address").val());
+              form_data.append("joining_date", $("#joining_date").val());
+              form_data.append("note", $("#note").val());
               form_data.append("office", $("#office").val());
               form_data.append("codeid", $("#codeid").val());
               
@@ -339,6 +382,10 @@
           $("#name").val(data.name);
           $("#phone").val(data.phone);
           $("#salary").val(data.salary);
+          $("#designation").val(data.designation);
+          $("#joining_date").val(data.joining_date);
+          $("#address").val(data.address);
+          $("#note").val(data.note);
           $("#email").val(data.email);
           $("#office").val(data.office);
           $("#codeid").val(data.id);

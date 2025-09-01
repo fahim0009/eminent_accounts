@@ -38,6 +38,32 @@ class AccountsController extends Controller
             }
 
 
+            // monthly view
+            if ($request->ajax() && $request->type === 'Monthly') {
+                $transactions = Transaction::where('office', 'dhaka')
+                    ->where('status', 1)
+                    ->selectRaw("
+                        DATE_FORMAT(date, '%Y-%m') as month,
+                        SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as expense,
+                        SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as income,
+                        SUM(CASE WHEN table_type = 'Assets' THEN bdt_amount ELSE 0 END) as asset,
+                        SUM(CASE WHEN table_type = 'Liabilities' THEN bdt_amount ELSE 0 END) as liability,
+                        SUM(CASE WHEN table_type = 'Equity' THEN bdt_amount ELSE 0 END) as equity
+                    ")
+                    ->groupBy('month')
+                    ->orderBy('month', 'DESC')
+                    ->get();
+
+                return DataTables::of($transactions)
+                    ->editColumn('month', function($t) {
+                        // Format month as "January 2025"
+                        return \Carbon\Carbon::createFromFormat('Y-m', $t->month)->format('F Y');
+                    })
+                    ->make(true);
+            }
+            // monthly end 
+
+
             $transactions = $transactions->orderby('id', 'DESC')->get();
 
         return DataTables::of($transactions)

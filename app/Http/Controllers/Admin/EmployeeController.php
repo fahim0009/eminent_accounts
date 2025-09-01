@@ -37,6 +37,13 @@ class EmployeeController extends Controller
             exit();
         }
 
+        if(empty($request->designation)){
+        $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Office \" field..!</b></div>";
+        return response()->json(['status'=> 303,'message'=>$message]);
+        exit();
+        }
+
+
         $duplicateemail = Employee::where('email',$request->email)->first();
         if($duplicateemail){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>This email already added.</b></div>";
@@ -47,6 +54,10 @@ class EmployeeController extends Controller
         $data = new Employee();
         $data->name = $request->name;
         $data->salary = $request->salary;
+        $data->designation = $request->designation;
+        $data->joining_date = $request->joining_date;
+        $data->address = $request->address;
+        $data->note = $request->note;
         $data->phone = $request->phone;
         $data->office = $request->office;
         $data->email = $request->email;
@@ -99,6 +110,10 @@ class EmployeeController extends Controller
         $data = Employee::find($request->codeid);
         $data->name = $request->name;
         $data->salary = $request->salary;
+        $data->designation = $request->designation;
+        $data->joining_date = $request->joining_date;
+        $data->address = $request->address;
+        $data->note = $request->note;
         $data->phone = $request->phone;
         $data->office = $request->office;
         $data->email = $request->email;

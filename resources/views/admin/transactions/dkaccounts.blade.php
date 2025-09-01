@@ -31,7 +31,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-Equity-tab" data-toggle="pill" href="#custom-tabs-one-Equity" role="tab" aria-controls="custom-tabs-one-Equity" aria-selected="false">Equity</a>
                             </li>
-                            
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-Monthly-tab" data-toggle="pill" href="#custom-tabs-one-Monthly" role="tab" aria-controls="custom-tabs-one-Monthly" aria-selected="false">Monthly</a>
+                            </li>
 
                             
                             <li class="nav-item ml-auto px-2">
@@ -45,7 +47,6 @@
                     </div>
 
                     <div class="card-body">
-
 
                         <div class="tab-content" id="custom-tabs-one-tabContent">
                             <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
@@ -78,6 +79,8 @@
                                 <button type="submit" class="btn btn-primary">Search</button>
                                     </form>
                                 </div>
+
+
                                 @component('components.table')
                                 @slot('tableID')
                                 assetTBL
@@ -113,10 +116,25 @@
                                     @endslot
                                     @endcomponent
                                 </div>
-                            @endforeach
-                 
-              
-                          </div>
+                            @endforeach                           
+                       
+
+                        <div class="tab-pane fade" id="custom-tabs-one-Monthly" role="tabpanel" aria-labelledby="custom-tabs-one-Monthly-tab">
+                            @component('components.table')
+                                @slot('tableID')
+                                    MonthlyTBL
+                                @endslot
+                                @slot('head')
+                                    <th>Month</th>
+                                    <th>Expense</th>
+                                    <th>Income</th>
+                                    <th>Asset</th>
+                                    <th>Liability</th>
+                                    <th>Equity</th>
+                                @endslot
+                            @endcomponent
+                        </div>
+                    </div>
 
                     </div>
                 </div>
@@ -334,8 +352,6 @@
         // Optionally trigger change on page load if value is pre-selected
         $('#chart_of_account_id').trigger('change');
 
-
-
         function fetchTranType(accountHead) {
             if (accountHead) {
             
@@ -384,126 +400,7 @@
         
         
         
-    var charturl = "{{URL::to('/admin/dk-account')}}";
-    var storeurl = "{{URL::to('/admin/account-store')}}";
-    var editurl = "{{URL::to('/admin/account-edit')}}";
-    var upurl = "{{URL::to('/admin/account-update')}}";
-    var customerTBL = $('#assetTBL').DataTable({
-        processing: true,
-        serverSide: true,
-        pageLength: 50, // Show 50 entries per page
-        order: [[0, 'desc']], // Order by the first column (ID) in descending order
-        ajax: {
-            url: charturl,
-            type: 'GET',
-            data: function(d) {
-
-                d.start_date = $('input[name="start_date"]').val();
-                d.end_date = $('input[name="end_date"]').val();
-                d.account_head = $('select[name="account_head"]').val(); 
-
-            },
-            error: function(xhr, error, thrown) {
-                console.log(xhr.responseText);
-            }
-        },
-        deferRender: true,
-        columns: [{
-                data: 'tran_id',
-                name: 'tran_id'
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },
-            {
-                data: 'chart_of_account',
-                name: 'chart_of_account'
-            },
-            {
-                data: 'note',
-                name: 'note'
-            },
-            // {
-            //     data: 'document',
-            //     name: 'document',
-            //     orderable: false,
-            //     searchable: false,
-            //     render: function(data, type, row, meta) {
-            //         if (row.document) {
-            //             return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-            //         } else {
-            //             return '';
-            //         }
-            //     }
-            // },
-            {
-                data: 'account_name',
-                name: 'account_name'
-            },
-            {
-                data: 'bdt_amount',
-                name: 'bdt_amount'
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    let button = `<button type="button" class="btn btn-warning btn-xs edit-btn" data-toggle="modal" data-target="#chartModal" value="${row.id}" title="Edit" data-purpose='1'><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>`;
-                    if (row.amount < 0) {}
-                    return button;
-                }
-            },
-        ]
-    });
-
-
-
-    // Initialize DataTables for each tab
-    ['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'].forEach(function(type) {
-        $('#' + type + 'TBL').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: charturl,
-                type: 'GET',
-                data: function(d) {
-                    
-                    d.start_date = $('input[name="start_date"]').val();
-                    d.end_date = $('input[name="end_date"]').val();
-                    d.account_head = $('select[name="account_head"]').val(); // ✅ FIXED
-                    d.type         = type; // Pass the type to backend // Pass the type to the server
-                },
-                error: function(xhr, error, thrown) {
-                    console.log(xhr.responseText);
-                }
-            },
-            deferRender: true,
-            columns: [
-                { data: 'tran_id', name: 'tran_id' },
-                { data: 'date', name: 'date' },
-                { data: 'chart_of_account', name: 'chart_of_account' },
-                { data: 'note', name: 'note' },
-                // {
-                //     data: 'document',
-                //     name: 'document',
-                //     orderable: false,
-                //     searchable: false,
-                //     render: function(data, type, row, meta) {
-                //         if (row.document) {
-                //             return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // },
-                { data: 'account_name', name: 'account_name' },
-                { data: 'bdt_amount', name: 'bdt_amount' }
-            ]
-        });
-    });
+   
 
     $('form').on('submit', function(e) {
         e.preventDefault();
@@ -624,10 +521,7 @@
 
 
 
-
-
     // update button event
-
     $(document).on('click', '.update-btn', function() {
         let formData = $('#customer-form').serialize();
         let id = $(this).val();
@@ -669,6 +563,127 @@
 
     
 });
+</script>
+
+<script>
+     var charturl = "{{URL::to('/admin/dk-account')}}";
+    var storeurl = "{{URL::to('/admin/account-store')}}";
+    var editurl = "{{URL::to('/admin/account-edit')}}";
+    var upurl = "{{URL::to('/admin/account-update')}}";
+    var customerTBL = $('#assetTBL').DataTable({
+        processing: true,
+        serverSide: true,
+        pageLength: 50, // Show 50 entries per page
+        order: [[0, 'desc']], // Order by the first column (ID) in descending order
+        ajax: {
+            url: charturl,
+            type: 'GET',
+            data: function(d) {
+
+                d.start_date = $('input[name="start_date"]').val();
+                d.end_date = $('input[name="end_date"]').val();
+                d.account_head = $('select[name="account_head"]').val(); 
+
+            },
+            error: function(xhr, error, thrown) {
+                console.log(xhr.responseText);
+            }
+        },
+        deferRender: true,
+        columns: [{
+                data: 'tran_id',
+                name: 'tran_id'
+            },
+            {
+                data: 'date',
+                name: 'date'
+            },
+            {
+                data: 'chart_of_account',
+                name: 'chart_of_account'
+            },
+            {
+                data: 'note',
+                name: 'note'
+            },
+            {
+                data: 'account_name',
+                name: 'account_name'
+            },
+            {
+                data: 'bdt_amount',
+                name: 'bdt_amount'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row, meta) {
+                    let button = `<button type="button" class="btn btn-warning btn-xs edit-btn" data-toggle="modal" data-target="#chartModal" value="${row.id}" title="Edit" data-purpose='1'><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>`;
+                    if (row.amount < 0) {}
+                    return button;
+                }
+            },
+        ]
+    });
+
+
+
+    // Initialize DataTables for each tab
+    ['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'].forEach(function(type) {
+        $('#' + type + 'TBL').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: charturl,
+                type: 'GET',
+                data: function(d) {
+                    
+                    d.start_date = $('input[name="start_date"]').val();
+                    d.end_date = $('input[name="end_date"]').val();
+                    d.account_head = $('select[name="account_head"]').val(); // ✅ FIXED
+                    d.type         = type; // Pass the type to backend // Pass the type to the server
+                },
+                error: function(xhr, error, thrown) {
+                    console.log(xhr.responseText);
+                }
+            },
+            deferRender: true,
+            columns: [
+                { data: 'tran_id', name: 'tran_id' },
+                { data: 'date', name: 'date' },
+                { data: 'chart_of_account', name: 'chart_of_account' },
+                { data: 'note', name: 'note' },
+                { data: 'account_name', name: 'account_name' },
+                { data: 'bdt_amount', name: 'bdt_amount' }
+            ]
+        });
+    });
+
+
+        $('#MonthlyTBL').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: charturl,
+            type: 'GET',
+            data: function(d) {
+                d.type = 'Monthly';
+                d.start_date = $('input[name="start_date"]').val();
+                d.end_date = $('input[name="end_date"]').val();
+            }
+        },
+        columns: [
+            { data: 'month', name: 'month' },
+            { data: 'expense', name: 'expense' },
+            { data: 'income', name: 'income' },
+            { data: 'asset', name: 'asset' },
+            { data: 'liability', name: 'liability' },
+            { data: 'equity', name: 'equity' },
+        ]
+    });
+
 </script>
 
 <script>
