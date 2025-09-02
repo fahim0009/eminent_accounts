@@ -81,6 +81,36 @@ class AccountsController extends Controller
             ->make(true);
 
         }
+
+        // ---- Lifetime Balance Calculation ----
+            $summary = Transaction::where('office', 'dhaka')
+                ->where('status', 1)
+                ->selectRaw("
+                    SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as total_income,
+                    SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as total_expense,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as liabilities_received,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as liabilities_payment,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as assets_purchase,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as assets_sales,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as equity_add,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as equity_deduct
+                ")
+                ->first();
+
+            $assets =  $summary->assets_purchase - $summary->assets_sales;
+
+            $assetsExp =  $summary->assets_sales - $summary->assets_purchase;
+
+            $equity = $summary->equity_add - $summary->equity_deduct;
+
+            $balance = ($summary->total_income - $summary->total_expense)
+                    + ($summary->liabilities_received - $summary->liabilities_payment)
+                    + $assetsExp + $equity;
+
+            $loanBalance = $summary->liabilities_received - $summary->liabilities_payment;
+
+// dd($assets,$equity,$summary->total_income,$summary->total_expense);
+
         $coa = ChartOfAccount::where('status', 1)->get();
         $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();
         $accounts = ChartOfAccount::where('status', 1)
@@ -89,7 +119,7 @@ class AccountsController extends Controller
             ->get();
 
 
-        return view('admin.transactions.dkaccounts', compact('coa','accounts','employees'));
+        return view('admin.transactions.dkaccounts', compact('coa','accounts','employees','loanBalance','balance','equity','assets'));
     }
 
 

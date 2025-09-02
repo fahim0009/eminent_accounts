@@ -4,6 +4,13 @@
 
 <section class="content pt-3" id="contentContainer">
     <div class="container-fluid">
+
+    <div class="alert alert-info mb-3">
+    <strong>Balance:</strong> {{ number_format($balance, 2) }} |
+    <strong>Loan Balance:</strong> {{ number_format($loanBalance, 2) }}|
+    <strong>Assets:</strong> {{ number_format($assets, 2) }}
+</div>
+
         <div class="row">
             <div class="col-md-12">
                 <div id="alert-container"></div>
@@ -357,15 +364,15 @@
             
                 if (accountHead == "Assets") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="purchase">Purchase</option><option value="sales">Sales</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="">Select type</option><option value="purchase">Purchase</option><option value="sales">Sales</option>');
 
                 } else if (accountHead == "Expenses") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="payment">Payment</option>');
 
                 } else if (accountHead == "Income") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="received">Received</option>');
 
                 } else if (accountHead == "Liabilities") {
 
@@ -373,7 +380,7 @@
 
                 } else if (accountHead == "Equity") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="withdraw">Withdraw</option>');
+                    $("#transaction_type").html('<option value="">Select type</option><option value="withdrawal">Withdrawal</option><option value="capital">Capital</option>');
 
                 } else {
                     $("#transaction_type").html("<option value=''>Please Select</option>");
