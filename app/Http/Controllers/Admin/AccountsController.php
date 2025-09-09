@@ -345,7 +345,7 @@ class AccountsController extends Controller
         $transaction->tran_id = 'TRN' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
         $transaction->save();
 
-        return response()->json(['status' => 200, 'message' => 'Created Successfully','document' => $request->document]);
+        return response()->json(['status' => 300, 'message' => 'Created Successfully','document' => $request->document]);
 
     }
 

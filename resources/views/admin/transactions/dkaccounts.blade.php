@@ -165,7 +165,7 @@
                 <div id="alert-container1"></div>
                 <div class="modal-body">
                     
-                <div class="ermsg"></div>
+                <div class="ermsg text-danger fw-bold"></div>
 
                     {{ csrf_field() }}
                     <div class="row">
@@ -483,54 +483,66 @@
 
 
     // save button event
-    $("body").delegate(".save-btn", "click", function(event) {
-            event.preventDefault();
+$("body").delegate(".save-btn", "click", function(event) {
+    event.preventDefault();
 
-            $(this).find('.fa-spinner').remove();
-            $(this).prepend('<i class="fa fa-spinner fa-spin"></i>');
-            $(this).attr("disabled", 'disabled');
+    let $btn = $(this);
 
-            
-            var formData = new FormData($('#customer-form')[0]);
+    if ($btn.prop("disabled")) return;
 
-            $.ajax({
-                url: storeurl,
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                cache: false,
-                success: function(d) {
-                    console.log(d);
-                    $("#loader").removeClass('fa fa-spinner fa-spin');
-                    $(".btn-submit").removeAttr("disabled", true);
+    $btn.find('.fa-spinner').remove();
+    $btn.prepend('<i class="fa fa-spinner fa-spin"></i>');
+    $btn.attr("disabled", true);
 
-                    if (d.status == 303) {
-                        $(".ermsg").html(d.message);
-                    } else if (data.status == 300) {
-                        $(function() {
-                            var Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Data saved successfully.'
-                            });
-                        });
-                        window.setTimeout(function(){location.reload()},2000)
+    var formData = new FormData($('#customer-form')[0]);
+
+    $.ajax({
+        url: storeurl,
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        success: function(d) {
+            console.log(d);
+
+            $btn.find('.fa-spinner').remove();
+            $btn.removeAttr("disabled");
+
+            if (d.status == 303) {
+                $(".ermsg").html(d.message);
+            } else if (d.status == 300) {
+                // ✅ Close the correct modal
+                $('#chartModal').modal('hide');
+
+                // ✅ Reset form fields (optional)
+                $('#customer-form')[0].reset();
+
+                // ✅ Show toast properly
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Data saved successfully.',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didClose: () => {
+                        // reload AFTER toast closes
+                        location.reload();
                     }
-                },
-                error: function(xhr, status, error) {
-                    $("#loader").removeClass('fa fa-spinner fa-spin');
-                    $(".btn-submit").removeAttr("disabled", true);
-                    console.error(xhr.responseText);
-                }
-            });
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            $btn.find('.fa-spinner').remove();
+            $btn.removeAttr("disabled");
+            console.error(xhr.responseText);
+        }
+    });
+});
 
-        })
+
 
 
 
