@@ -87,13 +87,13 @@
                                     </form>
                                 </div>
 
-
+                <!-- all transaction tab load here  -->
                                 @component('components.table')
                                 @slot('tableID')
                                 assetTBL
                                 @endslot
                                 @slot('head')
-                                    <th>ID</th>
+                                    <!-- <th>ID</th> -->
                                     <th>Date</th>
                                     <th>Account</th>
                                     <th>Note</th>
@@ -106,6 +106,8 @@
 
                             </div>
 
+<!-- Expenses', 'Income', 'Assets', 'Liabilities', 'Equity' tabs are load here  -->
+
                             @foreach (['Expenses', 'Income', 'Assets', 'Liabilities', 'Equity'] as $type)
                                 <div class="tab-pane fade" id="custom-tabs-one-{{ $type }}" role="tabpanel" aria-labelledby="custom-tabs-one-{{ $type }}-tab">
                                     
@@ -114,7 +116,7 @@
                                     {{ $type }}TBL
                                     @endslot
                                     @slot('head')
-                                        <th>ID</th>
+                                        <!-- <th>ID</th> -->
                                         <th>Date</th>
                                         <th>Account</th>
                                         <th>Note</th>
@@ -125,7 +127,7 @@
                                 </div>
                             @endforeach                           
                        
-
+        <!-- monthly view tab show  -->
                         <div class="tab-pane fade" id="custom-tabs-one-Monthly" role="tabpanel" aria-labelledby="custom-tabs-one-Monthly-tab">
                             @component('components.table')
                                 @slot('tableID')
@@ -138,6 +140,7 @@
                                     <th>Asset</th>
                                     <th>Liability</th>
                                     <th>Equity</th>
+                                    <th>Balance</th>
                                 @endslot
                             @endcomponent
                         </div>
@@ -161,6 +164,9 @@
             <form class="form-horizontal" id="customer-form" enctype="multipart/form-data">
                 <div id="alert-container1"></div>
                 <div class="modal-body">
+                    
+                <div class="ermsg"></div>
+
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-md-6">
@@ -499,9 +505,9 @@
                     $("#loader").removeClass('fa fa-spinner fa-spin');
                     $(".btn-submit").removeAttr("disabled", true);
 
-                    if (d.status == 400) {
+                    if (d.status == 303) {
                         $(".ermsg").html(d.message);
-                    } else {$('#chartModal').modal('toggle');
+                    } else if (data.status == 300) {
                         $(function() {
                             var Toast = Swal.mixin({
                                 toast: true,
@@ -580,7 +586,7 @@
     var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
-        pageLength: 50, // Show 50 entries per page
+        pageLength: 10, // Show 50 entries per page
         order: [[0, 'desc']], // Order by the first column (ID) in descending order
         ajax: {
             url: charturl,
@@ -597,10 +603,7 @@
             }
         },
         deferRender: true,
-        columns: [{
-                data: 'tran_id',
-                name: 'tran_id'
-            },
+        columns: [
             {
                 data: 'date',
                 name: 'date'
@@ -642,6 +645,7 @@
         $('#' + type + 'TBL').DataTable({
             processing: true,
             serverSide: true,
+            order: [[0, 'desc']],
             ajax: {
                 url: charturl,
                 type: 'GET',
@@ -658,7 +662,7 @@
             },
             deferRender: true,
             columns: [
-                { data: 'tran_id', name: 'tran_id' },
+                // { data: 'tran_id', name: 'tran_id' }, 
                 { data: 'date', name: 'date' },
                 { data: 'chart_of_account', name: 'chart_of_account' },
                 { data: 'note', name: 'note' },
@@ -669,27 +673,43 @@
     });
 
 
+// monthly tab data render 
+        $.fn.dataTable.ext.type.order['month-pre'] = function (d) {
+            return new Date(d).getTime(); // convert "September 2025" into timestamp
+        };
+
         $('#MonthlyTBL').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: charturl,
-            type: 'GET',
-            data: function(d) {
-                d.type = 'Monthly';
-                d.start_date = $('input[name="start_date"]').val();
-                d.end_date = $('input[name="end_date"]').val();
-            }
-        },
-        columns: [
-            { data: 'month', name: 'month' },
-            { data: 'expense', name: 'expense' },
-            { data: 'income', name: 'income' },
-            { data: 'asset', name: 'asset' },
-            { data: 'liability', name: 'liability' },
-            { data: 'equity', name: 'equity' },
-        ]
-    });
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: charturl,
+                type: 'GET',
+                data: function(d) {
+                    d.type = 'Monthly';
+                    d.start_date = $('input[name="start_date"]').val();
+                    d.end_date = $('input[name="end_date"]').val();
+                }
+            },
+            columns: [
+                { 
+                    data: 'month', 
+                    name: 'month',
+                    render: {
+                        _: 'display',   // what to show
+                        sort: 'timestamp' // what to sort
+                    }
+                },
+                { data: 'monthly_expense', name: 'monthly_expense' },
+                { data: 'monthly_income', name: 'monthly_income' },
+                { data: 'monthly_assets', name: 'monthly_assets' },
+                { data: 'monthly_liability', name: 'monthly_liability' },
+                { data: 'monthly_equity', name: 'monthly_equity' },
+                { data: 'monthly_balance', name: 'monthly_balance' },
+            ],
+            order: [[0, 'desc']]
+        });
+// monthly tab end 
+
 
 </script>
 

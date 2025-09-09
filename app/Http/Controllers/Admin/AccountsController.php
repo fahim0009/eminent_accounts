@@ -40,25 +40,54 @@ class AccountsController extends Controller
 
             // monthly view
             if ($request->ajax() && $request->type === 'Monthly') {
+
                 $transactions = Transaction::where('office', 'dhaka')
-                    ->where('status', 1)
-                    ->selectRaw("
+                    ->where('status', 1);
+
+                if ($request->filled('start_date')) {
+                        $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
+                        $transactions->whereBetween('date', [$request->start_date, $endDate]);
+                    }
+
+                   $transactions = $transactions->selectRaw("
                         DATE_FORMAT(date, '%Y-%m') as month,
-                        SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as expense,
-                        SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as income,
-                        SUM(CASE WHEN table_type = 'Assets' THEN bdt_amount ELSE 0 END) as asset,
-                        SUM(CASE WHEN table_type = 'Liabilities' THEN bdt_amount ELSE 0 END) as liability,
-                        SUM(CASE WHEN table_type = 'Equity' THEN bdt_amount ELSE 0 END) as equity
+                        SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as monthly_income,
+                        SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as monthly_expense,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as monthly_liabilities_received,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as monthly_liabilities_payment,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as monthly_assets_purchase,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as monthly_assets_sales,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as monthly_equity_add,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as monthly_equity_deduct
                     ")
                     ->groupBy('month')
                     ->orderBy('month', 'DESC')
                     ->get();
 
                 return DataTables::of($transactions)
-                    ->editColumn('month', function($t) {
-                        // Format month as "January 2025"
-                        return \Carbon\Carbon::createFromFormat('Y-m', $t->month)->format('F Y');
-                    })
+
+                        ->editColumn('month', function ($t) {
+                            return [
+                                'display'   => \Carbon\Carbon::createFromFormat('Y-m', $t->month)->format('F Y'),
+                                'timestamp' => $t->month, // keep raw YYYY-MM for sorting
+                            ];
+                        })
+
+                        ->addColumn('monthly_assets', function ($t) {
+                            return $t->monthly_assets_purchase - $t->monthly_assets_sales;
+                        })
+                        ->addColumn('monthly_liability', function ($t) {
+                            return $t->monthly_liabilities_received - $t->monthly_liabilities_payment;
+                        })
+                        ->addColumn('monthly_equity', function ($t) {
+                            return $t->monthly_equity_add - $t->monthly_equity_deduct;
+                        })
+                        ->addColumn('monthly_balance', function ($t) {
+                            $assets = $t->monthly_assets_purchase - $t->monthly_assets_sales;
+                            $loanBalance = $t->monthly_liabilities_received - $t->monthly_liabilities_payment;
+                            $equity = $t->monthly_equity_add - $t->monthly_equity_deduct;
+                            return ($t->monthly_income - $t->monthly_expense) + $loanBalance - $assets + $equity;
+                        })
                     ->make(true);
             }
             // monthly end 
@@ -109,7 +138,6 @@ class AccountsController extends Controller
 
             $loanBalance = $summary->liabilities_received - $summary->liabilities_payment;
 
-// dd($assets,$equity,$summary->total_income,$summary->total_expense);
 
         $coa = ChartOfAccount::where('status', 1)->get();
         $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();
@@ -127,7 +155,9 @@ class AccountsController extends Controller
     {
         if($request->ajax()){
             $assets = ChartOfAccount::whereIn('account_head',['Assets'])->get();
-            $transactions = Transaction::with('chartOfAccount')->where('office', 'ksa')->where('status', 1);
+            $transactions = Transaction::with(['chartOfAccount', 'employee']) // add 'employee'
+                ->where('office', 'ksa')
+                ->where('status', 1);
 
             if ($request->type) {
                 $transactions->where('table_type', $request->input('type'));
@@ -141,28 +171,123 @@ class AccountsController extends Controller
                 ]);
             }
 
-            if ($request->filled('account_name')) {
+            if ($request->filled('account_head')) {
                 $transactions->whereHas('chartOfAccount', function ($query) use ($request) {
-                    $query->where('account_name', $request->input('account_name'));
+                    $query->where('account_head', $request->input('account_head'));
                 });
             }
 
+
+            // monthly view
+            if ($request->ajax() && $request->type === 'Monthly') {
+
+                $transactions = Transaction::where('office', 'ksa')
+                    ->where('status', 1);
+
+                if ($request->filled('start_date')) {
+                        $endDate = $request->filled('end_date') ? $request->input('end_date') : now()->endOfDay();
+                        $transactions->whereBetween('date', [$request->start_date, $endDate]);
+                    }
+
+                   $transactions = $transactions->selectRaw("
+                        DATE_FORMAT(date, '%Y-%m') as month,
+                        SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as monthly_income,
+                        SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as monthly_expense,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as monthly_liabilities_received,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as monthly_liabilities_payment,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as monthly_assets_purchase,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as monthly_assets_sales,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as monthly_equity_add,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as monthly_equity_deduct
+                    ")
+                    ->groupBy('month')
+                    ->orderBy('month', 'DESC')
+                    ->get();
+
+                return DataTables::of($transactions)
+
+                        ->editColumn('month', function ($t) {
+                            return [
+                                'display'   => \Carbon\Carbon::createFromFormat('Y-m', $t->month)->format('F Y'),
+                                'timestamp' => $t->month, // keep raw YYYY-MM for sorting
+                            ];
+                        })
+
+                        ->addColumn('monthly_assets', function ($t) {
+                            return $t->monthly_assets_purchase - $t->monthly_assets_sales;
+                        })
+                        ->addColumn('monthly_liability', function ($t) {
+                            return $t->monthly_liabilities_received - $t->monthly_liabilities_payment;
+                        })
+                        ->addColumn('monthly_equity', function ($t) {
+                            return $t->monthly_equity_add - $t->monthly_equity_deduct;
+                        })
+                        ->addColumn('monthly_balance', function ($t) {
+                            $assets = $t->monthly_assets_purchase - $t->monthly_assets_sales;
+                            $loanBalance = $t->monthly_liabilities_received - $t->monthly_liabilities_payment;
+                            $equity = $t->monthly_equity_add - $t->monthly_equity_deduct;
+                            return ($t->monthly_income - $t->monthly_expense) + $loanBalance - $assets + $equity;
+                        })
+                    ->make(true);
+            }
+            // monthly end 
+
+
             $transactions = $transactions->orderby('id', 'DESC')->get();
 
-            return DataTables::of($transactions)
-                ->addColumn('chart_of_account', function ($transaction) {
-                    return $transaction->chartOfAccount ? $transaction->chartOfAccount->account_name : $transaction->description;
-                })
-                ->addColumn('account_name', function ($transaction) {
-                    return $transaction->account ? $transaction->account->name : "";
-                })
-                ->make(true);
+        return DataTables::of($transactions)
+            ->addColumn('chart_of_account', function ($t) {
+                $accountName = $t->chartOfAccount ? $t->chartOfAccount->account_name : $t->description;
+                if ($t->employee && stripos($accountName, 'salary') !== false) {
+                    // Only add employee if account name contains 'salary'
+                    return $accountName . ' (' . $t->employee->name . ')';
+                }
+                return $accountName;
+            })
+            ->addColumn('account_name', function ($t) {
+                return $t->account->name ?? '';
+            })
+            ->make(true);
+
         }
+
+        // ---- Lifetime Balance Calculation ----
+            $summary = Transaction::where('office', 'ksa')
+                ->where('status', 1)
+                ->selectRaw("
+                    SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as total_income,
+                    SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as total_expense,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as liabilities_received,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as liabilities_payment,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as assets_purchase,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as assets_sales,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as equity_add,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as equity_deduct
+                ")
+                ->first();
+
+            $assets =  $summary->assets_purchase - $summary->assets_sales;
+
+            $assetsExp =  $summary->assets_sales - $summary->assets_purchase;
+
+            $equity = $summary->equity_add - $summary->equity_deduct;
+
+            $balance = ($summary->total_income - $summary->total_expense)
+                    + ($summary->liabilities_received - $summary->liabilities_payment)
+                    + $assetsExp + $equity;
+
+            $loanBalance = $summary->liabilities_received - $summary->liabilities_payment;
+
+
         $coa = ChartOfAccount::where('status', 1)->get();
-        
-        $employees = Employee::where('status', 1)->where('office', 'ksa')->get();
-        $accounts = ChartOfAccount::where('sub_account_head', 'Account Payable')->get(['account_name', 'id']);
-        return view('admin.transactions.ksaaccounts', compact('coa','accounts','employees'));
+        $employees = Employee::where('status', 1)->where('office', 'dhaka')->get();
+        $accounts = ChartOfAccount::where('status', 1)
+            ->select('account_head')
+            ->distinct()
+            ->get();
+
+
+        return view('admin.transactions.ksaaccounts', compact('coa','accounts','employees','loanBalance','balance','equity','assets'));
     }
     
 
@@ -178,7 +303,7 @@ class AccountsController extends Controller
         }
 
         if (empty($request->transaction_type)) {
-            return response()->json(['status' => 303, 'message' => 'Transaction Type Field Is Required..!']);
+            return response()->json(['status' => 303, 'message' => 'Account Head Is Field Is Required..!']);
         }
 
         if (empty($request->chart_of_account_id)) {

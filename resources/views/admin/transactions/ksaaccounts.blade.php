@@ -4,6 +4,13 @@
 
 <section class="content pt-3" id="contentContainer">
     <div class="container-fluid">
+
+    <div class="alert alert-info mb-3">
+    <strong>Balance:</strong> {{ number_format($balance, 2) }} |
+    <strong>Loan Balance:</strong> {{ number_format($loanBalance, 2) }}|
+    <strong>Assets:</strong> {{ number_format($assets, 2) }}
+</div>
+
         <div class="row">
             <div class="col-md-12">
                 <div id="alert-container"></div>
@@ -31,12 +38,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-Equity-tab" data-toggle="pill" href="#custom-tabs-one-Equity" role="tab" aria-controls="custom-tabs-one-Equity" aria-selected="false">Equity</a>
                             </li>
-                            
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-Monthly-tab" data-toggle="pill" href="#custom-tabs-one-Monthly" role="tab" aria-controls="custom-tabs-one-Monthly" aria-selected="false">Monthly</a>
+                            </li>
 
                             
                             <li class="nav-item ml-auto px-2">
                                 <button class="btn btn-xs btn-success " data-toggle="modal" data-target="#chartModal" data-purpose="0">+ Add New Transaction</button>
-                                <a href="{{route('admin.coa', ['office' => 'dhaka'])}}" class="btn btn-xs btn-success " target="blank">
+                                <a href="{{route('admin.coa', ['office' => 'ksa'])}}" class="btn btn-xs btn-success " target="blank">
                                     <i class="fas fa-plus"></i>COA
                                 </a>
                             </li>
@@ -45,7 +54,6 @@
                     </div>
 
                     <div class="card-body">
-
 
                         <div class="tab-content" id="custom-tabs-one-tabContent">
                             <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
@@ -67,28 +75,28 @@
 
                                         <div class="form-group mx-sm-3">
                                             <label class="sr-only">Account</label>
-                                            <select class="form-control select2" name="account_name">
-                                                <option value="">Select Account..</option>
-                                                @foreach ($accounts as $account)
-                                                <option value="{{ $account->account_name }}" {{ request()->input('account_name') == $account->account_name ? 'selected' : '' }}>
-                                                    {{ $account->account_name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
+                                                <select name="account_head" id="search_account_head" class="form-control select2">
+                                                    <option value="">-- Select Account Head --</option>
+                                                    @foreach($accounts as $acc)
+                                                        <option value="{{ $acc->account_head }}">{{ $acc->account_head }}</option>
+                                                    @endforeach
+                                                </select>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="submit" class="btn btn-primary">Search</button>
                                     </form>
                                 </div>
+
+                <!-- all transaction tab load here  -->
                                 @component('components.table')
                                 @slot('tableID')
                                 assetTBL
                                 @endslot
                                 @slot('head')
-                                    <th>ID</th>
+                                    <!-- <th>ID</th> -->
                                     <th>Date</th>
                                     <th>Account</th>
-                                    <th>Document</th>
+                                    <th>Note</th>
                                     <th>Payment Type</th>
                                     <th>Amount</th>
                                     <th><i class=""></i> Action</th>
@@ -98,6 +106,8 @@
 
                             </div>
 
+<!-- Expenses', 'Income', 'Assets', 'Liabilities', 'Equity' tabs are load here  -->
+
                             @foreach (['Expenses', 'Income', 'Assets', 'Liabilities', 'Equity'] as $type)
                                 <div class="tab-pane fade" id="custom-tabs-one-{{ $type }}" role="tabpanel" aria-labelledby="custom-tabs-one-{{ $type }}-tab">
                                     
@@ -106,29 +116,35 @@
                                     {{ $type }}TBL
                                     @endslot
                                     @slot('head')
-                                        <th>ID</th>
+                                        <!-- <th>ID</th> -->
                                         <th>Date</th>
                                         <th>Account</th>
-                                        <th>Document</th>
+                                        <th>Note</th>
                                         <th>Payment Type</th>
                                         <th>Amount</th>
                                     @endslot
                                     @endcomponent
                                 </div>
-                            @endforeach
-                            
-              
-              
-              
-                          </div>
-
-
-
-
-                                
-
-
-
+                            @endforeach                           
+                       
+        <!-- monthly view tab show  -->
+                        <div class="tab-pane fade" id="custom-tabs-one-Monthly" role="tabpanel" aria-labelledby="custom-tabs-one-Monthly-tab">
+                            @component('components.table')
+                                @slot('tableID')
+                                    MonthlyTBL
+                                @endslot
+                                @slot('head')
+                                    <th>Month</th>
+                                    <th>Expense</th>
+                                    <th>Income</th>
+                                    <th>Asset</th>
+                                    <th>Liability</th>
+                                    <th>Equity</th>
+                                    <th>Balance</th>
+                                @endslot
+                            @endcomponent
+                        </div>
+                    </div>
 
                     </div>
                 </div>
@@ -148,6 +164,9 @@
             <form class="form-horizontal" id="customer-form" enctype="multipart/form-data">
                 <div id="alert-container1"></div>
                 <div class="modal-body">
+                    
+                <div class="ermsg"></div>
+
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-md-6">
@@ -156,12 +175,11 @@
                                 <input type="date" name="date" class="form-control" id="date" value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-
                         
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label class="form-label" for="account_head">Account Head</label>
-                            <select name="account_head" id="account_head" class="form-control">
+                            <select name="account_head" id="modal_account_head" class="form-control">
                                 <option value="">Select</option>
                                 <option value="Assets">Assets</option>
                                 <option value="Expenses">Expenses</option>
@@ -200,8 +218,7 @@
                                 </select>
                             </div>
                         </div>
-
-                        
+            
 
                         
                     </div>
@@ -251,12 +268,20 @@
                         </div>
 
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amount" class="control-label">BDT Amount</label>
                                 <input type="text" name="amount" class="form-control" id="amount">
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="note" class="control-label">Note</label>
+                                <input type="text" name="note" class="form-control" id="note">
+                            </div>
+                        </div>
+
                         <div class="col-md-6 d-none">
                             <div class="form-group">
                                 <label for="riyal_amount" class="control-label">Riyal Amount</label>
@@ -286,7 +311,7 @@
     $(document).ready(function() {
 
         $('#employeeDiv').hide();
-        $("#account_head").change(function () {
+        $("#modal_account_head").change(function () {
             var accountHead = $(this).val();
             var office = $('#office').val();
 
@@ -306,9 +331,12 @@
                     var $select = $("#chart_of_account_id");
                     $select.empty().append('<option value="">Select chart of account</option>');
 
-                    $.each(response.data, function (index, account) {
-                        $select.append('<option value="' + account.id + '" data-name="' + account.account_name.toLowerCase() + '">' + account.account_name + '</option>');
+                    var accounts = response.data ? response.data : response;
+                    $.each(accounts, function (index, account) {
+                        $select.append('<option value="' + account.id + '">' + account.account_name + '</option>');
                     });
+
+                     $select.trigger('change.select2'); // refresh select2
 
                     // Optional: reset salary div when loading new data
                     $('#employeeDiv').hide();
@@ -322,36 +350,35 @@
             });
         });
 
-        $('#chart_of_account_id').on('change', function () {
-            let selectedText = $("#chart_of_account_id option:selected").text().toLowerCase();
-
+            // Show employee dropdown when salary selected
+            $('#chart_of_account_id').on('change', function () {
+                let selectedText = $("#chart_of_account_id option:selected").text().toLowerCase();
                 $('#chart_of_account_val').val(selectedText);
-            if (selectedText.includes('salary')) {
-                $('#employeeDiv').show();
-            } else {
-                $('#employeeDiv').hide();
-            }
-        });
+
+                if (selectedText.includes('salary')) {
+                    $('#employeeDiv').show();
+                } else {
+                    $('#employeeDiv').hide();
+                }
+            });
 
         // Optionally trigger change on page load if value is pre-selected
         $('#chart_of_account_id').trigger('change');
-
-
 
         function fetchTranType(accountHead) {
             if (accountHead) {
             
                 if (accountHead == "Assets") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="purchase">Purchase</option><option value="sales">Sales</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="">Select type</option><option value="purchase">Purchase</option><option value="sales">Sales</option>');
 
                 } else if (accountHead == "Expenses") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="payment">Payment</option>');
 
                 } else if (accountHead == "Income") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="payment">Payment</option>');
+                    $("#transaction_type").html('<option value="received">Received</option>');
 
                 } else if (accountHead == "Liabilities") {
 
@@ -359,7 +386,7 @@
 
                 } else if (accountHead == "Equity") {
 
-                    $("#transaction_type").html('<option value="">Select type</option><option value="received">Received</option><option value="withdraw">Withdraw</option>');
+                    $("#transaction_type").html('<option value="">Select type</option><option value="withdrawal">Withdrawal</option><option value="capital">Capital</option>');
 
                 } else {
                     $("#transaction_type").html("<option value=''>Please Select</option>");
@@ -386,120 +413,7 @@
         
         
         
-    var charturl = "{{URL::to('/admin/ksa-account')}}";
-    var storeurl = "{{URL::to('/admin/account-store')}}";
-    var editurl = "{{URL::to('/admin/account-edit')}}";
-    var upurl = "{{URL::to('/admin/account-update')}}";
-    var customerTBL = $('#assetTBL').DataTable({
-        processing: true,
-        serverSide: true,
-        pageLength: 50, // Show 50 entries per page
-        order: [[0, 'desc']], // Order by the first column (ID) in descending order
-        ajax: {
-            url: charturl,
-            type: 'GET',
-            data: function(d) {
-
-                d.start_date = $('input[name="start_date"]').val();
-                d.end_date = $('input[name="end_date"]').val();
-                d.account_name = $('select[name="account_name"]').val();
-            },
-            error: function(xhr, error, thrown) {
-                console.log(xhr.responseText);
-            }
-        },
-        deferRender: true,
-        columns: [{
-                data: 'tran_id',
-                name: 'tran_id'
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },
-            {
-                data: 'chart_of_account',
-                name: 'chart_of_account'
-            },
-            {
-                data: 'document',
-                name: 'document',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    if (row.document) {
-                        return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'account_name',
-                name: 'account_name'
-            },
-            {
-                data: 'bdt_amount',
-                name: 'bdt_amount'
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row, meta) {
-                    let button = `<button type="button" class="btn btn-warning btn-xs edit-btn" data-toggle="modal" data-target="#chartModal" value="${row.id}" title="Edit" data-purpose='1'><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>`;
-                    if (row.amount < 0) {}
-                    return button;
-                }
-            },
-        ]
-    });
-
-
-
-    // Initialize DataTables for each tab
-    ['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'].forEach(function(type) {
-        $('#' + type + 'TBL').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: charturl,
-                type: 'GET',
-                data: function(d) {
-                    
-                    d.start_date = $('input[name="start_date"]').val();
-                    d.end_date = $('input[name="end_date"]').val();
-                    d.account_name = $('select[name="account_name"]').val();
-                    d.type = type; // Pass the type to the server
-                },
-                error: function(xhr, error, thrown) {
-                    console.log(xhr.responseText);
-                }
-            },
-            deferRender: true,
-            columns: [
-                { data: 'tran_id', name: 'tran_id' },
-                { data: 'date', name: 'date' },
-                { data: 'chart_of_account', name: 'chart_of_account' },
-                {
-                    data: 'document',
-                    name: 'document',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row, meta) {
-                        if (row.document) {
-                            return `<a class="btn btn-success btn-xs" href="{{asset('images/expense')}}/${row.document}" target="_blank">View</a>`;
-                        } else {
-                            return '';
-                        }
-                    }
-                },
-                { data: 'account_name', name: 'account_name' },
-                { data: 'bdt_amount', name: 'bdt_amount' }
-            ]
-        });
-    });
+   
 
     $('form').on('submit', function(e) {
         e.preventDefault();
@@ -524,10 +438,10 @@
 
                     var $select = $("#chart_of_account_id");
                     $select.empty().append('<option value="">Select chart of account</option>');
-
-                    $.each(response.coa, function (index, account) {
-                        $select.append('<option value="' + account.id + '" data-name="' + account.account_name.toLowerCase() + '">' + account.account_name + '</option>');
+                    $.each(accounts, function (index, account) {
+                        $select.append('<option value="' + account.id + '">' + account.account_name + '</option>');
                     });
+                    $select.trigger('change.select2');
 
                     $('#date').val(response.date);
                     $('#ref').val(response.ref);
@@ -540,7 +454,7 @@
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
 
-                    $('#account_head').val(response.account_head);
+                    $('#modal_account_head').val(response.account_head);
                     $('#chart_of_account_id').val(response.chart_of_account_id);
                     $('#chart_of_account_val').val(response.chart_of_account_val);
                     $('#employee_id').val(response.employee_id);
@@ -591,9 +505,9 @@
                     $("#loader").removeClass('fa fa-spinner fa-spin');
                     $(".btn-submit").removeAttr("disabled", true);
 
-                    if (d.status == 400) {
+                    if (d.status == 303) {
                         $(".ermsg").html(d.message);
-                    } else {$('#chartModal').modal('toggle');
+                    } else if (data.status == 300) {
                         $(function() {
                             var Toast = Swal.mixin({
                                 toast: true,
@@ -620,10 +534,7 @@
 
 
 
-
-
     // update button event
-
     $(document).on('click', '.update-btn', function() {
         let formData = $('#customer-form').serialize();
         let id = $(this).val();
@@ -665,6 +576,141 @@
 
     
 });
+</script>
+
+<script>
+     var charturl = "{{URL::to('/admin/ksa-account')}}";
+    var storeurl = "{{URL::to('/admin/account-store')}}";
+    var editurl = "{{URL::to('/admin/account-edit')}}";
+    var upurl = "{{URL::to('/admin/account-update')}}";
+    var customerTBL = $('#assetTBL').DataTable({
+        processing: true,
+        serverSide: true,
+        pageLength: 10, // Show 50 entries per page
+        order: [[0, 'desc']], // Order by the first column (ID) in descending order
+        ajax: {
+            url: charturl,
+            type: 'GET',
+            data: function(d) {
+
+                d.start_date = $('input[name="start_date"]').val();
+                d.end_date = $('input[name="end_date"]').val();
+                d.account_head = $('select[name="account_head"]').val(); 
+
+            },
+            error: function(xhr, error, thrown) {
+                console.log(xhr.responseText);
+            }
+        },
+        deferRender: true,
+        columns: [
+            {
+                data: 'date',
+                name: 'date'
+            },
+            {
+                data: 'chart_of_account',
+                name: 'chart_of_account'
+            },
+            {
+                data: 'note',
+                name: 'note'
+            },
+            {
+                data: 'account_name',
+                name: 'account_name'
+            },
+            {
+                data: 'bdt_amount',
+                name: 'bdt_amount'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row, meta) {
+                    let button = `<button type="button" class="btn btn-warning btn-xs edit-btn" data-toggle="modal" data-target="#chartModal" value="${row.id}" title="Edit" data-purpose='1'><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>`;
+                    if (row.amount < 0) {}
+                    return button;
+                }
+            },
+        ]
+    });
+
+
+
+    // Initialize DataTables for each tab
+    ['Assets', 'Expenses', 'Income', 'Liabilities', 'Equity'].forEach(function(type) {
+        $('#' + type + 'TBL').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[0, 'desc']],
+            ajax: {
+                url: charturl,
+                type: 'GET',
+                data: function(d) {
+                    
+                    d.start_date = $('input[name="start_date"]').val();
+                    d.end_date = $('input[name="end_date"]').val();
+                    d.account_head = $('select[name="account_head"]').val(); // ✅ FIXED
+                    d.type         = type; // Pass the type to backend // Pass the type to the server
+                },
+                error: function(xhr, error, thrown) {
+                    console.log(xhr.responseText);
+                }
+            },
+            deferRender: true,
+            columns: [
+                // { data: 'tran_id', name: 'tran_id' }, 
+                { data: 'date', name: 'date' },
+                { data: 'chart_of_account', name: 'chart_of_account' },
+                { data: 'note', name: 'note' },
+                { data: 'account_name', name: 'account_name' },
+                { data: 'bdt_amount', name: 'bdt_amount' }
+            ]
+        });
+    });
+
+
+// monthly tab data render 
+        $.fn.dataTable.ext.type.order['month-pre'] = function (d) {
+            return new Date(d).getTime(); // convert "September 2025" into timestamp
+        };
+
+        $('#MonthlyTBL').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: charturl,
+                type: 'GET',
+                data: function(d) {
+                    d.type = 'Monthly';
+                    d.start_date = $('input[name="start_date"]').val();
+                    d.end_date = $('input[name="end_date"]').val();
+                }
+            },
+            columns: [
+                { 
+                    data: 'month', 
+                    name: 'month',
+                    render: {
+                        _: 'display',   // what to show
+                        sort: 'timestamp' // what to sort
+                    }
+                },
+                { data: 'monthly_expense', name: 'monthly_expense' },
+                { data: 'monthly_income', name: 'monthly_income' },
+                { data: 'monthly_assets', name: 'monthly_assets' },
+                { data: 'monthly_liability', name: 'monthly_liability' },
+                { data: 'monthly_equity', name: 'monthly_equity' },
+                { data: 'monthly_balance', name: 'monthly_balance' },
+            ],
+            order: [[0, 'desc']]
+        });
+// monthly tab end 
+
+
 </script>
 
 <script>
