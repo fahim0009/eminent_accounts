@@ -280,16 +280,16 @@
             <!-- Sub-tab contents -->
             <div class="tab-content" id="client-subtabContent">
               <div class="tab-pane fade show active" id="subtab-processing" role="tabpanel">
-                @include('partials.processing-clients', ['datas' => $datas->where('status', 1)])
+                @include('partials.processing-clients', ['datas' => $datas->where('status', 1)->values()])
               </div>
               <div class="tab-pane fade" id="subtab-new" role="tabpanel">
-                @include('partials.new-clients', ['datas' => $datas->where('status', 0)])
+                @include('partials.new-clients', ['datas' => $datas->where('status', 0)->values()])
               </div>
               <div class="tab-pane fade" id="subtab-complete" role="tabpanel">
-                @include('partials.completed-clients', ['datas' => $datas->where('status', 2)])
+                @include('partials.completed-clients', ['datas' => $datas->where('status', 2)->values()])
               </div>
               <div class="tab-pane fade" id="subtab-decline" role="tabpanel">
-                @include('partials.decline-cancel-clients', ['datas' => $datas->whereIn('status', [3, 4])])
+                @include('partials.decline-cancel-clients', ['datas' => $datas->whereIn('status', [3, 4])->values()])
               </div>
             </div>
           </div>
@@ -501,10 +501,6 @@
 <!-- /.content -->
 
 
-
-
-
-
 <!-- Modal Receive Payment-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -631,42 +627,44 @@
 @section('script')
 <script>
     $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      
-      $("#example2").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+      function initReversedTable(selector) {
+        var $sel = $(selector);
+        var table = $sel.DataTable({
+          responsive: true,
+          lengthChange: false,
+          autoWidth: false,
+          buttons: ["copy", "csv", "excel", "pdf", "print"]
+        });
 
-      $("#example3").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
+        // move buttons (same as your previous code)
+        table.buttons().container().appendTo(selector + '_wrapper .col-md-6:eq(0)');
 
-      $("#example4").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example4_wrapper .col-md-6:eq(0)');
+        // On every draw, rewrite the first cell (SL column) for rows on current page
+        table.on('draw', function () {
+          var info = table.page.info(); // { start, end, length, recordsTotal, recordsDisplay, ... }
+          // iterate current page rows and set first <td>
+          table.rows({ page: 'current' }).nodes().each(function (row, i) {
+            // reversed SL: total_after_filtering - (start_index + index_on_page)
+            var reversed = info.recordsDisplay - (info.start + i);
+            $('td:eq(0)', row).html(reversed);
+          });
+        });
 
-      $("#example5").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example5_wrapper .col-md-6:eq(0)');
+        // initial draw to fill SL immediately
+        table.draw(false);
+        return table;
+      }
 
-      $("#example6").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example6_wrapper .col-md-6:eq(0)');
-
-      $("#example7").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example7_wrapper .col-md-6:eq(0)');
-      
+      // initialize whichever tables you have
+      initReversedTable('#example1');
+      initReversedTable('#example2');
+      initReversedTable('#example3');
+      initReversedTable('#example4');
+      initReversedTable('#example5');
+      initReversedTable('#example6');
+      initReversedTable('#example7');
     });
+
 
     
 
