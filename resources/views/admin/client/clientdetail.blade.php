@@ -66,6 +66,8 @@
               <!-- /.card-header -->
               <div class="card-body">
 
+        @if($assign->isNotEmpty())
+  
               @foreach($assign as $item)   
                 <div class="row">
                       <div class="col-sm-12 d-flex align-items-center gap-2">
@@ -105,6 +107,35 @@
                       </div>
                        </div>
                     @endforeach
+
+                @elseif(!empty($data->assign_details))
+                    {{-- Case 2: show assign_details from client --}}
+                    <div class="row">
+                        <div class="col-sm-12 d-flex align-items-center gap-2">
+                            <strong>Assign Details:</strong>
+                            <p class="mb-0 text-muted">&nbsp; {{ $data->assign_details }}</p>
+                        </div>
+                    </div>
+
+           @else
+
+              {{-- Case 3: show form to submit assign_details --}}
+              <form id="assignForm">
+                  @csrf
+                  @method('POST')
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <label for="assign_details" class="form-label"><strong>Assign To</strong></label>
+
+                          <input type="text" class="form-control" id="assign_details" name="assign_details" required>
+                          <input type="hidden" name="client_id" id="client_id" value="{{$data->id}}">
+                        </div>
+                      <div class="col-sm-12 mt-2">
+                          <button type="submit" id="assignUpdate" class="btn btn-primary">Save</button>
+                      </div>
+                  </div>
+              </form>
+          @endif
              
 
               </div>
@@ -1066,6 +1097,52 @@
         //update  end
           
       });
+
+
+// assign details updte if not my okala 
+ var assign_url = "{{URL::to('/admin/assign-update')}}";
+      // console.log(url);
+      $("#assignUpdate").click(function(){
+
+        var form_data = new FormData();
+          form_data.append("assign_details", $("#assign_details").val());
+          form_data.append("client_id", $("#client_id").val());
+
+          $.ajax({
+            url: assign_url,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            data:form_data,
+            success: function (d) {
+                if (d.status == 303) {
+                    $(".assignMsg").html(d.message);
+                }else if(d.status == 300){
+
+                  $(function() {
+                      var Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
+                      Toast.fire({
+                        icon: 'success',
+                        title: 'Data updated successfully.'
+                      });
+                    });
+                  window.setTimeout(function(){location.reload()},2000)
+                }
+            },
+            error: function (d) {
+                console.log(d);
+            }
+        });
+        //update  end
+      });
+
+
+
 
 
       var purl = "{{URL::to('/admin/client-partner-update')}}";

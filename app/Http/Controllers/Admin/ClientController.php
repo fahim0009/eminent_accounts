@@ -636,6 +636,36 @@ class ClientController extends Controller
         } 
     }
 
+        public function assignUpdate(Request $request)
+    {
+
+        
+        if(empty($request->client_id)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Client Id missing..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(empty($request->assign_details)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"assign details \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+
+        
+        $data = Client::find($request->client_id);
+        $data->assign_details = $request->assign_details;
+        $data->	assign = 1;
+        $data->updated_by = Auth::user()->id;
+        if ($data->save()) {
+            $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Assign Details Updated Successfully.</b></div>";
+            return response()->json(['status'=> 300,'message'=>$message]);
+        }
+        else{
+            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
+        } 
+    }
+
+
     public function changeClientStatus(Request $request)
 {
     $client = Client::find($request->id);

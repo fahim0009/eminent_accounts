@@ -571,8 +571,6 @@
 </div>
 <!-- end  -->
 
-
-
 <!-- modal create bill  --> 
 <!-- Modal -->
 <div class="modal fade" id="exampleModa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
