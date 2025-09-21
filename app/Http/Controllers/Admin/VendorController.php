@@ -21,7 +21,12 @@ class VendorController extends Controller
     public function store(Request $request)
     {
         if(empty($request->name)){
-            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Username \" field..!</b></div>";
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Name \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(empty($request->surname)){
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Surname \" field..!</b></div>";
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }

@@ -209,7 +209,7 @@
           if($(this).val() == 'Create') {
               var form_data = new FormData();
               form_data.append("name", $("#name").val());
-              form_data.append("name", $("#surname").val());
+              form_data.append("surname", $("#surname").val());
               form_data.append("email", $("#email").val());
               form_data.append("phone", $("#phone").val());
               form_data.append("address", $("#address").val());
