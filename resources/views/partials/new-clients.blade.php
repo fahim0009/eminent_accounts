@@ -10,7 +10,7 @@
       <th>Passport Name</th>
       <th>Passport Number</th>
       <th>Medical Exp Date</th>
-      <th>Package Cost</th>
+      <!-- <th>Package Cost</th> -->
       <th>Received Amount</th>
       <th>Status</th>
     </tr>
@@ -60,7 +60,7 @@
                     </td>
                     @endif
 
-      <td style="text-align: center">{{ $entry->total_package }}</td>
+      <!-- <td style="text-align: center">{{ $entry->total_package }}</td> -->
       <td style="text-align: center">{{ $entry->total_received }}</td>
       <td style="text-align: center">
         @if ($entry->status == 0) New

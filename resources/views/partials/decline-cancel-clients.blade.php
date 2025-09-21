@@ -20,7 +20,7 @@
       <td style="text-align: center">{{ $key + 1 }}</td>
       <td style="text-align: center"><a href="{{ route('admin.clientDetails', $entry->id) }}">{{ $entry->passport_name }}</a></td>
       <td style="text-align: center">{{ $entry->passport_number }}</td>
-      <td style="text-align: center">{{ $entry->total_package }}</td>
+      <td style="text-align: center">{{ ($entry->total_package - $entry->package_cost) }}</td>
       <td style="text-align: center">{{ $entry->total_received }}</td>
       <td style="text-align: center">
         @if ($entry->status == 0) New
