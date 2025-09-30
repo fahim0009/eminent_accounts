@@ -191,14 +191,14 @@ class AccountsController extends Controller
 
                    $transactions = $transactions->selectRaw("
                         DATE_FORMAT(date, '%Y-%m') as month,
-                        SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as monthly_income,
-                        SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as monthly_expense,
-                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as monthly_liabilities_received,
-                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as monthly_liabilities_payment,
-                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as monthly_assets_purchase,
-                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as monthly_assets_sales,
-                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as monthly_equity_add,
-                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as monthly_equity_deduct
+                        SUM(CASE WHEN table_type = 'Income' THEN foreign_amount ELSE 0 END) as monthly_income,
+                        SUM(CASE WHEN table_type = 'Expenses' THEN foreign_amount ELSE 0 END) as monthly_expense,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN foreign_amount ELSE 0 END) as monthly_liabilities_received,
+                        SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN foreign_amount ELSE 0 END) as monthly_liabilities_payment,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN foreign_amount ELSE 0 END) as monthly_assets_purchase,
+                        SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN foreign_amount ELSE 0 END) as monthly_assets_sales,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN foreign_amount ELSE 0 END) as monthly_equity_add,
+                        SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN foreign_amount ELSE 0 END) as monthly_equity_deduct
                     ")
                     ->groupBy('month')
                     ->orderBy('month', 'DESC')
@@ -255,14 +255,14 @@ class AccountsController extends Controller
             $summary = Transaction::where('office', 'ksa')
                 ->where('status', 1)
                 ->selectRaw("
-                    SUM(CASE WHEN table_type = 'Income' THEN bdt_amount ELSE 0 END) as total_income,
-                    SUM(CASE WHEN table_type = 'Expenses' THEN bdt_amount ELSE 0 END) as total_expense,
-                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN bdt_amount ELSE 0 END) as liabilities_received,
-                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN bdt_amount ELSE 0 END) as liabilities_payment,
-                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN bdt_amount ELSE 0 END) as assets_purchase,
-                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN bdt_amount ELSE 0 END) as assets_sales,
-                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN bdt_amount ELSE 0 END) as equity_add,
-                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN bdt_amount ELSE 0 END) as equity_deduct
+                    SUM(CASE WHEN table_type = 'Income' THEN foreign_amount ELSE 0 END) as total_income,
+                    SUM(CASE WHEN table_type = 'Expenses' THEN foreign_amount ELSE 0 END) as total_expense,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'received' THEN foreign_amount ELSE 0 END) as liabilities_received,
+                    SUM(CASE WHEN table_type = 'Liabilities' AND tran_type = 'payment' THEN foreign_amount ELSE 0 END) as liabilities_payment,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'purchase' THEN foreign_amount ELSE 0 END) as assets_purchase,
+                    SUM(CASE WHEN table_type = 'Assets' AND tran_type = 'sales' THEN foreign_amount ELSE 0 END) as assets_sales,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'capital' THEN foreign_amount ELSE 0 END) as equity_add,
+                    SUM(CASE WHEN table_type = 'Equity' AND tran_type = 'withdrawal' THEN foreign_amount ELSE 0 END) as equity_deduct
                 ")
                 ->first();
 
@@ -291,7 +291,7 @@ class AccountsController extends Controller
     }
     
 
-    public function store(Request $request)
+    public function dkStore(Request $request)
     {
 
         if (empty($request->date)) {
@@ -314,13 +314,13 @@ class AccountsController extends Controller
             return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
         }
 
-        if (empty($request->amount) && empty($request->riyal_amount)) {
-            return response()->json(['status' => 303, 'message' => 'Amount Field Is Required..!']);
+        if (empty($request->bdt_amount)) {
+            return response()->json(['status' => 303, 'message' => 'BDT Amount Field Is Required..!']);
         }
 
         $transaction = new Transaction();
         $transaction->table_type = $request->account_head;
-        $transaction->office = $request->office;
+        $transaction->office = "dhaka";
         $transaction->note = $request->note;
         $transaction->chart_of_account_val = $request->chart_of_account_val;
         $transaction->employee_id = $request->employee_id;
@@ -333,7 +333,62 @@ class AccountsController extends Controller
             $transaction->document = $imageName;
         }
         
-        $transaction->bdt_amount = $request->input('amount') ?? "0.00";
+        $transaction->bdt_amount = $request->input('bdt_amount') ?? "0.00";
+        $transaction->tran_type = $request->input('transaction_type');
+        $transaction->account_id = $request->input('payment_type');
+        $transaction->chart_of_account_id = $request->input('chart_of_account_id');
+
+        $transaction->created_by = Auth()->user()->id;
+        $transaction->save();
+        $transaction->tran_id = 'TRN' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+        $transaction->save();
+
+        return response()->json(['status' => 300, 'message' => 'Created Successfully','document' => $request->document]);
+
+    }
+
+        public function ksaStore(Request $request)
+    {
+
+        if (empty($request->date)) {
+            return response()->json(['status' => 303, 'message' => 'Date Field Is Required..!']);
+        }
+
+        if (empty($request->office)) {
+            return response()->json(['status' => 303, 'message' => 'Office Field Is Required..!']);
+        }
+
+        if (empty($request->transaction_type)) {
+            return response()->json(['status' => 303, 'message' => 'Account Head Is Field Is Required..!']);
+        }
+
+        if (empty($request->chart_of_account_id)) {
+            return response()->json(['status' => 303, 'message' => 'Chart of Account ID Field Is Required..!']);
+        }
+
+        if (empty($request->payment_type)) {
+            return response()->json(['status' => 303, 'message' => 'Payment Type Field Is Required..!']);
+        }
+
+        if (empty($request->riyal_amount)) {
+            return response()->json(['status' => 303, 'message' => 'Riyal Amount Field Is Required..!']);
+        }
+
+        $transaction = new Transaction();
+        $transaction->table_type = $request->account_head;
+        $transaction->office = "ksa";
+        $transaction->note = $request->note;
+        $transaction->chart_of_account_val = $request->chart_of_account_val;
+        $transaction->employee_id = $request->employee_id;
+        $transaction->date = $request->input('date');
+        if ($request->document) {
+            
+            $image = $request->document;
+            $imageName = time() . '.' . $image->extension();
+            $image->move(public_path('images/asset'), $imageName);
+            $transaction->document = $imageName;
+        }
+        
         $transaction->foreign_amount = $request->input('riyal_amount') ?? "0.00";
         $transaction->foreign_amount_type = 'riyal';
         $transaction->tran_type = $request->input('transaction_type');

@@ -99,7 +99,7 @@
                           <option value="">Select</option>
                           @foreach (\App\Models\User::where('is_type', '3')->where('status', 1)->get() as $vendor)
 
-                          <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                          <option value="{{$vendor->id}}">{{$vendor->name}} {{$vendor->surname}}</option>
                               
                           @endforeach
                         </select>

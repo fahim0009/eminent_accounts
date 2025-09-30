@@ -98,7 +98,7 @@
                                     <th>Account</th>
                                     <th>Note</th>
                                     <th>Payment Type</th>
-                                    <th>Amount</th>
+                                    <th>Amount (Riyal)</th>
                                     <th><i class=""></i> Action</th>
                                 @endslot
                                 @endcomponent
@@ -121,7 +121,7 @@
                                         <th>Account</th>
                                         <th>Note</th>
                                         <th>Payment Type</th>
-                                        <th>Amount</th>
+                                        <th>Amount (Riyal)</th>
                                     @endslot
                                     @endcomponent
                                 </div>
@@ -270,8 +270,8 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="amount" class="control-label">BDT Amount</label>
-                                <input type="text" name="amount" class="form-control" id="amount">
+                                <label for="riyal_amount" class="control-label">Riyal Amount</label>
+                                <input type="text" name="riyal_amount" class="form-control" id="riyal_amount">
                             </div>
                         </div>
 
@@ -279,13 +279,6 @@
                             <div class="form-group">
                                 <label for="note" class="control-label">Note</label>
                                 <input type="text" name="note" class="form-control" id="note">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 d-none">
-                            <div class="form-group">
-                                <label for="riyal_amount" class="control-label">Riyal Amount</label>
-                                <input type="text" name="riyal_amount" class="form-control" id="riyal_amount">
                             </div>
                         </div>
                     </div>
@@ -448,9 +441,8 @@
 
                     fetchTranType(response.account_head);
                     
-                    $('#office').val(response.office);
                     $('#transaction_type').val(response.transaction_type);
-                    $('#amount').val(response.amount);
+                    $('#bdt_amount').val(response.bdt_amount);
                     $('#riyal_amount').val(response.riyal_amount);
                     $('#payment_type').val(response.payment_type);
 
@@ -590,9 +582,10 @@ $("body").delegate(".save-btn", "click", function(event) {
 
 <script>
      var charturl = "{{URL::to('/admin/ksa-account')}}";
-    var storeurl = "{{URL::to('/admin/account-store')}}";
-    var editurl = "{{URL::to('/admin/account-edit')}}";
-    var upurl = "{{URL::to('/admin/account-update')}}";
+    var storeurl = "{{URL::to('/admin/ksa-account-store')}}";
+    var editurl = "{{URL::to('/admin/ksa-account-edit')}}";
+    var upurl = "{{URL::to('/admin/ksa-account-update')}}";
+    
     var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
@@ -631,8 +624,11 @@ $("body").delegate(".save-btn", "click", function(event) {
                 name: 'account_name'
             },
             {
-                data: 'bdt_amount',
-                name: 'bdt_amount'
+                data: 'foreign_amount',
+                name: 'foreign_amount',
+                render: function(data, type, row, meta) {
+                    return `SAR ${data}`;
+                }
             },
             {
                 data: 'action',
@@ -641,7 +637,7 @@ $("body").delegate(".save-btn", "click", function(event) {
                 searchable: false,
                 render: function(data, type, row, meta) {
                     let button = `<button type="button" class="btn btn-warning btn-xs edit-btn" data-toggle="modal" data-target="#chartModal" value="${row.id}" title="Edit" data-purpose='1'><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>`;
-                    if (row.amount < 0) {}
+                    if (row.bdt_amount < 0) {}
                     return button;
                 }
             },
@@ -677,7 +673,10 @@ $("body").delegate(".save-btn", "click", function(event) {
                 { data: 'chart_of_account', name: 'chart_of_account' },
                 { data: 'note', name: 'note' },
                 { data: 'account_name', name: 'account_name' },
-                { data: 'bdt_amount', name: 'bdt_amount' }
+                { data: 'foreign_amount', name: 'foreign_amount',
+                render: function(data, type, row, meta) {
+                    return `SAR ${data}`;
+                } }
             ]
         });
     });

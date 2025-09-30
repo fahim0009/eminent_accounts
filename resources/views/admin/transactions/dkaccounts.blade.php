@@ -281,14 +281,6 @@
                                 <input type="text" name="note" class="form-control" id="note">
                             </div>
                         </div>
-
-                        <div class="col-md-6 d-none">
-                            <div class="form-group">
-                                <label for="riyal_amount" class="control-label">Riyal Amount</label>
-                                <input type="text" name="riyal_amount" class="form-control" id="riyal_amount">
-                            </div>
-                        </div>
-                    </div>
                     
                 </div>
 
@@ -592,9 +584,9 @@ $("body").delegate(".save-btn", "click", function(event) {
 
 <script>
      var charturl = "{{URL::to('/admin/dk-account')}}";
-    var storeurl = "{{URL::to('/admin/account-store')}}";
-    var editurl = "{{URL::to('/admin/account-edit')}}";
-    var upurl = "{{URL::to('/admin/account-update')}}";
+    var storeurl = "{{URL::to('/admin/dk-account-store')}}";
+    var editurl = "{{URL::to('/admin/dk-account-edit')}}";
+    var upurl = "{{URL::to('/admin/dk-account-update')}}";
     var customerTBL = $('#assetTBL').DataTable({
         processing: true,
         serverSide: true,
@@ -634,7 +626,10 @@ $("body").delegate(".save-btn", "click", function(event) {
             },
             {
                 data: 'bdt_amount',
-                name: 'bdt_amount'
+                name: 'bdt_amount',
+                render: function(data, type, row, meta) {
+                    return `৳ ${data}`;
+                }
             },
             {
                 data: 'action',
@@ -679,7 +674,10 @@ $("body").delegate(".save-btn", "click", function(event) {
                 { data: 'chart_of_account', name: 'chart_of_account' },
                 { data: 'note', name: 'note' },
                 { data: 'account_name', name: 'account_name' },
-                { data: 'bdt_amount', name: 'bdt_amount' }
+                { data: 'bdt_amount', name: 'bdt_amount',
+                render: function(data, type, row, meta) {
+                    return `৳ ${data}`;
+                } }
             ]
         });
     });

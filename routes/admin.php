@@ -125,9 +125,12 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('dk-accounts', [AccountsController::class, 'dkAccount'])->name('admin.dkaccount.filter');
     Route::get('ksa-account', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount');
     Route::post('ksa-accounts', [AccountsController::class, 'ksaAccount'])->name('admin.ksaaccount.filter');
-    Route::post('account-store', [AccountsController::class, 'store'])->name('admin.transaction.store');
-    Route::get('account-edit/{id}', [AccountsController::class, 'edit'])->name('admin.transaction.edit');
-    Route::put('account-update/{id}', [AccountsController::class, 'update'])->name('admin.transaction.update'); 
+    Route::post('dk-account-store', [AccountsController::class, 'dkStore'])->name('admin.transaction.store');
+    Route::get('dk-account-edit/{id}', [AccountsController::class, 'dkEdit'])->name('admin.transaction.edit');
+    Route::put('dk-account-update/{id}', [AccountsController::class, 'dkUpdate'])->name('admin.transaction.update'); 
+    Route::post('ksa-account-store', [AccountsController::class, 'ksaStore'])->name('admin.transaction.store');
+    Route::get('ksa-account-edit/{id}', [AccountsController::class, 'ksaEdit'])->name('admin.transaction.edit');
+    Route::put('ksa-account-update/{id}', [AccountsController::class, 'ksaUpdate'])->name('admin.transaction.update'); 
 
     // Asset
     Route::get('asset', [AssetController::class, 'index'])->name('admin.asset');
