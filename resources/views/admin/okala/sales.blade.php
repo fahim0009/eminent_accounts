@@ -222,7 +222,7 @@
                               <td style="text-align: center">{{$procokala->visaid}}</td>
                               <td style="text-align: center">{{$procokala->sponsor_id}}</td>
                               <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
-                              <td style="text-align: center">{{$procokala->vendor_name}} </td>
+                              <td style="text-align: center">{{$procokala->vendor_name}} {{$procokala->vendor_surname}}</td>
 
                               
                               <td style="text-align: center">
@@ -295,7 +295,7 @@
                               <td style="text-align: center">{{$okala->visaid}}</td>
                               <td style="text-align: center">{{$okala->sponsor_id}}</td>
                               <td style="text-align: center">{{$user->name}} {{$user->surname}}</td>
-                              <td style="text-align: center">{{$okala->vendor_name}} </td>
+                              <td style="text-align: center">{{$okala->vendor_name}} {{$okala->vendor_surname}}</td>
 
                               <td style="text-align: center">
                                 <span class="btn btn-secondary btn-xs rcv-btn" style="cursor: pointer;" data-id="{{ $okala->id }}" data-agent-id="{{ $okala->user_id }}" data-rl-id="">Receive</span>

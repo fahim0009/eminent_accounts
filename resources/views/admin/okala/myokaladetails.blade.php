@@ -61,14 +61,14 @@
                       <td style="text-align:center">
                         @if ($row->assign_to) 
                           {{-- already assigned --}}
-                          {{ $row->passport_name }} ({{ $row->passport_number }})
+                          {{ $row->passport_name }}-{{ $row->passport_number }} ({{ $row->agent_name }})
                         @else
                         {{-- Not assigned: show dropdown + save button --}}
                             <div class="input-group">
                               <select class="form-control assignto" id="assignto{{ $row->id }}">
                                 <option value="">Please Select</option>
                                 @foreach ($clients as $c)
-                                  <option value="{{ $c->id }}">{{ $c->passport_name }} ({{ $c->passport_number }})</option>
+                                  <option value="{{ $c->id }}">{{ $c->passport_name }} - {{ $c->passport_number }} ({{ $c->agent?->name }})</option>
                                 @endforeach
                               </select>
                               <div class="input-group-append">
@@ -82,7 +82,7 @@
                       </td>
 
                       <td style="text-align:center">{{ $row->rl_name ?? '' }}</td>
-                      <td style="text-align:center">{{ $row->vendor_name ?? '' }}</td>
+                      <td style="text-align:center">{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
                     </tr>
                     @endforeach
 

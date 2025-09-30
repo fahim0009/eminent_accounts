@@ -62,8 +62,7 @@
                       @endif
                     </td>
 
-                    <td style="text-align: center">{{$name= \App\Models\User::where('id', $data->user_id)->first()?->name }}
-                     </td>
+                    <td style="text-align: center">{{$data->vendor_name}} {{$data->vendor_surname}}</td>
                   @endforeach
                 
                 </tbody>

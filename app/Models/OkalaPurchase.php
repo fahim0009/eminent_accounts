@@ -23,5 +23,10 @@ class OkalaPurchase extends Model
     {
         return $this->belongsTo(CodeMaster::class, 'r_l_detail_id');
     }
+
+    public function vendor()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     
 }

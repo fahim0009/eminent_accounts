@@ -66,7 +66,7 @@
                           <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $entry->id)}}">{{$entry->visaid}}</a></td>
                           <td style="text-align: center">{{$entry->sponsorid}}</td>
                           <td style="text-align: center">{{$entry->type_name}}</td>
-                          <td style="text-align: center">{{$entry->vendor_name}}</td>
+                          <td style="text-align: center">{{$entry->vendor_name}} {{$entry->vendor_surname}}</td>
                         </tr>
                             
 

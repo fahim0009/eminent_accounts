@@ -38,6 +38,7 @@ public function index()
             'trade.type_name as trade_name',
             'rl.type_name as rl_name',
             'u.name as vendor_name',
+            'u.surname as vendor_surname',
         ])
         ->get();
 
@@ -59,6 +60,7 @@ public function index()
             'op.*',
             'cm.type_name',
             'u.name as vendor_name',
+            'u.surname as vendor_surname',
         ])
         ->selectSub(function ($q) {
             $q->from('okala_purchase_details as opd')
@@ -107,6 +109,7 @@ public function okalapurchaseDetails($id)
             'rl.type_name as rl_name',
             'tr.type_name as trade_name',
             'u.name as vendor_name',
+            'u.surname as vendor_surname',
         ])
         ->where('op.id', $id)
         ->first();
@@ -119,7 +122,8 @@ public function okalapurchaseDetails($id)
         ->leftJoin('okala_purchases as op', 'opd.okala_purchase_id', '=', 'op.id')
         ->leftJoin('code_masters as rl', 'op.r_l_detail_id', '=', 'rl.id')
         ->leftJoin('code_masters as tr', 'op.trade', '=', 'tr.id')
-        ->leftJoin('users as u', 'op.user_id', '=', 'u.id')
+        ->leftJoin('users as vendor', 'op.user_id', '=', 'vendor.id') // vendor info
+        ->leftJoin('users as agent', 'c.user_id', '=', 'agent.id')   // agent info
         ->where('opd.okala_purchase_id', $id)
         ->orderByDesc('opd.id')
         ->select([
@@ -131,20 +135,24 @@ public function okalapurchaseDetails($id)
             'op.number',
             'rl.type_name as rl_name',
             'tr.type_name as trade_name',
-            'u.name as vendor_name',
+            'vendor.name as vendor_name',
+            'vendor.surname as vendor_surname',
+            'agent.name as agent_name',
+            'agent.surname as agent_surname',
         ])
         ->get();
 
+
     // Clients available for assigning (not assigned + processing only)
-    $clients = Client::select('id', 'passport_name', 'passport_number')
+    $clients = Client::with('agent:id,name,surname')
+        ->select('id', 'passport_name', 'passport_number', 'user_id')
         ->where('assign', 0)
         ->where(function ($q) {
             $q->where('status', 1)               // numeric Processing
-              ->orWhere('status', 'Processing'); // string Processing
+            ->orWhere('status', 'Processing'); // string Processing
         })
         ->orderBy('passport_name')
         ->get();
-
     return view('admin.okala.myokaladetails', compact('purchase', 'data', 'clients'));
 }
 
@@ -152,25 +160,32 @@ public function okalapurchaseDetails($id)
     public function assignedOkala()
     {
 
-        $data = DB::table('okala_purchase_details')
-        ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
-        ->join('okala_purchases', 'okala_purchases.id', '=', 'okala_purchase_details.okala_purchase_id')
-        ->leftJoin('users', 'clients.user_id', '=', 'users.id')
-        ->leftJoin('code_masters as mofa_cm', 'mofa_cm.id', '=', 'okala_purchases.trade')
-        ->leftJoin('code_masters as rl_cm', 'rl_cm.id', '=', 'okala_purchases.r_l_detail_id')
-        ->whereNotNull('okala_purchase_details.assign_to')
-        ->orderBy('okala_purchase_details.id', 'DESC')
-        ->select(
-            'okala_purchase_details.*', 
-            'clients.passport_name', 
-            'clients.passport_number',
-            'mofa_cm.type_name as mofa',
-            'rl_cm.type_name as rl',
-             'users.name as agent_name', 
-             'users.surname as agent_surname'
-        )
-        ->get();
-        
+    $data = DB::table('okala_purchase_details')
+            ->join('clients', 'okala_purchase_details.assign_to', '=', 'clients.id')
+            ->join('okala_purchases', 'okala_purchases.id', '=', 'okala_purchase_details.okala_purchase_id')
+            ->leftJoin('users as agent_users', 'clients.user_id', '=', 'agent_users.id') // Agent
+            ->leftJoin('users as vendor_users', 'okala_purchase_details.user_id', '=', 'vendor_users.id') // Vendor
+            ->leftJoin('code_masters as mofa_cm', 'mofa_cm.id', '=', 'okala_purchases.trade')
+            ->leftJoin('code_masters as rl_cm', 'rl_cm.id', '=', 'okala_purchases.r_l_detail_id')
+            ->whereNotNull('okala_purchase_details.assign_to')
+            ->orderBy('okala_purchase_details.id', 'DESC')
+            ->select(
+                'okala_purchase_details.*', 
+                'clients.passport_name', 
+                'clients.passport_number',
+                'mofa_cm.type_name as mofa',
+                'rl_cm.type_name as rl',
+
+                // Agent
+                'agent_users.name as agent_name', 
+                'agent_users.surname as agent_surname',
+
+                // Vendor
+                'vendor_users.name as vendor_name', 
+                'vendor_users.surname as vendor_surname'
+            )
+            ->get();
+
         return view('admin.okala.assignedokala', compact('data'));
     }
 
@@ -382,6 +397,7 @@ public function okalapurchaseDetails($id)
                 'op.number',
                 'rl.type_name as rl',
                 'v.name as vendor_name',
+                'v.surname as vendor_surname',
                 'a.name as agent_name',
                 'a.surname as agent_surname',
             ])

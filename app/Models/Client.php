@@ -40,6 +40,11 @@ class Client extends Model
         return $this->hasMany(MofaHistory::class)->orderBy('date', 'desc');
     }
 
+    public function agent()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
    
 
 }

@@ -211,7 +211,7 @@
                           <td style="text-align: center">{{$data->number}}</td>
                           <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $data->id)}}">{{$data->visaid}}</a></td>
                           <td style="text-align: center">{{$data->sponsorid}}</td>
-                          <td style="text-align: center">{{$data->user->name}}</td>
+                          <td style="text-align: center">{{$data->user->name}} {{$data->user->surname}}</td>
 
                           <td style="text-align: center">
                             <div class="btn-group">
@@ -284,7 +284,7 @@
                           <td style="text-align: center">{{$cdata->number}}</td>
                           <td style="text-align: center"><a href="{{route('admin.okalapurchaseDetails', $cdata->id)}}">{{$cdata->visaid}}</a></td>
                           <td style="text-align: center">{{$cdata->sponsorid}}</td>
-                          <td style="text-align: center">{{$cdata->user->name}}</td>
+                          <td style="text-align: center">{{$cdata->user->name}} {{$cdata->user->surname}}</td>
 
                           <td style="text-align: center">
                             <span class="btn btn-info btn-xs payment-btn" style="cursor: pointer;" data-id="{{ $cdata->id }}" data-vendor-id="{{ $cdata->user_id }}" data-rl-id="">Pay</span>
