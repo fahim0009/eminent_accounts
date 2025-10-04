@@ -270,8 +270,8 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="amount" class="control-label">BDT Amount</label>
-                                <input type="text" name="amount" class="form-control" id="amount">
+                                <label for="bdt_amount" class="control-label">BDT Amount</label>
+                                <input type="text" name="bdt_amount" class="form-control" id="bdt_amount">
                             </div>
                         </div>
 
