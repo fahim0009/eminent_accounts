@@ -90,7 +90,32 @@ public function index()
     {
         $data = OkalaPurchase::orderby('id','DESC')->get();
         $complete = OkalaPurchase::orderby('id','DESC')->where('status', 1)->get();
-        return view('admin.okala.purchase', compact('data','complete'));
+
+    // Visa Cancel list (assign_to = 1)
+    $visaCancel = DB::table('okala_purchase_details as opd')
+        ->leftJoin('users as u', 'opd.user_id', '=', 'u.id')
+        ->select(
+            'opd.*',
+            'u.name as vendor_name',
+            'u.surname as vendor_surname'
+        )
+        ->where('opd.assign_to', 1)
+        ->orderByDesc('opd.id')
+        ->get();
+
+    // Okala Cancel & Replace list (assign_to = 2)
+    $okalaReplace = DB::table('okala_purchase_details as opd')
+        ->leftJoin('users as u', 'opd.user_id', '=', 'u.id')
+        ->select(
+            'opd.*',
+            'u.name as vendor_name',
+            'u.surname as vendor_surname'
+        )
+        ->where('opd.assign_to', 2)
+        ->orderByDesc('opd.id')
+        ->get();
+
+        return view('admin.okala.purchase', compact('data','complete','visaCancel','okalaReplace'));
     }
 
 
@@ -353,27 +378,45 @@ public function okalapurchaseDetails($id)
 
     public function addClientToOkala(Request $request)
     {
+        $request->validate([
+            'okalaId' => 'required|integer',
+            'clientId' => 'required',
+        ]);
 
-        $data = OkalaPurchaseDetail::find($request->okalaId);
-        if (!$data) {
-            return response()->json(['status' => 303, 'message' => 'Okala record not found.']);
+        // Find okala purchase detail
+        $okalaDetail = OkalaPurchaseDetail::find($request->okalaId);
+        if (!$okalaDetail) {
+            return response()->json([
+                'status' => 303,
+                'message' => 'Okala record not found.',
+            ]);
         }
-        $data->assign_to = $request->clientId;
-        $data->assign_date = now();
-        $data->save();
 
+        // Assign
+        $okalaDetail->assign_to = $request->clientId;
+        $okalaDetail->assign_date = now();
+        $okalaDetail->save();
+
+        // Handle special values (1 = Cancel, 2 = Cancel & Replace)
+        if (in_array($request->clientId, [1, 2])) {
+            return response()->json([
+                'status' => 300,
+                'message' => 'Okala status updated successfully.',
+            ]);
+        }
+
+        // Update client status if it’s a real client
         $client = Client::find($request->clientId);
-        $client->assign = 1;
+        if ($client) {
+            $client->assign = 1;
+            $client->save();
+        }
 
-        if ($client->save()) {
-            $message ="Status Change Successfully.";
-            return response()->json(['status'=> 300,'message'=>$message]);
-        }
-        else{
-            return response()->json(['status'=> 303,'message'=>'Server Error!!']);
-        }
+        return response()->json([
+            'status' => 300,
+            'message' => 'Okala and Client assigned successfully.',
+        ]);
     }
-
 
 
     // okala sales

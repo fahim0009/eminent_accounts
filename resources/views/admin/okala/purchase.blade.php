@@ -166,9 +166,14 @@
               <li class="nav-item">
                 <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Completed</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link " id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="true">Tab 2</a>
-              </li> -->
+              <li class="nav-item">
+                  <a class="nav-link" id="custom-tabs-one-cancel-tab" data-toggle="pill" href="#custom-tabs-one-cancel" role="tab" aria-controls="custom-tabs-one-cancel" aria-selected="false">Visa Cancel</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="custom-tabs-one-replace-tab" data-toggle="pill" href="#custom-tabs-one-replace" role="tab" aria-controls="custom-tabs-one-replace" aria-selected="false">Okala Cancel & Replace</a>
+                </li>
+
+              
             </ul>
           </div>
           <div class="card-body">
@@ -238,10 +243,6 @@
                             
                         @endif
                         
-
-                        
-
-
                         @endforeach
                       
                       </tbody>
@@ -305,15 +306,79 @@
                 <!-- End visa and others transaction End  -->
               </div>
 
-                <!-- 
-              <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
-                coming soon
-              </div> -->
+                  {{-- Okala Cancel --}}
+              <div class="tab-pane fade" id="custom-tabs-one-cancel" role="tabpanel" aria-labelledby="custom-tabs-one-cancel-tab">
+                
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Okala Cancel</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>SL</th>
+                      <th>Okala Purchase ID</th>
+                      <th>VISA ID</th>
+                      <th>Sponsor ID</th>
+                      <th>Vendor Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($visaCancel as $key4 => $row)
+                      <tr>
+                       <td style="text-align: center">{{ $key4 + 1 }}</td>
+                        <td>{{ $row->okala_purchase_id }}</td>
+                        <td>{{ $row->visa_id }}</td>
+                        <td>{{ $row->sponsor_id }}</td>
+                         <td style="text-align:center">{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
+              {{-- Okala Cancel & Replace --}}
+              <div class="tab-pane fade" id="custom-tabs-one-replace" role="tabpanel" aria-labelledby="custom-tabs-one-replace-tab">
+                
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Okala Cancel & Replaced</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>SL</th>
+                      <th>Okala Purchase ID</th>
+                      <th>VISA ID</th>
+                      <th>Sponsor ID</th>
+                      <th>Vendor Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($okalaReplace as $key4 => $row)
+                      <tr>
+                        <td style="text-align: center">{{ $key4 + 1 }}</td>
+                        <td>{{ $row->okala_purchase_id }}</td>
+                        <td>{{ $row->visa_id }}</td>
+                        <td>{{ $row->sponsor_id }}</td>
+                        <td style="text-align:center">{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
             </div>
           </div>
-          <!-- /.card -->
         </div>
       </div>
       

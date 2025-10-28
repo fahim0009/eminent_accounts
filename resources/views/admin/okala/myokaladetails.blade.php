@@ -61,7 +61,13 @@
                       <td style="text-align:center">
                         @if ($row->assign_to) 
                           {{-- already assigned --}}
-                          {{ $row->passport_name }}-{{ $row->passport_number }} ({{ $row->agent_name }})
+                              @if ($row->assign_to == 1)
+                                  Okala Cancel
+                              @elseif ($row->assign_to == 2)
+                                  Okala Cancel & Replace
+                              @else
+                                  {{ $row->passport_name }} - {{ $row->passport_number }} ({{ $row->agent_name }})
+                              @endif
                         @else
                         {{-- Not assigned: show dropdown + save button --}}
                             <div class="input-group">
@@ -69,6 +75,8 @@
                                 <option value="">Please Select</option>
                                 @foreach ($clients as $c)
                                   <option value="{{ $c->id }}">{{ $c->passport_name }} - {{ $c->passport_number }} ({{ $c->agent?->name }})</option>
+                                  <option value="1">Okala Cancel</option>
+                                  <option value="2">Okala Cancel & Replace</option>
                                 @endforeach
                               </select>
                               <div class="input-group-append">
@@ -144,7 +152,6 @@ $(document).ready(function () {
             $('#message'+okalaId).html('<span class="text-danger">Please select first</span>');
             return false;
         }
-        console.log(okalaId, clientId);
         var okalaurl = "{{URL::to('/admin/client-add-okala')}}";
         $.ajax({
             type: "POST",
