@@ -170,7 +170,7 @@
                   <a class="nav-link" id="custom-tabs-one-cancel-tab" data-toggle="pill" href="#custom-tabs-one-cancel" role="tab" aria-controls="custom-tabs-one-cancel" aria-selected="false">Okala Cancel</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="custom-tabs-one-replace-tab" data-toggle="pill" href="#custom-tabs-one-replace" role="tab" aria-controls="custom-tabs-one-replace" aria-selected="false">Okala Cancel & Replace</a>
+                  <a class="nav-link" id="custom-tabs-one-replace-tab" data-toggle="pill" href="#custom-tabs-one-replace" role="tab" aria-controls="custom-tabs-one-replace" aria-selected="false">Okala replacement received</a>
                 </li>
 
               
@@ -315,7 +315,7 @@
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="example3">
                   <thead>
                     <tr>
                       <th>SL</th>
@@ -323,16 +323,29 @@
                       <th>Sponsor ID</th>
                       <th>Vendor Name</th>
                       <th>Note</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($visaCancel as $key4 => $row)
+                    @foreach ($okalaCancel as $key4 => $row)
                       <tr>
                        <td style="text-align: center">{{ $key4 + 1 }}</td>
                         <td>{{ $row->visa_id }}</td>
                         <td>{{ $row->sponsor_id }}</td>
                          <td>{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
                         <td></td>
+                          <td style="text-align: center">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-secondary"><span id="getRep{{$row->id}}"> Cancel</span></button>
+                              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                                <span class="sr-only">Toggle Dropdown</span>
+                              </button>
+                              <div class="dropdown-menu" role="menu">
+                                <button class="dropdown-item getReplace" data-id="{{$row->id}}" value="2">Get Replace</button>
+                                <!-- <button class="dropdown-item getReplace" data-id="{{$row->id}}" value="3">Cancel</button> -->
+                              </div>
+                            </div>
+                          </td>
 
                       </tr>
                     @endforeach
@@ -352,14 +365,16 @@
                   <!-- /.card-header -->
                   <div class="card-body">
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="example4">
                   <thead>
                     <tr>
                       <th>SL</th>
                       <th>VISA ID</th>
                       <th>Sponsor ID</th>
                       <th>Vendor Name</th>
+                      <th>Replace Date</th>
                       <th>Note</th>
+                      <th>Status</th>
 
                     </tr>
                   </thead>
@@ -370,7 +385,9 @@
                         <td>{{ $row->visa_id }}</td>
                         <td>{{ $row->sponsor_id }}</td>
                         <td>{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                        <td>{{ $row->assign_date }}</td>
                         <td></td>
+                        <td><button class="btn btn-success" value="">Replacement received</button></td>
 
                       </tr>
                     @endforeach
@@ -529,6 +546,55 @@ $(document).ready(function () {
         this.data(num--);
       });
   }).draw();
+
+
+    var t3 = $('#example3').DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL col
+    ]
+  });
+
+  // continuous reverse numbering
+  t3.on('order.dt search.dt draw.dt', function () {
+    const total = t3.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t3.page.info();
+    let num     = total - info.start;
+
+    t3.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () {
+        this.data(num--);
+      });
+  }).draw();
+
+
+    var t4 = $('#example4').DataTable({
+    responsive: true,
+    lengthChange: false,
+    autoWidth: false,
+    ordering: true,
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+    columnDefs: [
+      { targets: 0, orderable: false, searchable: false, className: 'all' } // SL col
+    ]
+  });
+
+  // continuous reverse numbering
+  t4.on('order.dt search.dt draw.dt', function () {
+    const total = t4.rows({ search: 'applied', order: 'applied' }).count();
+    const info  = t4.page.info();
+    let num     = total - info.start;
+
+    t4.cells(null, 0, { search: 'applied', order: 'applied', page: 'current' })
+      .every(function () {
+        this.data(num--);
+      });
+  }).draw();
+
 });
 
 var t2 = $("#example2").DataTable({
@@ -548,8 +614,6 @@ t2.on('order.dt search.dt draw.dt', function () {
   const total = t2.rows({ search: 'applied', order: 'applied' }).count();
   const info  = t2.page.info();
 
-  // The first number on the current page (descending)
-  // e.g., total=37; page 0 start=0 -> startNum=37
   //       page 1 start=10 -> startNum=27, etc.
   let num = total - info.start;
 
@@ -559,6 +623,7 @@ t2.on('order.dt search.dt draw.dt', function () {
       this.data(num--);
     });
 }).draw();
+
 
 
     $(function() {
@@ -610,6 +675,63 @@ t2.on('order.dt search.dt draw.dt', function () {
           });
       })
     })
+
+
+        $('.getReplace').click(function () {
+        
+        var okalaId = $(this).data('id');
+        var getRplc = $(this).val();
+
+        var repokala = "{{URL::to('/admin/getreplace-okala')}}";
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: repokala,
+            data: {
+              getRplc: getRplc,
+              okalaId: okalaId,
+            },
+            success: function (data) {
+
+                if (data.status == 303) {
+
+                  $('#message'+clientId).html(data.message);
+
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'warning',
+                          title: data.message
+                        });
+                      });
+                } else if (data.status == 300) {
+                    $(function() {
+                        var Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        Toast.fire({
+                          icon: 'success',
+                          title: data.message
+                        });
+                      });
+                      window.setTimeout(function(){location.reload()},2000);
+                }
+
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+      });
 
 
     $(document).ready(function () {

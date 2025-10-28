@@ -92,7 +92,7 @@ public function index()
         $complete = OkalaPurchase::orderby('id','DESC')->where('status', 1)->get();
 
     // Visa Cancel list (assign_to = 1)
-    $visaCancel = DB::table('okala_purchase_details as opd')
+    $okalaCancel = DB::table('okala_purchase_details as opd')
         ->leftJoin('users as u', 'opd.user_id', '=', 'u.id')
         ->select(
             'opd.*',
@@ -115,7 +115,7 @@ public function index()
         ->orderByDesc('opd.id')
         ->get();
 
-        return view('admin.okala.purchase', compact('data','complete','visaCancel','okalaReplace'));
+        return view('admin.okala.purchase', compact('data','complete','okalaCancel','okalaReplace'));
     }
 
 
@@ -415,6 +415,36 @@ public function okalapurchaseDetails($id)
         return response()->json([
             'status' => 300,
             'message' => 'Okala and Client assigned successfully.',
+        ]);
+    }
+
+
+
+    public function getReplacOkala(Request $request)
+    {
+        $request->validate([
+            'okalaId' => 'required|integer',
+            'getRplc' => 'required',
+        ]);
+
+        // Find okala purchase detail
+        $okalaDetail = OkalaPurchaseDetail::find($request->okalaId);
+        if (!$okalaDetail) {
+            return response()->json([
+                'status' => 303,
+                'message' => 'Okala record not found.',
+            ]);
+        }
+
+        // Assign
+        $okalaDetail->assign_to = $request->getRplc;
+        $okalaDetail->assign_date = now();
+        $okalaDetail->save();
+
+
+        return response()->json([
+            'status' => 300,
+            'message' => 'Okala replace successfully.',
         ]);
     }
 
