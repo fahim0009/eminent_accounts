@@ -167,7 +167,7 @@
                 <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Completed</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" id="custom-tabs-one-cancel-tab" data-toggle="pill" href="#custom-tabs-one-cancel" role="tab" aria-controls="custom-tabs-one-cancel" aria-selected="false">Visa Cancel</a>
+                  <a class="nav-link" id="custom-tabs-one-cancel-tab" data-toggle="pill" href="#custom-tabs-one-cancel" role="tab" aria-controls="custom-tabs-one-cancel" aria-selected="false">Okala Cancel</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" id="custom-tabs-one-replace-tab" data-toggle="pill" href="#custom-tabs-one-replace" role="tab" aria-controls="custom-tabs-one-replace" aria-selected="false">Okala Cancel & Replace</a>
@@ -319,20 +319,21 @@
                   <thead>
                     <tr>
                       <th>SL</th>
-                      <th>Okala Purchase ID</th>
                       <th>VISA ID</th>
                       <th>Sponsor ID</th>
                       <th>Vendor Name</th>
+                      <th>Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach ($visaCancel as $key4 => $row)
                       <tr>
                        <td style="text-align: center">{{ $key4 + 1 }}</td>
-                        <td>{{ $row->okala_purchase_id }}</td>
                         <td>{{ $row->visa_id }}</td>
                         <td>{{ $row->sponsor_id }}</td>
-                         <td style="text-align:center">{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                         <td>{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                        <td></td>
+
                       </tr>
                     @endforeach
                   </tbody>
@@ -355,20 +356,22 @@
                   <thead>
                     <tr>
                       <th>SL</th>
-                      <th>Okala Purchase ID</th>
                       <th>VISA ID</th>
                       <th>Sponsor ID</th>
                       <th>Vendor Name</th>
+                      <th>Note</th>
+
                     </tr>
                   </thead>
                   <tbody>
                     @foreach ($okalaReplace as $key4 => $row)
                       <tr>
                         <td style="text-align: center">{{ $key4 + 1 }}</td>
-                        <td>{{ $row->okala_purchase_id }}</td>
                         <td>{{ $row->visa_id }}</td>
                         <td>{{ $row->sponsor_id }}</td>
-                        <td style="text-align:center">{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                        <td>{{ $row->vendor_name ?? '' }} {{ $row->vendor_surname ?? '' }}</td>
+                        <td></td>
+
                       </tr>
                     @endforeach
                   </tbody>
@@ -386,11 +389,6 @@
   </div>
 </section>
 <!-- /.content -->
-
-
-
-
-
 
 <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">

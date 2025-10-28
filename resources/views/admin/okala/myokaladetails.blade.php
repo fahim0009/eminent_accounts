@@ -75,9 +75,9 @@
                                 <option value="">Please Select</option>
                                 @foreach ($clients as $c)
                                   <option value="{{ $c->id }}">{{ $c->passport_name }} - {{ $c->passport_number }} ({{ $c->agent?->name }})</option>
+                                @endforeach
                                   <option value="1">Okala Cancel</option>
                                   <option value="2">Okala Cancel & Replace</option>
-                                @endforeach
                               </select>
                               <div class="input-group-append">
                                 <button class="btn btn-secondary assignto_btn" data-id="{{ $row->id }}">
